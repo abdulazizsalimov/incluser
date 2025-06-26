@@ -43,11 +43,11 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
             <time 
-              dateTime={article.publishedAt || undefined}
+              dateTime={article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined}
               className="flex items-center gap-1"
             >
               <span className="sr-only">Опубликовано:</span>
-              {formatDate(article.publishedAt)}
+              {formatDate(article.publishedAt ? new Date(article.publishedAt).toISOString() : null)}
             </time>
             {article.readingTime && (
               <div className="flex items-center gap-1">
