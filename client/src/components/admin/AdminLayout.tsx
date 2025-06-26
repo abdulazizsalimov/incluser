@@ -1,0 +1,112 @@
+import { ReactNode, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { Link, useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Tags, 
+  Settings, 
+  ArrowLeft 
+} from "lucide-react";
+
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const { toast } = useToast();
+  const [location] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast({
+        title: "Unauthorized",
+        description: "You are logged out. Logging in again...",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 500);
+      return;
+    }
+
+    if (!isLoading && isAuthenticated && !user?.isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "Admin access required",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
+      return;
+    }
+  }, [isAuthenticated, isLoading, user, toast]);
+
+  const sidebarItems = [
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/articles", label: "Articles", icon: FileText },
+    { href: "/admin/categories", label: "Categories", icon: Tags },
+    { href: "/admin/pages", label: "Pages", icon: Settings },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || !user?.isAdmin) {
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="flex">
+        {/* Sidebar */}
+        <aside className="w-64 bg-card border-r border-border min-h-screen">
+          <div className="p-6">
+            <h2 className="text-xl font-semibold mb-6">Admin Panel</h2>
+            <nav className="space-y-2">
+              <Link href="/">
+                <Button variant="ghost" className="w-full justify-start">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Site
+                </Button>
+              </Link>
+              <Separator className="my-4" />
+              {sidebarItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location === item.href || 
+                  (item.href !== "/admin" && location.startsWith(item.href));
+                
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={isActive ? "secondary" : "ghost"}
+                      className="w-full justify-start"
+                    >
+                      <Icon className="mr-2 h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 p-8">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}
