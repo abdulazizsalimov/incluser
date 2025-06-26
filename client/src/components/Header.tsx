@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Menu, Accessibility } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import GoogleTranslate from "./GoogleTranslate";
+
 import AccessibilityWidget from "./AccessibilityWidget";
 
 export default function Header() {
@@ -60,9 +60,6 @@ export default function Header() {
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
-            {/* Google Translate */}
-            <GoogleTranslate />
-
             {/* Accessibility Widget */}
             <Button
               variant="outline"
