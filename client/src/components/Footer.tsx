@@ -12,10 +12,10 @@ export default function Footer() {
   ];
 
   const resourceItems = [
-    { href: "#", label: "Руководства WCAG" },
-    { href: "#", label: "Инструменты тестирования" },
-    { href: "#", label: "Полезные ссылки" },
-    { href: "#", label: "RSS подписка" },
+    { href: "#wcag", label: "Руководства WCAG" },
+    { href: "#tools", label: "Инструменты тестирования" },
+    { href: "#links", label: "Полезные ссылки" },
+    { href: "#rss", label: "RSS подписка" },
   ];
 
   return (
@@ -63,10 +63,11 @@ export default function Footer() {
               <ul className="space-y-2">
                 {navItems.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href}>
-                      <a className="text-slate-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded">
-                        {item.label}
-                      </a>
+                    <Link 
+                      href={item.href}
+                      className="text-slate-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+                    >
+                      {item.label}
                     </Link>
                   </li>
                 ))}

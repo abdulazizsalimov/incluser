@@ -32,10 +32,8 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/">
-              <a className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
-                Incluser
-              </a>
+            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
+              Incluser
             </Link>
           </div>
 
@@ -44,17 +42,16 @@ export default function Header() {
             <ul className="flex space-x-8">
               {navItems.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href}>
-                    <a
-                      className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
-                        isActive(item.href)
-                          ? "text-primary"
-                          : "text-muted-foreground hover:text-primary"
-                      }`}
-                      aria-current={isActive(item.href) ? "page" : undefined}
-                    >
-                      {item.label}
-                    </a>
+                  <Link 
+                    href={item.href}
+                    className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                      isActive(item.href)
+                        ? "text-primary"
+                        : "text-muted-foreground hover:text-primary"
+                    }`}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                  >
+                    {item.label}
                   </Link>
                 </li>
               ))}
@@ -133,16 +130,16 @@ export default function Header() {
               <SheetContent side="right" className="w-[300px]">
                 <nav className="flex flex-col space-y-4 mt-8">
                   {navItems.map((item) => (
-                    <Link key={item.href} href={item.href}>
-                      <a
-                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                          isActive(item.href)
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:text-primary hover:bg-muted"
-                        }`}
-                      >
-                        {item.label}
-                      </a>
+                    <Link 
+                      key={item.href} 
+                      href={item.href}
+                      className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                        isActive(item.href)
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:text-primary hover:bg-muted"
+                      }`}
+                    >
+                      {item.label}
                     </Link>
                   ))}
                   
