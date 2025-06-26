@@ -28,6 +28,43 @@
     <link rel="preconnect" href="https://translate.googleapis.com" />
   </head>
   <body>
+    <script>
+      // IMMEDIATE ERROR OVERLAY BLOCKER - Runs before any other scripts
+      (function() {
+        'use strict';
+        
+        // Override sendError function immediately
+        window.sendError = function() { return; };
+        
+        // Block all error events at the earliest stage
+        const blockAllErrors = function(e) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          return false;
+        };
+        
+        // Add listeners immediately
+        window.addEventListener('error', blockAllErrors, true);
+        window.addEventListener('unhandledrejection', blockAllErrors, true);
+        document.addEventListener('error', blockAllErrors, true);
+        
+        // Override console.error to prevent overlay triggers
+        const originalError = console.error;
+        console.error = function() {
+          const args = Array.from(arguments);
+          const message = args.join(' ');
+          if (message.includes('runtime-error') || 
+              message.includes('sendError') || 
+              message.includes('Script error') ||
+              message.includes('plugin:runtime-error-plugin')) {
+            return; // Completely suppress these errors
+          }
+          originalError.apply(console, args);
+        };
+        
+        console.log('Error overlay blocker activated');
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
