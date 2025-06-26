@@ -1,187 +1,250 @@
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Menu, Accessibility } from "lucide-react";
+import { Menu, X, Settings, Globe } from "lucide-react";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import GoogleTranslate from "./GoogleTranslate";
+import { useAuth } from "@/hooks/useAuth";
 import AccessibilityWidget from "./AccessibilityWidget";
+import GoogleTranslate from "./GoogleTranslate";
 
 export default function Header() {
-  const { user, isAuthenticated, isLoading } = useAuth();
   const [location] = useLocation();
-  const [accessibilityOpen, setAccessibilityOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
-  const navItems = [
-    { href: "/", label: "Главная" },
-    { href: "/articles", label: "Статьи" },
-    { href: "/about", label: "Об авторе" },
-    { href: "/contact", label: "Контакты" },
-  ];
-
-  const isActive = (href: string) => {
-    if (href === "/" && location === "/") return true;
-    if (href !== "/" && location.startsWith(href)) return true;
+  const isActive = (path: string) => {
+    if (path === "/" && location === "/") return true;
+    if (path !== "/" && location.startsWith(path)) return true;
     return false;
   };
 
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const navLinkStyle = (path: string) => ({
+    color: isActive(path) ? '#0369a1' : '#4b5563',
+    textDecoration: 'none',
+    fontWeight: '500',
+    padding: '0.5rem 1rem',
+    borderRadius: '0.375rem',
+    transition: 'all 0.2s',
+    backgroundColor: isActive(path) ? '#f1f5f9' : 'transparent'
+  });
+
+  const mobileNavLinkStyle = (path: string) => ({
+    display: 'block',
+    color: isActive(path) ? '#0369a1' : '#4b5563',
+    textDecoration: 'none',
+    fontWeight: '500',
+    padding: '0.75rem 1rem',
+    borderRadius: '0.375rem',
+    backgroundColor: isActive(path) ? '#f1f5f9' : 'transparent'
+  });
+
   return (
-    <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-border" role="banner">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header 
+      style={{ 
+        background: 'rgba(255, 255, 255, 0.95)', 
+        backdropFilter: 'blur(8px)', 
+        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        borderBottom: '1px solid #e2e8f0',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50
+      }} 
+      role="banner"
+    >
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4rem' }}>
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent hover:from-cyan-600 hover:to-blue-600 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
-              Incluser
+          <div style={{ flexShrink: 0 }}>
+            <Link href="/" style={{ textDecoration: 'none' }}>
+              <span style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: '700', 
+                color: '#0369a1',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                Incluser
+              </span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav id="navigation" role="navigation" aria-label="Основная навигация" className="hidden md:block">
-            <ul className="flex space-x-8">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <Link 
-                    href={item.href}
-                    className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
-                      isActive(item.href)
-                        ? "text-primary"
-                        : "text-muted-foreground hover:text-primary"
-                    }`}
-                    aria-current={isActive(item.href) ? "page" : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          {/* Navigation Links - Always visible on desktop */}
+          <nav 
+            role="navigation" 
+            aria-label="Основная навигация"
+            style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}
+          >
+            <Link href="/" style={navLinkStyle("/")}>
+              Главная
+            </Link>
+            <Link href="/articles" style={navLinkStyle("/articles")}>
+              Статьи
+            </Link>
+            <Link href="/about" style={navLinkStyle("/about")}>
+              Об авторе
+            </Link>
+            <Link href="/contact" style={navLinkStyle("/contact")}>
+              Контакты
+            </Link>
           </nav>
 
-          {/* Right Section */}
-          <div className="flex items-center space-x-4">
+          {/* Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             {/* Google Translate */}
             <GoogleTranslate />
-
-            {/* Accessibility Widget */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setAccessibilityOpen(true)}
-              aria-label="Специальные возможности"
-              className="hidden sm:flex"
+            
+            {/* Accessibility Widget Button */}
+            <button
+              onClick={() => setIsAccessibilityOpen(!isAccessibilityOpen)}
+              style={{
+                background: 'transparent',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.375rem',
+                padding: '0.5rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                color: '#6b7280'
+              }}
+              aria-label="Настройки доступности"
             >
-              <Accessibility className="h-4 w-4" />
-              <span className="ml-2">Доступность</span>
-            </Button>
+              <Settings size={18} />
+            </button>
 
-            {/* Auth Buttons */}
-            {!isLoading && (
-              <div className="flex items-center space-x-2">
-                {isAuthenticated ? (
-                  <div className="flex items-center space-x-2">
-                    {(user as any)?.isAdmin && (
-                      <Link href="/admin">
-                        <Button variant="outline" size="sm">
-                          Админ-панель
-                        </Button>
-                      </Link>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.location.href = "/api/logout"}
-                    >
-                      Выход
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="hidden sm:flex space-x-2">
-                    <Button
-                      size="sm"
-                      onClick={() => window.location.href = "/api/login"}
-                    >
-                      Вход
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.location.href = "/api/login"}
-                    >
-                      Регистрация
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Mobile Menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="md:hidden"
-                  aria-label="Открыть меню навигации"
+            {/* Auth Actions */}
+            {isAuthenticated ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  Привет, {(user as any)?.firstName || 'Пользователь'}!
+                </span>
+                <a 
+                  href="/api/logout"
+                  style={{
+                    background: '#0369a1',
+                    color: 'white',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.375rem',
+                    textDecoration: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
+                  }}
                 >
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px]">
-                <nav className="flex flex-col space-y-4 mt-8">
-                  {navItems.map((item) => (
-                    <Link 
-                      key={item.href} 
-                      href={item.href}
-                      className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                        isActive(item.href)
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:text-primary hover:bg-muted"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                  
-                  <div className="border-t pt-4 space-y-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setAccessibilityOpen(true)}
-                      className="w-full justify-start"
-                    >
-                      <Accessibility className="h-4 w-4 mr-2" />
-                      Доступность
-                    </Button>
-                    
-                    {!isLoading && !isAuthenticated && (
-                      <>
-                        <Button
-                          size="sm"
-                          onClick={() => window.location.href = "/api/login"}
-                          className="w-full"
-                        >
-                          Вход
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.location.href = "/api/login"}
-                          className="w-full"
-                        >
-                          Регистрация
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
+                  Выйти
+                </a>
+              </div>
+            ) : (
+              <a 
+                href="/api/login"
+                style={{
+                  background: '#0369a1',
+                  color: 'white',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.375rem',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '500'
+                }}
+              >
+                Войти
+              </a>
+            )}
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div 
+            id="mobile-menu"
+            style={{
+              display: 'block',
+              '@media (min-width: 768px)': { display: 'none' },
+              paddingBottom: '1rem'
+            }}
+          >
+            <nav role="navigation" aria-label="Мобильная навигация">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                <Link href="/" style={mobileNavLinkStyle("/")} onClick={() => setIsMenuOpen(false)}>
+                  Главная
+                </Link>
+                <Link href="/articles" style={mobileNavLinkStyle("/articles")} onClick={() => setIsMenuOpen(false)}>
+                  Статьи
+                </Link>
+                <Link href="/about" style={mobileNavLinkStyle("/about")} onClick={() => setIsMenuOpen(false)}>
+                  Об авторе
+                </Link>
+                <Link href="/contact" style={mobileNavLinkStyle("/contact")} onClick={() => setIsMenuOpen(false)}>
+                  Контакты
+                </Link>
+              </div>
+            </nav>
+
+            {/* Mobile Actions */}
+            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e5e7eb' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                <GoogleTranslate />
+                <button
+                  onClick={() => setIsAccessibilityOpen(!isAccessibilityOpen)}
+                  style={{
+                    background: 'transparent',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.375rem',
+                    padding: '0.5rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#6b7280'
+                  }}
+                  aria-label="Настройки доступности"
+                >
+                  <Settings size={18} />
+                </button>
+              </div>
+
+              {isAuthenticated ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                    Привет, {user?.firstName || 'Пользователь'}!
+                  </span>
+                  <a 
+                    href="/api/logout"
+                    style={{
+                      background: '#0369a1',
+                      color: 'white',
+                      padding: '0.75rem 1rem',
+                      borderRadius: '0.375rem',
+                      textDecoration: 'none',
+                      textAlign: 'center',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Выйти
+                  </a>
+                </div>
+              ) : (
+                <a 
+                  href="/api/login"
+                  style={{
+                    background: '#0369a1',
+                    color: 'white',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '0.375rem',
+                    textDecoration: 'none',
+                    display: 'block',
+                    textAlign: 'center',
+                    fontWeight: '500'
+                  }}
+                >
+                  Войти
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
-      <AccessibilityWidget open={accessibilityOpen} onOpenChange={setAccessibilityOpen} />
+      {/* Accessibility Widget */}
+      <AccessibilityWidget open={isAccessibilityOpen} onOpenChange={setIsAccessibilityOpen} />
     </header>
   );
 }
