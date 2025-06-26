@@ -10,11 +10,18 @@ interface ArticleCardProps {
 export default function ArticleCard({ article }: ArticleCardProps) {
   const formatDate = (date: string | null) => {
     if (!date) return "";
-    return new Date(date).toLocaleDateString("ru-RU", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    try {
+      const dateObj = new Date(date);
+      if (isNaN(dateObj.getTime())) return "";
+      return dateObj.toLocaleDateString("ru-RU", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (error) {
+      console.warn('Date formatting error:', error);
+      return "";
+    }
   };
 
   return (

@@ -60,8 +60,8 @@ export default function Header() {
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
-            {/* Google Translate - temporarily disabled for debugging */}
-            {/* <GoogleTranslate /> */}
+            {/* Google Translate */}
+            <GoogleTranslate />
 
             {/* Accessibility Widget */}
             <Button
