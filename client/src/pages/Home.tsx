@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Clock, User, Calendar } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
@@ -18,159 +21,111 @@ export default function Home() {
   const articles = articlesData?.articles || [];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <SkipLinks />
       <Header />
       
       <main>
         {/* Hero Section */}
-        <section 
-          style={{ 
-            background: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 50%, #075985 100%)', 
-            color: 'white',
-            padding: '4rem 1rem'
-          }} 
-          role="banner" 
-          aria-labelledby="hero-title"
-        >
-          <div style={{ maxWidth: '80rem', margin: '0 auto', textAlign: 'center' }}>
-            <h1 id="hero-title" style={{ fontSize: 'clamp(2rem, 8vw, 4rem)', fontWeight: '700', marginBottom: '1.5rem', lineHeight: '1.2' }}>
-              <span style={{ display: 'block', fontSize: 'clamp(3rem, 10vw, 5rem)', fontWeight: '700' }}>
+        <section className="hero-gradient py-16 text-white" role="banner" aria-labelledby="hero-title">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 id="hero-title" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <span className="block text-5xl sm:text-6xl lg:text-7xl font-bold">
                 Incluser
               </span>
-              <span style={{ display: 'block', fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', fontWeight: '500', marginTop: '0.5rem', opacity: '0.9' }}>
+              <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
                 доступный сайт о доступности
               </span>
             </h1>
-            <p style={{ 
-              fontSize: 'clamp(1.125rem, 4vw, 1.5rem)', 
-              marginBottom: '2rem', 
-              maxWidth: '48rem', 
-              margin: '0 auto 2rem auto',
-              opacity: '0.9',
-              lineHeight: '1.6'
-            }}>
+            <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto opacity-90 leading-relaxed">
               Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
               которыми могут пользоваться все люди, независимо от их способностей.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}>
-              <Link href="/articles" style={{ textDecoration: 'none' }}>
-                <div style={{ 
-                  background: 'white', 
-                  color: '#0369a1', 
-                  padding: '0.875rem 2rem',
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'inline-block',
-                  transition: 'all 0.2s'
-                }}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/articles">
+                <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
                   Читать статьи
-                </div>
+                </Button>
               </Link>
-              <Link href="/about" style={{ textDecoration: 'none' }}>
-                <div style={{ 
-                  background: 'transparent', 
-                  color: 'white', 
-                  padding: '0.875rem 2rem',
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  border: '2px solid white',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'inline-block',
-                  transition: 'all 0.2s'
-                }}>
+              <Link href="/about">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
                   Об авторе
-                </div>
+                </Button>
               </Link>
             </div>
           </div>
         </section>
 
         {/* Latest Articles Section */}
-        <section style={{ padding: '4rem 1rem' }} aria-labelledby="latest-articles">
-          <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-              <h2 id="latest-articles" style={{ fontSize: '2.25rem', fontWeight: '700', color: '#1e293b', marginBottom: '1rem' }}>
+        <section className="py-16" aria-labelledby="latest-articles">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 id="latest-articles" className="text-3xl font-bold text-foreground mb-4">
                 Свежие статьи
               </h2>
-              <p style={{ fontSize: '1.125rem', color: '#6b7280', maxWidth: '32rem', margin: '0 auto' }}>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Последние публикации о цифровой доступности, лучших практиках и новых решениях
               </p>
             </div>
 
             {isLoading ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} style={{ 
-                    background: 'white', 
-                    borderRadius: '0.5rem', 
-                    padding: '1.5rem',
-                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-                    border: '1px solid #e2e8f0'
-                  }}>
-                    <div style={{ height: '1.5rem', background: '#e2e8f0', borderRadius: '0.25rem', marginBottom: '1rem' }}></div>
-                    <div style={{ height: '1rem', background: '#e2e8f0', borderRadius: '0.25rem', marginBottom: '0.5rem' }}></div>
-                    <div style={{ height: '1rem', background: '#e2e8f0', borderRadius: '0.25rem', width: '60%' }}></div>
+                  <div key={i} className="bg-card border border-border rounded-lg p-6">
+                    <Skeleton className="h-6 w-3/4 mb-4" />
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-2/3 mb-4" />
+                    <div className="flex justify-between">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
                   </div>
                 ))}
               </div>
             ) : articles.length > 0 ? (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {articles.map((article) => (
-                  <article key={article.id} style={{ 
-                    background: 'white', 
-                    borderRadius: '0.5rem', 
-                    padding: '1.5rem',
-                    boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
-                    border: '1px solid #e2e8f0',
-                    transition: 'all 0.2s'
-                  }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1e293b', marginBottom: '0.75rem' }}>
-                      <Link href={`/articles/${article.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <article key={article.id} className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <h3 className="text-xl font-semibold text-card-foreground mb-3">
+                      <Link 
+                        href={`/articles/${article.slug}`}
+                        className="hover:text-primary transition-colors"
+                      >
                         {article.title}
                       </Link>
                     </h3>
                     {article.excerpt && (
-                      <p style={{ color: '#6b7280', lineHeight: '1.6', marginBottom: '1rem' }}>
+                      <p className="text-muted-foreground mb-4 line-clamp-3">
                         {article.excerpt}
                       </p>
                     )}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', color: '#9ca3af' }}>
-                      <span>{article.author?.firstName || 'Автор'}</span>
-                      <span>{new Date(article.createdAt || '').toLocaleDateString('ru-RU')}</span>
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center gap-2">
+                        <User size={14} />
+                        <span>{article.author?.firstName || 'Автор'}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar size={14} />
+                        <span>{new Date(article.createdAt || '').toLocaleDateString('ru-RU')}</span>
+                      </div>
                     </div>
                   </article>
                 ))}
               </div>
             ) : (
-              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-                <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>
+              <div className="text-center py-12">
+                <p className="text-lg text-muted-foreground">
                   Статьи пока не опубликованы. Скоро здесь появится интересный контент!
                 </p>
               </div>
             )}
 
             {articles.length > 0 && (
-              <div style={{ textAlign: 'center', marginTop: '3rem' }}>
-                <Link href="/articles" style={{ textDecoration: 'none' }}>
-                  <div style={{ 
-                    background: '#0369a1', 
-                    color: 'white', 
-                    padding: '0.875rem 2rem',
-                    fontSize: '1.125rem',
-                    fontWeight: '600',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer',
-                    display: 'inline-block',
-                    transition: 'all 0.2s'
-                  }}>
+              <div className="text-center mt-12">
+                <Link href="/articles">
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                     Все статьи
-                  </div>
+                  </Button>
                 </Link>
               </div>
             )}
