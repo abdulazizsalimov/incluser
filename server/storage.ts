@@ -83,13 +83,6 @@ export class DatabaseStorage implements IStorage {
   } = {}): Promise<ArticleWithRelations[]> {
     const { published, limit = 50, offset = 0, search, categoryId } = options;
     
-    let query = db
-      .select()
-      .from(articles)
-      .leftJoin(users, eq(articles.authorId, users.id))
-      .leftJoin(categories, eq(articles.categoryId, categories.id))
-      .orderBy(desc(articles.publishedAt));
-
     const conditions = [];
     if (published !== undefined) {
       conditions.push(eq(articles.isPublished, published));
@@ -101,11 +94,16 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(articles.categoryId, categoryId));
     }
 
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
+    const query = db
+      .select()
+      .from(articles)
+      .leftJoin(users, eq(articles.authorId, users.id))
+      .leftJoin(categories, eq(articles.categoryId, categories.id))
+      .orderBy(desc(articles.publishedAt));
 
-    const results = await query.limit(limit).offset(offset);
+    const results = conditions.length > 0
+      ? await query.where(and(...conditions)).limit(limit).offset(offset)
+      : await query.limit(limit).offset(offset);
     
     return results.map(result => ({
       ...result.articles,
