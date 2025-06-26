@@ -47,7 +47,7 @@ export default function About() {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <SkipLinks />
       <Header />
       
