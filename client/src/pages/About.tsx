@@ -39,8 +39,8 @@ export default function About() {
           `,
           metaDescription: "О блоге Incluser, посвящённом цифровой доступности и инклюзивному дизайну",
           isPublished: true,
-          updatedAt: new Date().toISOString(),
-        } as Page;
+          updatedAt: new Date(),
+        };
       }
       return response.json();
     },

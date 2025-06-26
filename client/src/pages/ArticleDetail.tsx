@@ -129,8 +129,8 @@ export default function ArticleDetail() {
                   {article.publishedAt && (
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" aria-hidden="true" />
-                      <time dateTime={article.publishedAt}>
-                        {formatDate(article.publishedAt)}
+                      <time dateTime={new Date(article.publishedAt).toISOString()}>
+                        {formatDate(new Date(article.publishedAt).toISOString())}
                       </time>
                     </div>
                   )}
