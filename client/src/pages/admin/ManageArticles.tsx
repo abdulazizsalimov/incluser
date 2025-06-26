@@ -27,7 +27,7 @@ import type { ArticleWithRelations, Category } from "@shared/schema";
 export default function ManageArticles() {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [showEditor, setShowEditor] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleWithRelations | null>(null);
   const { toast } = useToast();
@@ -51,7 +51,7 @@ export default function ManageArticles() {
       });
       
       if (search) params.append("search", search);
-      if (categoryFilter) params.append("categoryId", categoryFilter);
+      if (categoryFilter && categoryFilter !== "all") params.append("categoryId", categoryFilter);
       
       const response = await fetch(`/api/admin/articles?${params}`);
       if (!response.ok) throw new Error("Failed to fetch articles");
@@ -180,9 +180,16 @@ export default function ManageArticles() {
     setCurrentPage(1);
   };
 
-  const formatDate = (date: string | null) => {
+  const formatDate = (date: string | Date | null | undefined) => {
     if (!date) return "Не опубликовано";
-    return new Date(date).toLocaleDateString("ru-RU");
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      if (isNaN(dateObj.getTime())) return "Не опубликовано";
+      return dateObj.toLocaleDateString("ru-RU");
+    } catch (error) {
+      console.warn('Date formatting error:', error);
+      return "Не опубликовано";
+    }
   };
 
   if (showEditor) {
@@ -260,7 +267,7 @@ export default function ManageArticles() {
                 <SelectValue placeholder="Все категории" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Все категории</SelectItem>
+                <SelectItem value="all">Все категории</SelectItem>
                 {categoriesData?.map((category) => (
                   <SelectItem key={category.id} value={category.id.toString()}>
                     {category.name}
