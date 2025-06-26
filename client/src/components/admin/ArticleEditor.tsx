@@ -202,8 +202,8 @@ export default function ArticleEditor({
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <Select
-                        value={field.value?.toString()}
-                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        value={field.value ? field.value.toString() : "none"}
+                        onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -211,6 +211,7 @@ export default function ArticleEditor({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="none">No category</SelectItem>
                           {categories.map((category) => (
                             <SelectItem key={category.id} value={category.id.toString()}>
                               {category.name}
