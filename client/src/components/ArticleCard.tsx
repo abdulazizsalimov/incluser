@@ -8,9 +8,10 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
-  const formatDate = (date: string | null) => {
+  const formatDate = (date: string | Date | null) => {
     if (!date) return "";
-    return new Date(date).toLocaleDateString("ru-RU", {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString("ru-RU", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -29,10 +30,11 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       )}
       <CardContent className="p-6">
         <h3 className="text-xl font-semibold mb-3">
-          <Link href={`/articles/${article.slug}`}>
-            <a className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors">
-              {article.title}
-            </a>
+          <Link 
+            href={`/articles/${article.slug}`}
+            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+          >
+            {article.title}
           </Link>
         </h3>
         {article.excerpt && (

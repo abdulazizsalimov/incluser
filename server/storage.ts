@@ -14,7 +14,7 @@ import {
   type InsertPage,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, like, count } from "drizzle-orm";
+import { eq, desc, and, like, count, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (required for Replit Auth)
@@ -179,8 +179,6 @@ export class DatabaseStorage implements IStorage {
   async getArticlesCount(options: { published?: boolean; search?: string; categoryId?: number } = {}): Promise<number> {
     const { published, search, categoryId } = options;
     
-    let query = db.select({ count: count() }).from(articles);
-
     const conditions = [];
     if (published !== undefined) {
       conditions.push(eq(articles.isPublished, published));
@@ -192,9 +190,9 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(articles.categoryId, categoryId));
     }
 
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
+    const query = conditions.length > 0
+      ? db.select({ count: sql<number>`count(*)`.as('count') }).from(articles).where(and(...conditions))
+      : db.select({ count: sql<number>`count(*)`.as('count') }).from(articles);
 
     const [result] = await query;
     return result.count;
