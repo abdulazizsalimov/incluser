@@ -6,13 +6,15 @@ import SkipLinks from "@/components/SkipLinks";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500">
       <SkipLinks />
-      <Header />
+      <div className="bg-white/90 backdrop-blur-sm">
+        <Header />
+      </div>
       
       <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-24" aria-labelledby="hero-heading">
+        <section className="text-white py-24" aria-labelledby="hero-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               Incluser
