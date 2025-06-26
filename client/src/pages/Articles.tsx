@@ -14,7 +14,7 @@ import type { ArticleWithRelations, Category } from "@shared/schema";
 export default function Articles() {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [categoryId, setCategoryId] = useState<string>("");
+  const [categoryId, setCategoryId] = useState<string>("all");
   const articlesPerPage = 12;
 
   const { data: categoriesData } = useQuery<Category[]>({
@@ -35,7 +35,7 @@ export default function Articles() {
       });
       
       if (search) params.append("search", search);
-      if (categoryId) params.append("categoryId", categoryId);
+      if (categoryId && categoryId !== "all") params.append("categoryId", categoryId);
       
       const response = await fetch(`/api/articles?${params}`);
       if (!response.ok) throw new Error("Failed to fetch articles");
@@ -101,7 +101,7 @@ export default function Articles() {
                     <SelectValue placeholder="Все категории" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Все категории</SelectItem>
+                    <SelectItem value="all">Все категории</SelectItem>
                     {categoriesData?.map((category) => (
                       <SelectItem key={category.id} value={category.id.toString()}>
                         {category.name}
@@ -123,11 +123,11 @@ export default function Articles() {
                 <Skeleton className="h-6 w-48" />
               ) : (
                 <p className="text-muted-foreground">
-                  {search || categoryId ? (
+                  {search || (categoryId && categoryId !== "all") ? (
                     <>
                       Найдено {articlesData?.totalCount || 0} статей
                       {search && ` по запросу "${search}"`}
-                      {categoryId && categoriesData && (
+                      {categoryId && categoryId !== "all" && categoriesData && (
                         ` в категории "${categoriesData.find(c => c.id.toString() === categoryId)?.name}"`
                       )}
                     </>
@@ -222,14 +222,14 @@ export default function Articles() {
             ) : (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground mb-4">
-                  {search || categoryId ? "По вашему запросу ничего не найдено" : "Статей пока нет"}
+                  {search || (categoryId && categoryId !== "all") ? "По вашему запросу ничего не найдено" : "Статей пока нет"}
                 </p>
-                {(search || categoryId) && (
+                {(search || (categoryId && categoryId !== "all")) && (
                   <Button
                     variant="outline"
                     onClick={() => {
                       setSearch("");
-                      setCategoryId("");
+                      setCategoryId("all");
                       setCurrentPage(1);
                     }}
                   >
