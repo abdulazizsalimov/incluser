@@ -8,10 +8,9 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article }: ArticleCardProps) {
-  const formatDate = (date: string | Date | null) => {
+  const formatDate = (date: string | null) => {
     if (!date) return "";
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return dateObj.toLocaleDateString("ru-RU", {
+    return new Date(date).toLocaleDateString("ru-RU", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -30,11 +29,10 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       )}
       <CardContent className="p-6">
         <h3 className="text-xl font-semibold mb-3">
-          <Link 
-            href={`/articles/${article.slug}`}
-            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
-          >
-            {article.title}
+          <Link href={`/articles/${article.slug}`}>
+            <a className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors">
+              {article.title}
+            </a>
           </Link>
         </h3>
         {article.excerpt && (
@@ -45,7 +43,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <div className="flex items-center gap-4">
             <time 
-              dateTime={article.publishedAt ? String(article.publishedAt) : undefined}
+              dateTime={article.publishedAt || undefined}
               className="flex items-center gap-1"
             >
               <span className="sr-only">Опубликовано:</span>

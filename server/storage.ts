@@ -14,7 +14,7 @@ import {
   type InsertPage,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, like, count, sql } from "drizzle-orm";
+import { eq, desc, and, like, count } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (required for Replit Auth)
@@ -83,6 +83,13 @@ export class DatabaseStorage implements IStorage {
   } = {}): Promise<ArticleWithRelations[]> {
     const { published, limit = 50, offset = 0, search, categoryId } = options;
     
+    let query = db
+      .select()
+      .from(articles)
+      .leftJoin(users, eq(articles.authorId, users.id))
+      .leftJoin(categories, eq(articles.categoryId, categories.id))
+      .orderBy(desc(articles.publishedAt));
+
     const conditions = [];
     if (published !== undefined) {
       conditions.push(eq(articles.isPublished, published));
@@ -94,16 +101,11 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(articles.categoryId, categoryId));
     }
 
-    const query = db
-      .select()
-      .from(articles)
-      .leftJoin(users, eq(articles.authorId, users.id))
-      .leftJoin(categories, eq(articles.categoryId, categories.id))
-      .orderBy(desc(articles.publishedAt));
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
 
-    const results = conditions.length > 0
-      ? await query.where(and(...conditions)).limit(limit).offset(offset)
-      : await query.limit(limit).offset(offset);
+    const results = await query.limit(limit).offset(offset);
     
     return results.map(result => ({
       ...result.articles,
@@ -177,6 +179,8 @@ export class DatabaseStorage implements IStorage {
   async getArticlesCount(options: { published?: boolean; search?: string; categoryId?: number } = {}): Promise<number> {
     const { published, search, categoryId } = options;
     
+    let query = db.select({ count: count() }).from(articles);
+
     const conditions = [];
     if (published !== undefined) {
       conditions.push(eq(articles.isPublished, published));
@@ -188,9 +192,9 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(articles.categoryId, categoryId));
     }
 
-    const query = conditions.length > 0
-      ? db.select({ count: sql<number>`count(*)`.as('count') }).from(articles).where(and(...conditions))
-      : db.select({ count: sql<number>`count(*)`.as('count') }).from(articles);
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
 
     const [result] = await query;
     return result.count;

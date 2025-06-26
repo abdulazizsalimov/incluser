@@ -2,37 +2,36 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Clock, User, Calendar } from "lucide-react";
+import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function Home() {
-  const { data: articlesData, isLoading } = useQuery<{ articles: ArticleWithRelations[]; total: number }>({
-    queryKey: ["/api/articles"],
+  const { data: articlesData, isLoading } = useQuery<{
+    articles: ArticleWithRelations[];
+    totalCount: number;
+  }>({
+    queryKey: ["/api/articles", { limit: 5, published: true }],
     queryFn: async () => {
-      const response = await fetch("/api/articles?limit=3");
+      const response = await fetch("/api/articles?limit=5&published=true");
       if (!response.ok) throw new Error("Failed to fetch articles");
       return response.json();
     },
   });
 
-  const articles = articlesData?.articles || [];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       <SkipLinks />
       <Header />
       
-      <main>
+      <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="hero-gradient py-16 text-white" role="banner" aria-labelledby="hero-title">
+        <section className="bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-16 sm:py-24" aria-labelledby="hero-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 id="hero-title" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              <span className="block text-5xl sm:text-6xl lg:text-7xl font-bold">
-                Incluser
-              </span>
+            <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+              Incluser
               <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
                 доступный сайт о доступности
               </span>
@@ -69,71 +68,99 @@ export default function Home() {
             </div>
 
             {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-card border border-border rounded-lg p-6">
-                    <Skeleton className="h-6 w-3/4 mb-4" />
-                    <Skeleton className="h-4 w-full mb-2" />
-                    <Skeleton className="h-4 w-2/3 mb-4" />
-                    <div className="flex justify-between">
-                      <Skeleton className="h-3 w-16" />
-                      <Skeleton className="h-3 w-20" />
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="space-y-3">
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-16 w-full" />
                   </div>
                 ))}
               </div>
-            ) : articles.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {articles.map((article) => (
-                  <article key={article.id} className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow">
-                    <h3 className="text-xl font-semibold text-card-foreground mb-3">
-                      <Link 
-                        href={`/articles/${article.slug}`}
-                        className="hover:text-primary transition-colors"
-                      >
-                        {article.title}
-                      </Link>
-                    </h3>
-                    {article.excerpt && (
-                      <p className="text-muted-foreground mb-4 line-clamp-3">
-                        {article.excerpt}
-                      </p>
-                    )}
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <User size={14} />
-                        <span>{article.author?.firstName || 'Автор'}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar size={14} />
-                        <span>{new Date(article.createdAt || '').toLocaleDateString('ru-RU')}</span>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
+            ) : articlesData?.articles.length ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {articlesData.articles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+                
+                <div className="text-center mt-12">
+                  <Link href="/articles">
+                    <Button size="lg">
+                      Все статьи
+                    </Button>
+                  </Link>
+                </div>
+              </>
             ) : (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground">
-                  Статьи пока не опубликованы. Скоро здесь появится интересный контент!
+                  Пока что статей нет. Следите за обновлениями!
                 </p>
               </div>
             )}
+          </div>
+        </section>
 
-            {articles.length > 0 && (
-              <div className="text-center mt-12">
-                <Link href="/articles">
-                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    Все статьи
-                  </Button>
-                </Link>
+        {/* Digital Accessibility Info Section */}
+        <section className="bg-muted py-16" aria-labelledby="accessibility-info">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 id="accessibility-info" className="text-3xl font-bold text-foreground mb-8">
+                Что такое цифровая доступность?
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div className="bg-card p-6 rounded-lg shadow-sm">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Для всех пользователей</h3>
+                  <p className="text-muted-foreground">
+                    Доступность означает, что веб-сайты и приложения могут использовать люди 
+                    с различными способностями и ограничениями.
+                  </p>
+                </div>
+
+                <div className="bg-card p-6 rounded-lg shadow-sm">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Стандарты WCAG</h3>
+                  <p className="text-muted-foreground">
+                    Следование международным стандартам WCAG обеспечивает 
+                    высокое качество и доступность цифровых продуктов.
+                  </p>
+                </div>
+
+                <div className="bg-card p-6 rounded-lg shadow-sm">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.006 2.006 0 0 0 18.06 7c-.8 0-1.54.5-1.85 1.26l-1.92 5.75c-.16.48-.21 1.03-.12 1.58L15.49 19H12l-.53-4H9.41l.59 4.5c.1.75.69 1.33 1.45 1.5H20v-1h-1.5l.5-4z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Социальная ответственность</h3>
+                  <p className="text-muted-foreground">
+                    Создание инклюзивных решений — это вопрос социальной ответственности 
+                    и равных возможностей в цифровом мире.
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </section>
       </main>
 
       <Footer />
+      
+      {/* Live region for screen readers */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only" id="status-messages"></div>
     </div>
   );
 }

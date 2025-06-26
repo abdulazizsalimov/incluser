@@ -40,18 +40,6 @@
   --sidebar-ring: hsl(207, 90%, 54%);
 }
 
-/* Custom utility classes for the blog design */
-.hero-gradient {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 50%, #075985 100%);
-}
-
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
 .dark {
   --background: hsl(240, 10%, 3.9%);
   --foreground: hsl(0, 0%, 98%);
@@ -138,18 +126,6 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-  }
-
-  /* Beautiful gradient backgrounds for key sections */
-  .hero-gradient {
-    background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 50%, #075985 100%);
-  }
-
-  .card-gradient {
-    background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%);
-    backdrop-filter: blur(10px);
   }
 
   /* Improved focus indicators for better accessibility */

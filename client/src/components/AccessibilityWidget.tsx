@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -65,9 +65,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           </DialogTitle>
         </DialogHeader>
         
-        <DialogDescription>
+        <div id="accessibility-description" className="sr-only">
           Панель настроек специальных возможностей для улучшения доступности сайта
-        </DialogDescription>
+        </div>
 
         <div className="space-y-6">
           {/* Font Size */}
