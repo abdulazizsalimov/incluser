@@ -93,12 +93,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center">
-          <p className="text-muted-foreground">
+        <div className="border-t border-slate-700 mt-8 pt-8 text-center">
+          <p className="text-slate-400">
             © {currentYear} Incluser. Все права защищены.{" "}
             <a
               href="#"
-              className="text-primary hover:text-foreground transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
+              className="text-cyan-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
             >
               Политика конфиденциальности
             </a>
