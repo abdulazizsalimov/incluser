@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RichTextEditor from "./RichTextEditor";
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
 const articleSchema = z.object({
@@ -153,15 +154,14 @@ export default function ArticleEditor({
                     <FormItem>
                       <FormLabel>Content</FormLabel>
                       <FormControl>
-                        <Textarea
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            handleContentChange(e.target.value);
+                        <RichTextEditor
+                          value={field.value || ""}
+                          onChange={(content) => {
+                            field.onChange(content);
+                            handleContentChange(content);
                           }}
-                          placeholder="Article content in Markdown"
-                          rows={20}
-                          className="font-mono"
+                          placeholder="Начните вводить содержание статьи..."
+                          height={500}
                         />
                       </FormControl>
                       <FormMessage />
