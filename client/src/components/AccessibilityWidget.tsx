@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Type, Eye, Palette, Volume2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 interface AccessibilityWidgetProps {
   open: boolean;
@@ -12,6 +14,7 @@ interface AccessibilityWidgetProps {
 }
 
 export default function AccessibilityWidget({ open, onOpenChange }: AccessibilityWidgetProps) {
+  const { theme, setTheme } = useTheme();
   const [fontSize, setFontSize] = useState([100]);
   const [highContrast, setHighContrast] = useState(false);
   const [largeText, setLargeText] = useState(false);
