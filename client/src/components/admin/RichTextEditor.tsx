@@ -66,32 +66,53 @@ export default function RichTextEditor({
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           font-size: 14px;
           line-height: 1.6;
+          background-color: hsl(var(--background));
+          color: hsl(var(--foreground));
         }
         
         .quill-editor-container .ql-toolbar {
-          border-top: 1px solid #e5e7eb;
-          border-left: 1px solid #e5e7eb;
-          border-right: 1px solid #e5e7eb;
+          border-top: 1px solid hsl(var(--border));
+          border-left: 1px solid hsl(var(--border));
+          border-right: 1px solid hsl(var(--border));
           border-bottom: none;
-          background: #f9fafb;
+          background: hsl(var(--muted));
+        }
+        
+        .quill-editor-container .ql-toolbar .ql-stroke {
+          stroke: hsl(var(--foreground));
+        }
+        
+        .quill-editor-container .ql-toolbar .ql-fill {
+          fill: hsl(var(--foreground));
+        }
+        
+        .quill-editor-container .ql-toolbar button:hover {
+          background-color: hsl(var(--accent));
+        }
+        
+        .quill-editor-container .ql-toolbar button.ql-active {
+          background-color: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
         }
         
         .quill-editor-container .ql-container {
-          border-left: 1px solid #e5e7eb;
-          border-right: 1px solid #e5e7eb;
-          border-bottom: 1px solid #e5e7eb;
+          border-left: 1px solid hsl(var(--border));
+          border-right: 1px solid hsl(var(--border));
+          border-bottom: 1px solid hsl(var(--border));
           border-top: none;
           font-size: 14px;
+          background-color: hsl(var(--background));
         }
         
         .quill-editor-container .ql-editor.ql-blank::before {
-          color: #9ca3af;
+          color: hsl(var(--muted-foreground));
           font-style: normal;
           left: 15px;
         }
         
         .quill-editor-container .ql-editor p {
           margin-bottom: 1em;
+          color: hsl(var(--foreground));
         }
         
         .quill-editor-container .ql-editor h1,
@@ -103,15 +124,16 @@ export default function RichTextEditor({
           margin-top: 1.5em;
           margin-bottom: 0.5em;
           font-weight: 600;
+          color: hsl(var(--foreground));
         }
         
         .quill-editor-container .ql-editor blockquote {
-          border-left: 4px solid #e5e7eb;
+          border-left: 4px solid hsl(var(--primary));
           padding-left: 16px;
           margin-left: 0;
           margin-right: 0;
           font-style: italic;
-          color: #6b7280;
+          color: hsl(var(--muted-foreground));
         }
         
         .quill-editor-container .ql-editor ul,
@@ -121,6 +143,7 @@ export default function RichTextEditor({
         
         .quill-editor-container .ql-editor li {
           margin-bottom: 0.5em;
+          color: hsl(var(--foreground));
         }
         
         .quill-editor-container .ql-editor img {
@@ -136,13 +159,51 @@ export default function RichTextEditor({
         
         .quill-editor-container .ql-editor table td,
         .quill-editor-container .ql-editor table th {
-          border: 1px solid #e5e7eb;
+          border: 1px solid hsl(var(--border));
           padding: 8px 12px;
+          background-color: hsl(var(--background));
+          color: hsl(var(--foreground));
         }
         
         .quill-editor-container .ql-editor table th {
-          background-color: #f9fafb;
+          background-color: hsl(var(--muted));
           font-weight: 600;
+        }
+        
+        .quill-editor-container .ql-picker {
+          color: hsl(var(--foreground));
+        }
+        
+        .quill-editor-container .ql-picker-options {
+          background-color: hsl(var(--background));
+          border: 1px solid hsl(var(--border));
+        }
+        
+        .quill-editor-container .ql-picker-item {
+          color: hsl(var(--foreground));
+        }
+        
+        .quill-editor-container .ql-picker-item:hover {
+          background-color: hsl(var(--accent));
+        }
+        
+        .quill-editor-container .ql-editor a {
+          color: hsl(var(--primary));
+        }
+        
+        .quill-editor-container .ql-editor code {
+          background-color: hsl(var(--muted));
+          color: hsl(var(--foreground));
+          padding: 2px 4px;
+          border-radius: 3px;
+        }
+        
+        .quill-editor-container .ql-editor pre {
+          background-color: hsl(var(--muted));
+          color: hsl(var(--foreground));
+          padding: 12px;
+          border-radius: 6px;
+          border: 1px solid hsl(var(--border));
         }
       `}</style>
       

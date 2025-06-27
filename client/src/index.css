@@ -41,40 +41,58 @@
 }
 
 .dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(189, 85%, 54%);
-  --secondary-foreground: hsl(211, 100%, 99%);
-  --accent: hsl(186, 90%, 54%);
-  --accent-foreground: hsl(211, 100%, 99%);
+  --background: hsl(222, 84%, 4.9%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(217, 32.6%, 17.5%);
+  --muted-foreground: hsl(215, 20.2%, 65.1%);
+  --popover: hsl(222, 84%, 4.9%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 4.9%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(217, 32.6%, 17.5%);
+  --input: hsl(217, 32.6%, 17.5%);
+  --primary: hsl(207, 90%, 61%);
+  --primary-foreground: hsl(222, 84%, 4.9%);
+  --secondary: hsl(189, 85%, 61%);
+  --secondary-foreground: hsl(222, 84%, 4.9%);
+  --accent: hsl(217, 32.6%, 17.5%);
+  --accent-foreground: hsl(210, 40%, 98%);
   --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(207, 90%, 61%);
   
-  --chart-1: hsl(207, 90%, 54%);
-  --chart-2: hsl(189, 85%, 54%);
-  --chart-3: hsl(186, 90%, 54%);
-  --chart-4: hsl(173, 80%, 44%);
-  --chart-5: hsl(158, 75%, 39%);
+  --chart-1: hsl(207, 90%, 61%);
+  --chart-2: hsl(189, 85%, 61%);
+  --chart-3: hsl(186, 90%, 61%);
+  --chart-4: hsl(173, 80%, 50%);
+  --chart-5: hsl(158, 75%, 45%);
   
-  --sidebar-background: hsl(240, 10%, 3.9%);
-  --sidebar-foreground: hsl(0, 0%, 98%);
-  --sidebar-primary: hsl(207, 90%, 54%);
-  --sidebar-primary-foreground: hsl(211, 100%, 99%);
-  --sidebar-accent: hsl(240, 3.7%, 15.9%);
-  --sidebar-accent-foreground: hsl(0, 0%, 98%);
-  --sidebar-border: hsl(240, 3.7%, 15.9%);
-  --sidebar-ring: hsl(240, 4.9%, 83.9%);
+  --sidebar-background: hsl(222, 84%, 4.9%);
+  --sidebar-foreground: hsl(210, 40%, 98%);
+  --sidebar-primary: hsl(207, 90%, 61%);
+  --sidebar-primary-foreground: hsl(222, 84%, 4.9%);
+  --sidebar-accent: hsl(217, 32.6%, 17.5%);
+  --sidebar-accent-foreground: hsl(210, 40%, 98%);
+  --sidebar-border: hsl(217, 32.6%, 17.5%);
+  --sidebar-ring: hsl(207, 90%, 61%);
+}
+
+.dark.high-contrast {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 10%);
+  --muted-foreground: hsl(0, 0%, 80%);
+  --card: hsl(0, 0%, 0%);
+  --card-foreground: hsl(0, 0%, 100%);
+  --border: hsl(0, 0%, 40%);
+  --input: hsl(0, 0%, 10%);
+  --primary: hsl(207, 100%, 70%);
+  --primary-foreground: hsl(0, 0%, 0%);
+  --secondary: hsl(189, 100%, 70%);
+  --secondary-foreground: hsl(0, 0%, 0%);
+  --accent: hsl(0, 0%, 15%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(207, 100%, 70%);
 }
 
 /* Accessibility enhancements */

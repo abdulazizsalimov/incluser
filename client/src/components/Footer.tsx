@@ -19,36 +19,36 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-slate-900 text-white py-12" role="contentinfo">
+    <footer className="bg-card border-t border-border py-12" role="contentinfo">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-4">
+            <h3 className="text-2xl font-bold text-gradient mb-4">
               Incluser
             </h3>
-            <p className="text-slate-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               Блог о цифровой доступности и инклюзивном дизайне. 
               Делаем интернет доступнее для всех.
             </p>
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="text-slate-400 hover:text-cyan-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+                className="text-muted-foreground hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="text-slate-400 hover:text-cyan-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+                className="text-muted-foreground hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="text-slate-400 hover:text-cyan-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+                className="text-muted-foreground hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
                 aria-label="GitHub"
               >
                 <Github className="h-5 w-5" />
@@ -58,14 +58,14 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Навигация</h4>
+            <h4 className="text-lg font-semibold mb-4 text-foreground">Навигация</h4>
             <nav aria-label="Навигация в подвале">
               <ul className="space-y-2">
                 {navItems.map((item) => (
                   <li key={item.href}>
                     <Link 
                       href={item.href}
-                      className="text-slate-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+                      className="text-muted-foreground hover:text-foreground transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
                     >
                       {item.label}
                     </Link>
@@ -77,13 +77,13 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Ресурсы</h4>
+            <h4 className="text-lg font-semibold mb-4 text-foreground">Ресурсы</h4>
             <ul className="space-y-2">
               {resourceItems.map((item) => (
                 <li key={item.href}>
                   <a
                     href={item.href}
-                    className="text-slate-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+                    className="text-muted-foreground hover:text-foreground transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
                   >
                     {item.label}
                   </a>
@@ -93,12 +93,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-700 mt-8 pt-8 text-center">
-          <p className="text-slate-400">
+        <div className="border-t border-border mt-8 pt-8 text-center">
+          <p className="text-muted-foreground">
             © {currentYear} Incluser. Все права защищены.{" "}
             <a
               href="#"
-              className="text-cyan-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+              className="text-primary hover:text-foreground transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring rounded"
             >
               Политика конфиденциальности
             </a>

@@ -73,6 +73,44 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         </div>
 
         <div className="space-y-6">
+          {/* Theme Selection */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              {theme === 'light' && <Sun className="h-4 w-4" />}
+              {theme === 'dark' && <Moon className="h-4 w-4" />}
+              {theme === 'system' && <Monitor className="h-4 w-4" />}
+              <Label htmlFor="theme-select">Тема оформления</Label>
+            </div>
+            <Select value={theme} onValueChange={setTheme}>
+              <SelectTrigger id="theme-select" aria-label="Выбрать тему оформления">
+                <SelectValue placeholder="Выберите тему" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">
+                  <div className="flex items-center gap-2">
+                    <Sun className="h-4 w-4" />
+                    Светлая
+                  </div>
+                </SelectItem>
+                <SelectItem value="dark">
+                  <div className="flex items-center gap-2">
+                    <Moon className="h-4 w-4" />
+                    Темная
+                  </div>
+                </SelectItem>
+                <SelectItem value="system">
+                  <div className="flex items-center gap-2">
+                    <Monitor className="h-4 w-4" />
+                    Как в системе
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
+              Выберите предпочитаемую цветовую схему
+            </p>
+          </div>
+
           {/* Font Size */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">

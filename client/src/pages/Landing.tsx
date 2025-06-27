@@ -12,7 +12,7 @@ export default function Landing() {
       
       <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-24" aria-labelledby="hero-heading">
+        <section className="bg-gradient-primary text-primary-foreground py-24 dark:from-primary dark:to-secondary" aria-labelledby="hero-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
               Incluser
@@ -26,12 +26,12 @@ export default function Landing() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/articles">
-                <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
+                <Button size="lg" variant="secondary" className="bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground border-2 border-card">
                   Читать статьи
                 </Button>
               </Link>
               <Link href="/about">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                <Button size="lg" variant="outline" className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
                   Об авторе
                 </Button>
               </Link>
