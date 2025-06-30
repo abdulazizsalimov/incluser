@@ -16,6 +16,7 @@ import Contact from "@/pages/Contact";
 import WcagGuides from "@/pages/WcagGuides";
 import TestingTools from "@/pages/TestingTools";
 import Resources from "@/pages/Resources";
+import Login from "@/pages/Login";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ManageArticles from "@/pages/admin/ManageArticles";
 import ManageCategories from "@/pages/admin/ManageCategories";
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/wcag-guides" component={WcagGuides} />
       <Route path="/testing-tools" component={TestingTools} />
       <Route path="/resources" component={Resources} />
+      <Route path="/login" component={Login} />
 
       {/* Admin routes - only for authenticated users */}
       {isAuthenticated && (

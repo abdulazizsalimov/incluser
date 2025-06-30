@@ -132,7 +132,14 @@ export default function Header() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.location.href = "/api/logout"}
+                      onClick={async () => {
+                        try {
+                          await fetch("/api/logout", { method: "POST" });
+                          window.location.href = "/";
+                        } catch (error) {
+                          window.location.href = "/";
+                        }
+                      }}
                     >
                       Выход
                     </Button>
@@ -141,16 +148,9 @@ export default function Header() {
                   <div className="hidden sm:flex space-x-2">
                     <Button
                       size="sm"
-                      onClick={() => window.location.href = "/api/login"}
+                      onClick={() => window.location.href = "/login"}
                     >
                       Вход
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => window.location.href = "/api/login"}
-                    >
-                      Регистрация
                     </Button>
                   </div>
                 )}
@@ -245,7 +245,14 @@ export default function Header() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => window.location.href = "/api/logout"}
+                            onClick={async () => {
+                              try {
+                                await fetch("/api/logout", { method: "POST" });
+                                window.location.href = "/";
+                              } catch (error) {
+                                window.location.href = "/";
+                              }
+                            }}
                             className="w-full justify-center xs:justify-start"
                             title="Выход"
                           >
@@ -254,27 +261,15 @@ export default function Header() {
                           </Button>
                         </div>
                       ) : (
-                        <div className="flex gap-1">
-                          <Button
-                            size="sm"
-                            onClick={() => window.location.href = "/api/login"}
-                            className="flex-1 justify-center min-w-0 px-2"
-                            title="Вход"
-                          >
-                            <LogIn className="h-4 w-4 shrink-0" />
-                            <span className="hidden xs:inline xs:ml-2 truncate">Вход</span>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => window.location.href = "/api/login"}
-                            className="flex-1 justify-center min-w-0 px-2"
-                            title="Регистрация"
-                          >
-                            <UserPlus className="h-4 w-4 shrink-0" />
-                            <span className="hidden xs:inline xs:ml-2 truncate">Регистрация</span>
-                          </Button>
-                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => window.location.href = "/login"}
+                          className="w-full justify-center xs:justify-start"
+                          title="Вход"
+                        >
+                          <LogIn className="h-4 w-4" />
+                          <span className="hidden xs:inline xs:ml-2">Вход</span>
+                        </Button>
                       )}
                     </>
                   )}
