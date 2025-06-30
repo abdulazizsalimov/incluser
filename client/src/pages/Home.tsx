@@ -83,12 +83,12 @@ export default function Home() {
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                     <Link href="/articles">
-                      <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
+                      <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
                         Читать статьи
                       </Button>
                     </Link>
                     <Link href="/about">
-                      <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                      <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10">
                         Об авторе
                       </Button>
                     </Link>
