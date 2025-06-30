@@ -36,19 +36,17 @@ export default function ManageArticles() {
 
   // Check for create parameter and open editor
   useEffect(() => {
-    const urlParts = location.split('?');
-    console.log('ManageArticles location:', location, 'urlParts:', urlParts);
-    if (urlParts[1]) {
-      const params = new URLSearchParams(urlParts[1]);
-      const createParam = params.get('create');
-      console.log('Create param:', createParam);
-      if (createParam === 'true') {
-        console.log('Opening article editor');
-        setShowEditor(true);
-        setEditingArticle(null);
-        // Remove the parameter from URL
-        window.history.replaceState({}, '', '/admin/articles');
-      }
+    console.log('ManageArticles useEffect triggered, location:', location);
+    const urlParams = new URLSearchParams(window.location.search);
+    const createParam = urlParams.get('create');
+    console.log('URL search params:', window.location.search, 'create param:', createParam);
+    
+    if (createParam === 'true') {
+      console.log('Opening article editor automatically');
+      setShowEditor(true);
+      setEditingArticle(null);
+      // Remove the parameter from URL
+      window.history.replaceState({}, '', '/admin/articles');
     }
   }, [location]);
 

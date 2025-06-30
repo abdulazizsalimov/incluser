@@ -22,19 +22,17 @@ export default function ManageCategories() {
 
   // Check for create parameter and open editor
   useEffect(() => {
-    const urlParts = location.split('?');
-    console.log('ManageCategories location:', location, 'urlParts:', urlParts);
-    if (urlParts[1]) {
-      const params = new URLSearchParams(urlParts[1]);
-      const createParam = params.get('create');
-      console.log('Create param:', createParam);
-      if (createParam === 'true') {
-        console.log('Opening category editor');
-        setShowEditor(true);
-        setEditingCategory(null);
-        // Remove the parameter from URL
-        window.history.replaceState({}, '', '/admin/categories');
-      }
+    console.log('ManageCategories useEffect triggered, location:', location);
+    const urlParams = new URLSearchParams(window.location.search);
+    const createParam = urlParams.get('create');
+    console.log('URL search params:', window.location.search, 'create param:', createParam);
+    
+    if (createParam === 'true') {
+      console.log('Opening category editor automatically');
+      setShowEditor(true);
+      setEditingCategory(null);
+      // Remove the parameter from URL
+      window.history.replaceState({}, '', '/admin/categories');
     }
   }, [location]);
 
