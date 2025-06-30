@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Menu, Accessibility, ChevronDown } from "lucide-react";
+import { Menu, Accessibility, ChevronDown, LogIn, UserPlus, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logoImage from "@assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_1751254062366.png";
@@ -219,7 +219,7 @@ export default function Header() {
                         className="w-full justify-start"
                       >
                         <Accessibility className="h-4 w-4 mr-2" />
-                        Доступность
+                        <span className="hidden xs:inline">Доступность</span>
                       </Button>
                       
                       {!isLoading && (
@@ -231,38 +231,44 @@ export default function Header() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => window.location.href = "/admin"}
-                                  className="w-full"
+                                  className="w-full justify-start"
                                 >
-                                  Админ-панель
+                                  <Settings className="h-4 w-4 mr-2" />
+                                  <span className="hidden xs:inline">Админ-панель</span>
                                 </Button>
                               )}
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => window.location.href = "/api/logout"}
-                                className="w-full"
+                                className="w-full justify-start"
                               >
-                                Выход
+                                <LogOut className="h-4 w-4 mr-2" />
+                                <span className="hidden xs:inline">Выход</span>
                               </Button>
                             </div>
                           ) : (
-                            <>
+                            <div className="flex gap-2">
                               <Button
                                 size="sm"
                                 onClick={() => window.location.href = "/api/login"}
-                                className="w-full"
+                                className="flex-1 justify-center"
+                                title="Вход"
                               >
-                                Вход
+                                <LogIn className="h-4 w-4" />
+                                <span className="hidden xs:inline ml-2">Вход</span>
                               </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => window.location.href = "/api/login"}
-                                className="w-full"
+                                className="flex-1 justify-center"
+                                title="Регистрация"
                               >
-                                Регистрация
+                                <UserPlus className="h-4 w-4" />
+                                <span className="hidden xs:inline ml-2">Регистрация</span>
                               </Button>
-                            </>
+                            </div>
                           )}
                         </>
                       )}
