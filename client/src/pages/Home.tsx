@@ -6,6 +6,7 @@ import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
+import accessibilityHeroSvg from "@/assets/accessibility-hero.svg";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function Home() {
@@ -28,29 +29,45 @@ export default function Home() {
       
       <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-16 sm:py-24" aria-labelledby="hero-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              Incluser
-              <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
-                доступный сайт о доступности
-              </span>
-            </h1>
-            <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto opacity-90 leading-relaxed">
-              Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
-              которыми могут пользоваться все люди, независимо от их способностей.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/articles">
-                <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
-                  Читать статьи
-                </Button>
-              </Link>
-              <Link href="/about">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
-                  Об авторе
-                </Button>
-              </Link>
+        <section className="relative bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-16 sm:py-24 overflow-hidden" aria-labelledby="hero-heading">
+          {/* Background image positioned on the right */}
+          <div className="absolute inset-0 flex justify-end">
+            <div className="w-full md:w-3/5 lg:w-1/2 h-full relative">
+              <img 
+                src={accessibilityHeroSvg} 
+                alt="" 
+                className="w-full h-full object-cover opacity-60"
+                role="presentation"
+              />
+              {/* Gradient overlay for smooth blending */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 via-blue-600/40 to-transparent"></div>
+            </div>
+          </div>
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl">
+              <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-left">
+                Incluser
+                <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
+                  доступный сайт о доступности
+                </span>
+              </h1>
+              <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed text-left">
+                Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
+                которыми могут пользоваться все люди, независимо от их способностей.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/articles">
+                  <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
+                    Читать статьи
+                  </Button>
+                </Link>
+                <Link href="/about">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                    Об авторе
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
