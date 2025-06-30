@@ -6,15 +6,9 @@ import SkipLinks from "@/components/SkipLinks";
 import NotFound from "@/pages/not-found";
 import { Page } from "@shared/schema";
 
-interface PageViewProps {
-  slug: string;
-}
-
-export default function PageView({ slug }: PageViewProps) {
-
+export default function TestingTools() {
   const { data: page, isLoading, error } = useQuery<Page>({
-    queryKey: ['/api/pages', slug],
-    enabled: !!slug,
+    queryKey: ['/api/pages', 'testing-tools'],
   });
 
   if (isLoading) {
