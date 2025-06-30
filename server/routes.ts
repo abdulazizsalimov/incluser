@@ -9,6 +9,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // Open Graph meta tags for articles - must be before frontend routes
+  app.get('/articles/:slug', async (req, res, next) => {
+    const userAgent = req.get('User-Agent') || '';
+    const isBot = /bot|crawler|spider|crawling|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegram/i.test(userAgent);
+    
+    if (!isBot) {
+      return next(); // Let frontend handle regular users
+    }
+
+    try {
+      const article = await storage.getArticleBySlug(req.params.slug);
+      if (!article) {
+        return next(); // Article not found, let frontend handle 404
+      }
+
+      const escapeHtml = (text: string) => {
+        return text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#x27;');
+      };
+
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const articleUrl = `${baseUrl}/articles/${article.slug}`;
+      const imageUrl = article.featuredImage 
+        ? (article.featuredImage.startsWith('http') ? article.featuredImage : `${baseUrl}${article.featuredImage}`)
+        : `${baseUrl}/favicon.png`;
+
+      const title = escapeHtml(article.title);
+      const description = escapeHtml(article.excerpt || article.title);
+      const authorName = escapeHtml(`${article.author?.firstName || ''} ${article.author?.lastName || ''}`.trim());
+      const categoryName = article.category ? escapeHtml(article.category.name) : '';
+
+      const html = `<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title} | Incluser</title>
+    <meta name="description" content="${description}" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:url" content="${articleUrl}" />
+    <meta property="og:site_name" content="Incluser" />
+    <meta property="og:locale" content="ru_RU" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="${title}" />
+    <meta property="twitter:description" content="${description}" />
+    <meta property="twitter:image" content="${imageUrl}" />
+    
+    <!-- Article specific -->
+    ${authorName ? `<meta property="article:author" content="${authorName}" />` : ''}
+    ${article.publishedAt ? `<meta property="article:published_time" content="${new Date(article.publishedAt).toISOString()}" />` : ''}
+    ${categoryName ? `<meta property="article:section" content="${categoryName}" />` : ''}
+    
+    <link rel="canonical" href="${articleUrl}" />
+    <meta http-equiv="refresh" content="0; url=${articleUrl}" />
+  </head>
+  <body>
+    <h1>${title}</h1>
+    <p>${description}</p>
+    <a href="${articleUrl}">Читать статью полностью</a>
+    <script>window.location.href = "${articleUrl}";</script>
+  </body>
+</html>`;
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(html);
+    } catch (error) {
+      console.error("Error generating meta tags for article:", error);
+      next(); // Let frontend handle on error
+    }
+  });
+
   // RSS feed - must be before other routes to avoid frontend routing conflicts
   app.get('/rss.xml', async (req, res) => {
     try {
