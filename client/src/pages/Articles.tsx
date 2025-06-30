@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -12,10 +13,20 @@ import SkipLinks from "@/components/SkipLinks";
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
 export default function Articles() {
+  const [location] = useLocation();
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState<string>("all");
   const articlesPerPage = 12;
+
+  // Parse URL parameters for category filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    if (categoryParam) {
+      setCategoryId(categoryParam);
+    }
+  }, [location]);
 
   const { data: categoriesData } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
@@ -35,7 +46,13 @@ export default function Articles() {
       });
       
       if (search) params.append("search", search);
-      if (categoryId && categoryId !== "all") params.append("categoryId", categoryId);
+      if (categoryId && categoryId !== "all") {
+        // Convert category slug to ID if needed
+        const category = categoriesData?.find(cat => cat.slug === categoryId);
+        if (category) {
+          params.append("categoryId", category.id.toString());
+        }
+      }
       
       const response = await fetch(`/api/articles?${params}`);
       if (!response.ok) throw new Error("Failed to fetch articles");
@@ -51,7 +68,20 @@ export default function Articles() {
   const handleCategoryChange = (value: string) => {
     setCategoryId(value);
     setCurrentPage(1);
+    
+    // Update URL to reflect category filter
+    const url = new URL(window.location.href);
+    if (value && value !== "all") {
+      url.searchParams.set('category', value);
+    } else {
+      url.searchParams.delete('category');
+    }
+    window.history.pushState({}, '', url.toString());
   };
+
+  // Get current category name for display
+  const currentCategory = categoriesData?.find(cat => cat.slug === categoryId);
+  const categoryDisplayName = categoryId === "all" ? "Все категории" : currentCategory?.name || "Неизвестная категория";
 
   const totalPages = articlesData?.totalPages || 1;
 
@@ -103,7 +133,7 @@ export default function Articles() {
                   <SelectContent>
                     <SelectItem value="all">Все категории</SelectItem>
                     {categoriesData?.map((category) => (
-                      <SelectItem key={category.id} value={category.id.toString()}>
+                      <SelectItem key={category.id} value={category.slug}>
                         {category.name}
                       </SelectItem>
                     ))}
