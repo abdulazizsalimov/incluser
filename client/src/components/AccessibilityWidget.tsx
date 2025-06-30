@@ -16,29 +16,61 @@ interface AccessibilityWidgetProps {
 
 export default function AccessibilityWidget({ open, onOpenChange }: AccessibilityWidgetProps) {
   const { theme, setTheme } = useTheme();
-  const [fontSize, setFontSize] = useState([100]);
-  const [lineHeight, setLineHeight] = useState([150]);
-  const [letterSpacing, setLetterSpacing] = useState([100]);
-  const [highContrast, setHighContrast] = useState(false);
-  const [grayscale, setGrayscale] = useState(false);
-  const [largeText, setLargeText] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  
+  // Load all settings from localStorage
+  const [fontSize, setFontSize] = useState(() => {
+    const saved = localStorage.getItem('accessibility-font-size');
+    return saved ? [parseInt(saved)] : [100];
+  });
+  
+  const [lineHeight, setLineHeight] = useState(() => {
+    const saved = localStorage.getItem('accessibility-line-height');
+    return saved ? [parseInt(saved)] : [150];
+  });
+  
+  const [letterSpacing, setLetterSpacing] = useState(() => {
+    const saved = localStorage.getItem('accessibility-letter-spacing');
+    return saved ? [parseInt(saved)] : [100];
+  });
+  
+  const [highContrast, setHighContrast] = useState(() => {
+    const saved = localStorage.getItem('accessibility-high-contrast');
+    return saved === 'true';
+  });
+  
+  const [grayscale, setGrayscale] = useState(() => {
+    const saved = localStorage.getItem('accessibility-grayscale');
+    return saved === 'true';
+  });
+  
+  const [largeText, setLargeText] = useState(() => {
+    const saved = localStorage.getItem('accessibility-large-text');
+    return saved === 'true';
+  });
+  
+  const [reducedMotion, setReducedMotion] = useState(() => {
+    const saved = localStorage.getItem('accessibility-reduced-motion');
+    return saved === 'true';
+  });
+  
   const [textMagnifier, setTextMagnifier] = useState(() => {
-    // Load saved state from localStorage
     const saved = localStorage.getItem('accessibility-text-magnifier');
     return saved === 'true';
   });
 
   const applyFontSize = (size: number) => {
     document.documentElement.style.fontSize = `${size}%`;
+    localStorage.setItem('accessibility-font-size', size.toString());
   };
 
   const applyLineHeight = (height: number) => {
     document.documentElement.style.setProperty('--line-height-multiplier', `${height / 100}`);
+    localStorage.setItem('accessibility-line-height', height.toString());
   };
 
   const applyLetterSpacing = (spacing: number) => {
     document.documentElement.style.setProperty('--letter-spacing-multiplier', `${(spacing - 100) / 100}em`);
+    localStorage.setItem('accessibility-letter-spacing', spacing.toString());
   };
 
   const toggleHighContrast = (enabled: boolean) => {
@@ -47,6 +79,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } else {
       document.documentElement.classList.remove('high-contrast');
     }
+    localStorage.setItem('accessibility-high-contrast', enabled.toString());
   };
 
   const toggleGrayscale = (enabled: boolean) => {
@@ -55,6 +88,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } else {
       document.documentElement.classList.remove('grayscale');
     }
+    localStorage.setItem('accessibility-grayscale', enabled.toString());
   };
 
   const toggleLargeText = (enabled: boolean) => {
@@ -63,6 +97,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } else {
       document.documentElement.classList.remove('large-text');
     }
+    localStorage.setItem('accessibility-large-text', enabled.toString());
   };
 
   const toggleReducedMotion = (enabled: boolean) => {
@@ -71,6 +106,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } else {
       document.documentElement.classList.remove('reduce-motion');
     }
+    localStorage.setItem('accessibility-reduced-motion', enabled.toString());
   };
 
   const toggleTextMagnifier = (enabled: boolean) => {
@@ -83,8 +119,28 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.setItem('accessibility-text-magnifier', enabled.toString());
   };
 
-  // Apply saved text magnifier state on component mount
+  // Apply saved settings on component mount
   useEffect(() => {
+    applyFontSize(fontSize[0]);
+    applyLineHeight(lineHeight[0]);
+    applyLetterSpacing(letterSpacing[0]);
+    
+    if (highContrast) {
+      document.documentElement.classList.add('high-contrast');
+    }
+    
+    if (grayscale) {
+      document.documentElement.classList.add('grayscale');
+    }
+    
+    if (largeText) {
+      document.documentElement.classList.add('large-text');
+    }
+    
+    if (reducedMotion) {
+      document.documentElement.classList.add('reduce-motion');
+    }
+    
     if (textMagnifier) {
       document.documentElement.classList.add('text-magnifier-enabled');
     }
@@ -280,7 +336,14 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     document.documentElement.style.removeProperty('--letter-spacing-multiplier');
     document.documentElement.classList.remove('high-contrast', 'grayscale', 'large-text', 'reduce-motion', 'text-magnifier-enabled');
     
-    // Clear localStorage
+    // Clear all localStorage settings
+    localStorage.removeItem('accessibility-font-size');
+    localStorage.removeItem('accessibility-line-height');
+    localStorage.removeItem('accessibility-letter-spacing');
+    localStorage.removeItem('accessibility-high-contrast');
+    localStorage.removeItem('accessibility-grayscale');
+    localStorage.removeItem('accessibility-large-text');
+    localStorage.removeItem('accessibility-reduced-motion');
     localStorage.removeItem('accessibility-text-magnifier');
   };
 
@@ -375,8 +438,12 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              aria-label="Изменить размер шрифта"
+              aria-label={`Размер шрифта: ${fontSize[0]} процентов`}
+              aria-describedby="font-size-desc"
             />
+            <p id="font-size-desc" className="sr-only">
+              Используйте стрелки или перетаскивание для изменения размера шрифта от 75% до 150%
+            </p>
           </div>
 
           {/* Line Height */}
@@ -396,8 +463,12 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={200}
               step={25}
               className="w-full"
-              aria-label="Изменить междустрочный интервал"
+              aria-label={`Междустрочный интервал: ${lineHeight[0]} процентов`}
+              aria-describedby="line-height-desc"
             />
+            <p id="line-height-desc" className="sr-only">
+              Используйте стрелки или перетаскивание для изменения междустрочного интервала от 100% до 200%
+            </p>
           </div>
 
           {/* Letter Spacing */}
@@ -417,8 +488,12 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              aria-label="Изменить межбуквенный интервал"
+              aria-label={`Межбуквенный интервал: ${letterSpacing[0]} процентов`}
+              aria-describedby="letter-spacing-desc"
             />
+            <p id="letter-spacing-desc" className="sr-only">
+              Используйте стрелки или перетаскивание для изменения межбуквенного интервала от 75% до 150%
+            </p>
           </div>
 
           {/* High Contrast */}
