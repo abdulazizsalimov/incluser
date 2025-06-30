@@ -131,7 +131,7 @@ export default function PageEditor({
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Publication</CardTitle>
+                <CardTitle>Публикация</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -139,7 +139,7 @@ export default function PageEditor({
                   name="isPublished"
                   render={({ field }) => (
                     <FormItem className="flex items-center justify-between">
-                      <FormLabel>Published</FormLabel>
+                      <FormLabel>Опубликовано</FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
@@ -162,17 +162,17 @@ export default function PageEditor({
                   name="metaDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Meta Description</FormLabel>
+                      <FormLabel>Мета-описание</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
-                          placeholder="Brief description for search engines"
+                          placeholder="Краткое описание для поисковых систем"
                           rows={3}
                           maxLength={160}
                         />
                       </FormControl>
                       <p className="text-xs text-muted-foreground">
-                        {field.value?.length || 0}/160 characters
+                        {field.value?.length || 0}/160 символов
                       </p>
                       <FormMessage />
                     </FormItem>
@@ -183,10 +183,10 @@ export default function PageEditor({
 
             <div className="flex gap-2">
               <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? "Saving..." : page ? "Update" : "Create"}
+                {isLoading ? "Сохранение..." : page ? "Обновить" : "Создать"}
               </Button>
               <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
+                Отмена
               </Button>
             </div>
           </div>
