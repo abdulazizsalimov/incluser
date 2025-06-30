@@ -20,7 +20,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const [highContrast, setHighContrast] = useState(false);
   const [largeText, setLargeText] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [textMagnifier, setTextMagnifier] = useState(false);
+  const [textMagnifier, setTextMagnifier] = useState(() => {
+    // Load saved state from localStorage
+    const saved = localStorage.getItem('accessibility-text-magnifier');
+    return saved === 'true';
+  });
 
   const applyFontSize = (size: number) => {
     document.documentElement.style.fontSize = `${size}%`;
@@ -56,7 +60,16 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } else {
       document.documentElement.classList.remove('text-magnifier-enabled');
     }
+    // Save state to localStorage
+    localStorage.setItem('accessibility-text-magnifier', enabled.toString());
   };
+
+  // Apply saved text magnifier state on component mount
+  useEffect(() => {
+    if (textMagnifier) {
+      document.documentElement.classList.add('text-magnifier-enabled');
+    }
+  }, []);
 
   // Text magnifier functionality
   useEffect(() => {
@@ -242,6 +255,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     
     document.documentElement.style.fontSize = '';
     document.documentElement.classList.remove('high-contrast', 'large-text', 'reduce-motion', 'text-magnifier-enabled');
+    
+    // Clear localStorage
+    localStorage.removeItem('accessibility-text-magnifier');
   };
 
   return (
