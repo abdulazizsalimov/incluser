@@ -89,6 +89,39 @@ export default function ArticleEditor({
     form.setValue("readingTime", readingTime);
   };
 
+  const handleImageUpload = async (file: File) => {
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      form.setValue('featuredImage', data.imageUrl);
+      
+      toast({
+        title: "Изображение загружено",
+        description: "Изображение успешно загружено на сервер",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка загрузки",
+        description: "Не удалось загрузить изображение",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSave)} className="space-y-6">
@@ -257,19 +290,76 @@ export default function ArticleEditor({
                 <CardTitle>Главное изображение</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="featuredImage"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>URL изображения</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="https://..." />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <Tabs defaultValue="url" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="url">По URL</TabsTrigger>
+                    <TabsTrigger value="upload">Загрузить файл</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="url" className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="featuredImage"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>URL изображения</FormLabel>
+                          <FormControl>
+                            <Input {...field} placeholder="https://..." />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="upload" className="space-y-4">
+                    <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <div className="mt-2">
+                        <label htmlFor="image-upload" className="cursor-pointer">
+                          <span className="mt-2 block text-sm font-medium text-gray-900 dark:text-gray-100">
+                            Выберите изображение
+                          </span>
+                          <input
+                            id="image-upload"
+                            type="file"
+                            className="sr-only"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleImageUpload(file);
+                              }
+                            }}
+                            disabled={uploadingImage}
+                          />
+                        </label>
+                        <p className="mt-1 text-xs text-gray-500">
+                          PNG, JPG, GIF до 5MB
+                        </p>
+                      </div>
+                      {uploadingImage && (
+                        <div className="mt-2">
+                          <p className="text-sm text-blue-600">Загрузка...</p>
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                {/* Preview of current image */}
+                {form.watch("featuredImage") && (
+                  <div className="mt-4">
+                    <img 
+                      src={form.watch("featuredImage")} 
+                      alt="Preview" 
+                      className="max-w-full h-32 object-cover rounded-lg border"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
 
                 <FormField
                   control={form.control}
@@ -278,7 +368,7 @@ export default function ArticleEditor({
                     <FormItem>
                       <FormLabel>Альтернативный текст</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Описание изображения" />
+                        <Input {...field} placeholder="Описание изображения для доступности" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
