@@ -270,9 +270,9 @@ export default function ArticleEditor({
                   name="featuredImageAlt"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Alt Text</FormLabel>
+                      <FormLabel>Альтернативный текст</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Image description" />
+                        <Input {...field} placeholder="Описание изображения" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -283,10 +283,10 @@ export default function ArticleEditor({
 
             <div className="flex gap-2">
               <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? "Saving..." : article ? "Update" : "Create"}
+                {isLoading ? "Сохранение..." : article ? "Обновить" : "Создать"}
               </Button>
               <Button type="button" variant="outline" onClick={onCancel}>
-                Cancel
+                Отмена
               </Button>
             </div>
           </div>

@@ -10,9 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Page } from "@shared/schema";
 
 const pageSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  slug: z.string().min(1, "Slug is required").max(200),
-  content: z.string().min(1, "Content is required"),
+  title: z.string().min(1, "Заголовок обязателен").max(200),
+  slug: z.string().min(1, "URL-адрес обязателен").max(200),
+  content: z.string().min(1, "Содержание обязательно"),
   metaDescription: z.string().max(160).optional(),
   isPublished: z.boolean(),
 });
@@ -67,7 +67,7 @@ export default function PageEditor({
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Page Content</CardTitle>
+                <CardTitle>Содержание страницы</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -75,7 +75,7 @@ export default function PageEditor({
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel>Заголовок</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -83,7 +83,7 @@ export default function PageEditor({
                             field.onChange(e);
                             handleTitleChange(e.target.value);
                           }}
-                          placeholder="Page title"
+                          placeholder="Заголовок страницы"
                         />
                       </FormControl>
                       <FormMessage />
@@ -96,9 +96,9 @@ export default function PageEditor({
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Slug</FormLabel>
+                      <FormLabel>URL-адрес</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="page-slug" />
+                        <Input {...field} placeholder="url-adres-stranitsy" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -110,11 +110,11 @@ export default function PageEditor({
                   name="content"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Content</FormLabel>
+                      <FormLabel>Содержание</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
-                          placeholder="Page content in HTML or Markdown"
+                          placeholder="Содержание страницы в HTML или Markdown"
                           rows={20}
                           className="font-mono"
                         />
