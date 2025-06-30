@@ -39,15 +39,9 @@ function Router() {
           <Route path="/articles/:slug" component={ArticleDetail} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
-          <Route path="/wcag-guides">
-            {() => <PageView slug="wcag-guides" />}
-          </Route>
-          <Route path="/testing-tools">
-            {() => <PageView slug="testing-tools" />}
-          </Route>
-          <Route path="/resources">
-            {() => <PageView slug="resources" />}
-          </Route>
+          <Route path="/wcag-guides" component={WcagGuides} />
+          <Route path="/testing-tools" component={TestingTools} />
+          <Route path="/resources" component={Resources} />
         </>
       ) : (
         <>
@@ -57,15 +51,9 @@ function Router() {
           <Route path="/articles/:slug" component={ArticleDetail} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
-          <Route path="/wcag-guides">
-            {() => <PageView slug="wcag-guides" />}
-          </Route>
-          <Route path="/testing-tools">
-            {() => <PageView slug="testing-tools" />}
-          </Route>
-          <Route path="/resources">
-            {() => <PageView slug="resources" />}
-          </Route>
+          <Route path="/wcag-guides" component={WcagGuides} />
+          <Route path="/testing-tools" component={TestingTools} />
+          <Route path="/resources" component={Resources} />
         </>
       )}
 
