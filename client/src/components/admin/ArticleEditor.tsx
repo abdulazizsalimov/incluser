@@ -134,11 +134,11 @@ export default function ArticleEditor({
                   name="excerpt"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Excerpt</FormLabel>
+                      <FormLabel>Краткое описание</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
-                          placeholder="Brief description of the article"
+                          placeholder="Краткое описание статьи"
                           rows={3}
                         />
                       </FormControl>
@@ -152,7 +152,7 @@ export default function ArticleEditor({
                   name="content"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Content</FormLabel>
+                      <FormLabel>Содержание</FormLabel>
                       <FormControl>
                         <RichTextEditor
                           value={field.value || ""}
@@ -176,7 +176,7 @@ export default function ArticleEditor({
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Publication</CardTitle>
+                <CardTitle>Публикация</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -184,7 +184,7 @@ export default function ArticleEditor({
                   name="isPublished"
                   render={({ field }) => (
                     <FormItem className="flex items-center justify-between">
-                      <FormLabel>Published</FormLabel>
+                      <FormLabel>Опубликовано</FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
@@ -200,18 +200,18 @@ export default function ArticleEditor({
                   name="categoryId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category</FormLabel>
+                      <FormLabel>Категория</FormLabel>
                       <Select
                         value={field.value ? field.value.toString() : "none"}
                         onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select category" />
+                            <SelectValue placeholder="Выберите категорию" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="none">No category</SelectItem>
+                          <SelectItem value="none">Без категории</SelectItem>
                           {categories.map((category) => (
                             <SelectItem key={category.id} value={category.id.toString()}>
                               {category.name}
@@ -229,14 +229,14 @@ export default function ArticleEditor({
                   name="readingTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Reading Time (minutes)</FormLabel>
+                      <FormLabel>Время чтения (минуты)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
                           {...field}
                           value={field.value || ""}
                           onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                          placeholder="Auto-calculated"
+                          placeholder="Автоматически рассчитано"
                         />
                       </FormControl>
                       <FormMessage />
@@ -248,7 +248,7 @@ export default function ArticleEditor({
 
             <Card>
               <CardHeader>
-                <CardTitle>Featured Image</CardTitle>
+                <CardTitle>Главное изображение</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -256,7 +256,7 @@ export default function ArticleEditor({
                   name="featuredImage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Image URL</FormLabel>
+                      <FormLabel>URL изображения</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="https://..." />
                       </FormControl>
