@@ -30,14 +30,14 @@ export default function Header() {
   return (
     <header className="bg-background shadow-sm border-b border-border fixed top-0 left-0 right-0 z-50" role="banner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
               <img 
                 src={logoImage} 
                 alt="Incluser - доступный сайт о доступности" 
-                className="h-14 w-auto max-w-none"
+                className="h-24 w-auto max-w-none"
               />
             </Link>
           </div>
