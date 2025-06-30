@@ -345,7 +345,10 @@ export default function ManageArticles() {
                         )}
                         <div className="flex items-center gap-1">
                           <User className="h-3 w-3" />
-                          {article.author.firstName} {article.author.lastName}
+                          {article.author.firstName && article.author.lastName 
+                            ? `${article.author.firstName} ${article.author.lastName}` 
+                            : article.author.username || 'Автор'
+                          }
                         </div>
                       </div>
                     </div>
