@@ -36,22 +36,20 @@ export default function Home() {
             <div className="lg:hidden absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
             
             {/* Desktop: Photo with gradient overlay */}
-            <div className="hidden lg:flex absolute inset-0">
-              {/* Photo container taking full height */}
-              <div className="w-1/2 h-full relative">
+            <div className="hidden lg:block absolute inset-0">
+              {/* Photo taking wider space to avoid cropping */}
+              <div className="absolute inset-0">
                 <img 
                   src={heroPhoto} 
                   alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-left"
                   loading="eager"
                 />
               </div>
               
-              {/* Gradient transition area */}
-              <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-blue-600/60 to-blue-600"></div>
-              
-              {/* Additional smooth blending overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/80 lg:via-blue-600/30 lg:to-blue-600"></div>
+              {/* Multiple gradient overlays for smooth fade to background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
             </div>
           </div>
@@ -70,12 +68,9 @@ export default function Home() {
           {/* Content */}
           <div className="relative z-10 h-full flex items-center">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-              <div className="lg:grid lg:grid-cols-2 lg:gap-12 h-full lg:min-h-[600px] flex items-center">
-                {/* Empty space for photo on desktop */}
-                <div className="hidden lg:block"></div>
-                
-                {/* Content - full width on mobile, right side on desktop */}
-                <div className="text-center lg:text-left lg:flex lg:flex-col lg:justify-center">
+              <div className="h-full lg:min-h-[600px] flex items-center">
+                {/* Content positioned on the right half on desktop, full width on mobile */}
+                <div className="w-full lg:w-1/2 lg:ml-auto text-center lg:text-left lg:flex lg:flex-col lg:justify-center lg:px-8">
                   <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                     Incluser
                     <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
