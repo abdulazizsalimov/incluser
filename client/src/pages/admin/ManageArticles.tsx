@@ -76,7 +76,7 @@ export default function ManageArticles() {
       if (isUnauthorizedError(error)) {
         toast({
           title: "Нет доступа",
-          description: "You are logged out. Logging in again...",
+          description: "Вы не авторизованы. Выполняется вход в систему...",
           variant: "destructive",
         });
         setTimeout(() => {
@@ -109,7 +109,7 @@ export default function ManageArticles() {
       if (isUnauthorizedError(error)) {
         toast({
           title: "Нет доступа",
-          description: "You are logged out. Logging in again...",
+          description: "Вы не авторизованы. Выполняется вход в систему...",
           variant: "destructive",
         });
         setTimeout(() => {
@@ -140,7 +140,7 @@ export default function ManageArticles() {
       if (isUnauthorizedError(error)) {
         toast({
           title: "Нет доступа",
-          description: "You are logged out. Logging in again...",
+          description: "Вы не авторизованы. Выполняется вход в систему...",
           variant: "destructive",
         });
         setTimeout(() => {

@@ -13,10 +13,10 @@ import RichTextEditor from "./RichTextEditor";
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
 const articleSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  slug: z.string().min(1, "Slug is required").max(200),
+  title: z.string().min(1, "Заголовок обязателен").max(200),
+  slug: z.string().min(1, "URL-адрес обязателен").max(200),
   excerpt: z.string().optional(),
-  content: z.string().min(1, "Content is required"),
+  content: z.string().min(1, "Содержание обязательно"),
   featuredImage: z.string().url().optional().or(z.literal("")),
   featuredImageAlt: z.string().optional(),
   isPublished: z.boolean(),
@@ -91,7 +91,7 @@ export default function ArticleEditor({
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Article Content</CardTitle>
+                <CardTitle>Содержание статьи</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -99,7 +99,7 @@ export default function ArticleEditor({
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel>Заголовок</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -107,7 +107,7 @@ export default function ArticleEditor({
                             field.onChange(e);
                             handleTitleChange(e.target.value);
                           }}
-                          placeholder="Article title"
+                          placeholder="Заголовок статьи"
                         />
                       </FormControl>
                       <FormMessage />
@@ -120,9 +120,9 @@ export default function ArticleEditor({
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Slug</FormLabel>
+                      <FormLabel>URL-адрес</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="article-slug" />
+                        <Input {...field} placeholder="url-adres-stati" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

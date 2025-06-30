@@ -45,8 +45,8 @@ export default function ManagePages() {
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
+          title: "Нет доступа",
+          description: "Вы не авторизованы. Выполняется вход в систему...",
           variant: "destructive",
         });
         setTimeout(() => {
@@ -78,8 +78,8 @@ export default function ManagePages() {
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
+          title: "Нет доступа",
+          description: "Вы не авторизованы. Выполняется вход в систему...",
           variant: "destructive",
         });
         setTimeout(() => {
@@ -109,8 +109,8 @@ export default function ManagePages() {
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
+          title: "Нет доступа",
+          description: "Вы не авторизованы. Выполняется вход в систему...",
           variant: "destructive",
         });
         setTimeout(() => {
