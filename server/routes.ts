@@ -9,6 +9,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // RSS feed - must be before other routes to avoid frontend routing conflicts
+  app.get('/rss.xml', async (req, res) => {
+    try {
+      const articles = await storage.getArticles({
+        published: true,
+        limit: 20,
+        offset: 0,
+      });
+
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const buildDate = new Date().toUTCString();
+      
+      const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Incluser - Блог о цифровой доступности</title>
+    <link>${baseUrl}</link>
+    <description>Блог о цифровой доступности и инклюзивном дизайне. Делаем интернет доступнее для всех.</description>
+    <language>ru</language>
+    <lastBuildDate>${buildDate}</lastBuildDate>
+    <atom:link href="${baseUrl}/rss.xml" rel="self" type="application/rss+xml"/>
+    <generator>Incluser Blog</generator>
+    <webMaster>contact@incluser.uz (Incluser Team)</webMaster>
+    <managingEditor>contact@incluser.uz (Incluser Team)</managingEditor>
+    <copyright>© ${new Date().getFullYear()} Incluser. Все права защищены.</copyright>
+    <category>Технологии/Доступность</category>
+    <ttl>1440</ttl>
+    
+${articles.map(article => {
+  const articleUrl = `${baseUrl}/articles/${article.slug}`;
+  const pubDate = (article.createdAt || new Date()).toUTCString();
+  const description = article.excerpt || article.content.replace(/<[^>]*>/g, '').substring(0, 200) + '...';
+  
+  return `    <item>
+      <title><![CDATA[${article.title}]]></title>
+      <link>${articleUrl}</link>
+      <guid isPermaLink="true">${articleUrl}</guid>
+      <description><![CDATA[${description}]]></description>
+      <pubDate>${pubDate}</pubDate>
+      <author>contact@incluser.uz (${article.author.email})</author>
+      <category><![CDATA[${article.category?.name || 'Общее'}]]></category>
+    </item>`;
+}).join('\n')}
+  </channel>
+</rss>`;
+
+      res.set({
+        'Content-Type': 'application/rss+xml; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+      });
+      
+      res.send(rssXml);
+    } catch (error) {
+      console.error("Error generating RSS feed:", error);
+      res.status(500).send('Error generating RSS feed');
+    }
+  });
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {

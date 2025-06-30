@@ -15,7 +15,7 @@ export default function Footer() {
     { href: "#wcag", label: "Руководства WCAG" },
     { href: "#testing", label: "Инструменты тестирования" },
     { href: "#links", label: "Полезные ссылки" },
-    { href: "#rss", label: "RSS подписка" },
+    { href: "/rss.xml", label: "RSS подписка" },
   ];
 
   return (
