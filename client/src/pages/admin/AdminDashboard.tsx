@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { 
   FileText, 
   Eye, 
@@ -15,6 +15,8 @@ import {
 import type { ArticleWithRelations, Category, Page } from "@shared/schema";
 
 export default function AdminDashboard() {
+  const [, setLocation] = useLocation();
+  
   const { data: articlesData, isLoading: articlesLoading } = useQuery<{
     articles: ArticleWithRelations[];
     totalCount: number;
@@ -32,6 +34,16 @@ export default function AdminDashboard() {
 
   const publishedArticles = articlesData?.articles.filter(a => a.isPublished).length || 0;
   const draftArticles = (articlesData?.totalCount || 0) - publishedArticles;
+
+  const handleCreateArticle = () => {
+    // Программно переходим на страницу создания статьи
+    setLocation('/admin/articles?create=true');
+  };
+
+  const handleCreateCategory = () => {
+    // Программно переходим на страницу создания категории
+    setLocation('/admin/categories?create=true');
+  };
 
   return (
     <div className="space-y-8">
@@ -130,12 +142,10 @@ export default function AdminDashboard() {
                   Управлять
                 </Button>
               </Link>
-              <Link href="/admin/articles?create=true">
-                <Button size="sm" variant="outline">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Создать
-                </Button>
-              </Link>
+              <Button size="sm" variant="outline" onClick={handleCreateArticle}>
+                <Plus className="h-4 w-4 mr-2" />
+                Создать
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -158,12 +168,10 @@ export default function AdminDashboard() {
                   Настроить
                 </Button>
               </Link>
-              <Link href="/admin/categories?create=true">
-                <Button size="sm" variant="outline">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Добавить
-                </Button>
-              </Link>
+              <Button size="sm" variant="outline" onClick={handleCreateCategory}>
+                <Plus className="h-4 w-4 mr-2" />
+                Добавить
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -245,12 +253,10 @@ export default function AdminDashboard() {
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">Статей пока нет</p>
-              <Link href="/admin/articles?create=true">
-                <Button className="mt-4">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Создать первую статью
-                </Button>
-              </Link>
+              <Button className="mt-4" onClick={handleCreateArticle}>
+                <Plus className="h-4 w-4 mr-2" />
+                Создать первую статью
+              </Button>
             </div>
           )}
         </CardContent>
