@@ -5,11 +5,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
 import NotFound from "@/pages/not-found";
+import { Page } from "@shared/schema";
 
 export default function PageView() {
   const { slug } = useParams();
 
-  const { data: page, isLoading, error } = useQuery({
+  const { data: page, isLoading, error } = useQuery<Page>({
     queryKey: ['/api/pages', slug],
     enabled: !!slug,
   });

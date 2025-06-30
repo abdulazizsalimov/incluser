@@ -37,6 +37,9 @@ function Router() {
           <Route path="/articles/:slug" component={ArticleDetail} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
+          <Route path="/wcag-guides" component={PageView} />
+          <Route path="/testing-tools" component={PageView} />
+          <Route path="/resources" component={PageView} />
         </>
       ) : (
         <>
