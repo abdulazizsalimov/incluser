@@ -59,7 +59,7 @@ export const articles = pgTable("articles", {
   isPublished: boolean("is_published").default(false),
   publishedAt: timestamp("published_at"),
   readingTime: integer("reading_time"), // in minutes
-  authorId: varchar("author_id").notNull(),
+  authorId: integer("author_id").notNull(),
   categoryId: integer("category_id"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
