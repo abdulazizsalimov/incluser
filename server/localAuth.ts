@@ -38,20 +38,27 @@ export async function setupAuth(app: Express) {
   passport.use(new LocalStrategy(
     async (username: string, password: string, done) => {
       try {
+        console.log('Login attempt:', { username, passwordLength: password.length });
         const user = await storage.getUserByUsername(username);
         
         if (!user) {
+          console.log('User not found:', username);
           return done(null, false, { message: 'Invalid username or password' });
         }
 
+        console.log('User found:', { id: user.id, username: user.username, passwordHash: user.password?.substring(0, 10) + '...' });
         const isValidPassword = await bcrypt.compare(password, user.password);
+        console.log('Password validation result:', isValidPassword);
         
         if (!isValidPassword) {
+          console.log('Invalid password for user:', username);
           return done(null, false, { message: 'Invalid username or password' });
         }
 
+        console.log('Login successful for user:', username);
         return done(null, user);
       } catch (error) {
+        console.error('Login error:', error);
         return done(error);
       }
     }
