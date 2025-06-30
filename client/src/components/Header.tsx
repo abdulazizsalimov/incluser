@@ -169,9 +169,9 @@ export default function Header() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[280px] flex flex-col p-4">
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  <nav className="flex flex-col space-y-3 mt-4 pb-4">
+              <SheetContent side="right" className="w-[280px] flex flex-col p-0">
+                <div className="flex-1 overflow-y-auto p-4">
+                  <nav className="flex flex-col space-y-3 mt-4">
                     {navItems.map((item) => (
                       <div key={item.href}>
                         <Link 
@@ -210,73 +210,74 @@ export default function Header() {
                         )}
                       </div>
                     ))}
-                    
-                    <div className="border-t pt-3 space-y-2 mt-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setAccessibilityOpen(true)}
-                        className="w-full justify-center xs:justify-start"
-                        title="Доступность"
-                      >
-                        <Accessibility className="h-4 w-4" />
-                        <span className="hidden xs:inline xs:ml-2">Доступность</span>
-                      </Button>
-                      
-                      {!isLoading && (
-                        <>
-                          {isAuthenticated ? (
-                            <div className="space-y-2">
-                              {user?.isAdmin && (
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => window.location.href = "/admin"}
-                                  className="w-full justify-center xs:justify-start"
-                                  title="Админ-панель"
-                                >
-                                  <Settings className="h-4 w-4" />
-                                  <span className="hidden xs:inline xs:ml-2">Админ-панель</span>
-                                </Button>
-                              )}
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => window.location.href = "/api/logout"}
-                                className="w-full justify-center xs:justify-start"
-                                title="Выход"
-                              >
-                                <LogOut className="h-4 w-4" />
-                                <span className="hidden xs:inline xs:ml-2">Выход</span>
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className="flex gap-1">
-                              <Button
-                                size="sm"
-                                onClick={() => window.location.href = "/api/login"}
-                                className="flex-1 justify-center min-w-0 px-2"
-                                title="Вход"
-                              >
-                                <LogIn className="h-4 w-4 shrink-0" />
-                                <span className="hidden xs:inline xs:ml-2 truncate">Вход</span>
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => window.location.href = "/api/login"}
-                                className="flex-1 justify-center min-w-0 px-2"
-                                title="Регистрация"
-                              >
-                                <UserPlus className="h-4 w-4 shrink-0" />
-                                <span className="hidden xs:inline xs:ml-2 truncate">Регистрация</span>
-                              </Button>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
                   </nav>
+                </div>
+                
+                {/* Fixed bottom section */}
+                <div className="border-t bg-background p-4 space-y-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setAccessibilityOpen(true)}
+                    className="w-full justify-center xs:justify-start"
+                    title="Доступность"
+                  >
+                    <Accessibility className="h-4 w-4" />
+                    <span className="hidden xs:inline xs:ml-2">Доступность</span>
+                  </Button>
+                  
+                  {!isLoading && (
+                    <>
+                      {isAuthenticated ? (
+                        <div className="space-y-2">
+                          {user?.isAdmin && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.location.href = "/admin"}
+                              className="w-full justify-center xs:justify-start"
+                              title="Админ-панель"
+                            >
+                              <Settings className="h-4 w-4" />
+                              <span className="hidden xs:inline xs:ml-2">Админ-панель</span>
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.location.href = "/api/logout"}
+                            className="w-full justify-center xs:justify-start"
+                            title="Выход"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            <span className="hidden xs:inline xs:ml-2">Выход</span>
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            onClick={() => window.location.href = "/api/login"}
+                            className="flex-1 justify-center min-w-0 px-2"
+                            title="Вход"
+                          >
+                            <LogIn className="h-4 w-4 shrink-0" />
+                            <span className="hidden xs:inline xs:ml-2 truncate">Вход</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.location.href = "/api/login"}
+                            className="flex-1 justify-center min-w-0 px-2"
+                            title="Регистрация"
+                          >
+                            <UserPlus className="h-4 w-4 shrink-0" />
+                            <span className="hidden xs:inline xs:ml-2 truncate">Регистрация</span>
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
