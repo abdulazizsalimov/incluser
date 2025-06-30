@@ -169,104 +169,106 @@ export default function Header() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] overflow-y-auto max-h-screen">
-                <nav className="flex flex-col space-y-4 mt-8 pb-8 min-h-0">
-                  {navItems.map((item) => (
-                    <div key={item.href}>
-                      <Link 
-                        href={item.href}
-                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                          isActive(item.href)
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground hover:text-primary hover:bg-muted"
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                      
-                      {/* Categories submenu for Articles in mobile */}
-                      {item.href === "/articles" && categories.length > 0 && (
-                        <div className="ml-4 mt-2 space-y-1">
-                          <div className="text-sm font-medium text-muted-foreground px-3 py-1">
-                            Категории:
-                          </div>
-                          <Link 
-                            href="/articles"
-                            className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
-                          >
-                            Все статьи
-                          </Link>
-                          {categories.map((category) => (
+              <SheetContent side="right" className="w-[300px] flex flex-col">
+                <div className="flex-1 overflow-y-auto">
+                  <nav className="flex flex-col space-y-4 mt-8 pb-8">
+                    {navItems.map((item) => (
+                      <div key={item.href}>
+                        <Link 
+                          href={item.href}
+                          className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                            isActive(item.href)
+                              ? "bg-primary text-primary-foreground"
+                              : "text-muted-foreground hover:text-primary hover:bg-muted"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                        
+                        {/* Categories submenu for Articles in mobile */}
+                        {item.href === "/articles" && categories.length > 0 && (
+                          <div className="ml-4 mt-2 space-y-1">
+                            <div className="text-sm font-medium text-muted-foreground px-3 py-1">
+                              Категории:
+                            </div>
                             <Link 
-                              key={category.id}
-                              href={`/articles?category=${category.slug}`}
+                              href="/articles"
                               className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
                             >
-                              {category.name}
+                              Все статьи
                             </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                  
-                  <div className="border-t pt-4 space-y-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setAccessibilityOpen(true)}
-                      className="w-full justify-start"
-                    >
-                      <Accessibility className="h-4 w-4 mr-2" />
-                      Доступность
-                    </Button>
+                            {categories.map((category) => (
+                              <Link 
+                                key={category.id}
+                                href={`/articles?category=${category.slug}`}
+                                className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
+                              >
+                                {category.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
                     
-                    {!isLoading && (
-                      <>
-                        {isAuthenticated ? (
-                          <div className="space-y-2">
-                            {user?.isAdmin && (
+                    <div className="border-t pt-4 space-y-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setAccessibilityOpen(true)}
+                        className="w-full justify-start"
+                      >
+                        <Accessibility className="h-4 w-4 mr-2" />
+                        Доступность
+                      </Button>
+                      
+                      {!isLoading && (
+                        <>
+                          {isAuthenticated ? (
+                            <div className="space-y-2">
+                              {user?.isAdmin && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => window.location.href = "/admin"}
+                                  className="w-full"
+                                >
+                                  Админ-панель
+                                </Button>
+                              )}
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => window.location.href = "/admin"}
+                                onClick={() => window.location.href = "/api/logout"}
                                 className="w-full"
                               >
-                                Админ-панель
+                                Выход
                               </Button>
-                            )}
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => window.location.href = "/api/logout"}
-                              className="w-full"
-                            >
-                              Выход
-                            </Button>
-                          </div>
-                        ) : (
-                          <>
-                            <Button
-                              size="sm"
-                              onClick={() => window.location.href = "/api/login"}
-                              className="w-full"
-                            >
-                              Вход
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => window.location.href = "/api/login"}
-                              className="w-full"
-                            >
-                              Регистрация
-                            </Button>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </nav>
+                            </div>
+                          ) : (
+                            <>
+                              <Button
+                                size="sm"
+                                onClick={() => window.location.href = "/api/login"}
+                                className="w-full"
+                              >
+                                Вход
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => window.location.href = "/api/login"}
+                                className="w-full"
+                              >
+                                Регистрация
+                              </Button>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </nav>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
