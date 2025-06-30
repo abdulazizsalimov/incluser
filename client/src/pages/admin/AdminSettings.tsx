@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import AdminLayout from "@/components/admin/AdminLayout";
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, "Текущий пароль обязателен"),
@@ -36,10 +35,24 @@ export default function AdminSettings() {
 
   const changePasswordMutation = useMutation({
     mutationFn: async (data: ChangePasswordData) => {
-      await apiRequest('/api/admin/change-password', 'POST', {
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
+      const response = await fetch('/api/admin/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+        }),
       });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Ошибка при изменении пароля');
+      }
+
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -62,91 +75,89 @@ export default function AdminSettings() {
   };
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Настройки администратора</h1>
-          <p className="text-muted-foreground">
-            Управление настройками учетной записи администратора
-          </p>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Смена пароля</CardTitle>
-            <CardDescription>
-              Измените пароль для учетной записи администратора
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="currentPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Текущий пароль</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Введите текущий пароль"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="newPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Новый пароль</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Введите новый пароль"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Подтвердите новый пароль</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Повторите новый пароль"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Button 
-                  type="submit" 
-                  disabled={changePasswordMutation.isPending}
-                  className="w-full"
-                >
-                  {changePasswordMutation.isPending ? "Изменение..." : "Изменить пароль"}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold">Настройки администратора</h1>
+        <p className="text-muted-foreground">
+          Управление настройками учетной записи администратора
+        </p>
       </div>
-    </AdminLayout>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Смена пароля</CardTitle>
+          <CardDescription>
+            Измените пароль для учетной записи администратора
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Текущий пароль</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Введите текущий пароль"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Новый пароль</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Введите новый пароль"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Подтвердите новый пароль</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Повторите новый пароль"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button 
+                type="submit" 
+                disabled={changePasswordMutation.isPending}
+                className="w-full"
+              >
+                {changePasswordMutation.isPending ? "Изменение..." : "Изменить пароль"}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
