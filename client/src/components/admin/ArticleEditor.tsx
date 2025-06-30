@@ -117,8 +117,6 @@ export default function ArticleEditor({
       }
 
       const data = await response.json();
-      console.log('Upload response:', data);
-      console.log('Setting image URL:', data.imageUrl);
       
       form.setValue('featuredImage', data.imageUrl);
       setCurrentImage(data.imageUrl);
@@ -127,12 +125,9 @@ export default function ArticleEditor({
       // Принудительно обновляем форму
       form.trigger('featuredImage');
       
-      console.log('Current image state after update:', data.imageUrl);
-      console.log('Form value after update:', form.getValues('featuredImage'));
-      
       toast({
         title: "Изображение загружено",
-        description: `URL: ${data.imageUrl}`,
+        description: "Изображение успешно загружено на сервер",
       });
     } catch (error) {
       toast({
@@ -388,25 +383,11 @@ export default function ArticleEditor({
                       alt="Preview" 
                       className="max-w-full h-32 object-cover rounded-lg border"
                       onError={(e) => {
-                        console.log('Image error:', currentImage);
                         e.currentTarget.style.display = 'none';
                       }}
-                      onLoad={() => {
-                        console.log('Image loaded successfully:', currentImage);
-                      }}
                     />
-                    <div className="text-xs text-gray-500 mt-1">
-                      {currentImage}
-                    </div>
                   </div>
                 )}
-                
-                {/* Debug info */}
-                <div className="mt-2 text-xs text-gray-400">
-                  Debug: currentImage = {currentImage || 'пусто'}
-                  <br />
-                  forceUpdate = {forceUpdate}
-                </div>
 
                 <FormField
                   control={form.control}
