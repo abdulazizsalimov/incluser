@@ -12,9 +12,9 @@ export default function Footer() {
   ];
 
   const resourceItems = [
-    { href: "#wcag", label: "Руководства WCAG" },
-    { href: "#testing", label: "Инструменты тестирования" },
-    { href: "#links", label: "Полезные ссылки" },
+    { href: "/wcag-guides", label: "Руководства WCAG" },
+    { href: "/testing-tools", label: "Инструменты тестирования" },
+    { href: "/resources", label: "Полезные ссылки" },
     { href: "/rss.xml", label: "RSS подписка" },
   ];
 

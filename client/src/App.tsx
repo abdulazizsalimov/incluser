@@ -14,6 +14,7 @@ import Articles from "@/pages/Articles";
 import ArticleDetail from "@/pages/ArticleDetail";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import PageView from "@/pages/PageView";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ManageArticles from "@/pages/admin/ManageArticles";
 import ManageCategories from "@/pages/admin/ManageCategories";
@@ -45,6 +46,9 @@ function Router() {
           <Route path="/articles/:slug" component={ArticleDetail} />
           <Route path="/about" component={About} />
           <Route path="/contact" component={Contact} />
+          <Route path="/wcag-guides" component={PageView} />
+          <Route path="/testing-tools" component={PageView} />
+          <Route path="/resources" component={PageView} />
         </>
       )}
 
