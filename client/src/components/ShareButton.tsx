@@ -47,7 +47,9 @@ export default function ShareButton({
 
   const shareToTelegram = () => {
     const text = `${title}\n\n${description}`;
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+    // Add cache-busting parameter to force refresh
+    const urlWithCacheBuster = `${url}?v=${Date.now()}`;
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(urlWithCacheBuster)}&text=${encodeURIComponent(text)}`;
     window.open(telegramUrl, '_blank', 'noopener,noreferrer');
   };
 

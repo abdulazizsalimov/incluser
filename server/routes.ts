@@ -56,10 +56,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     <meta property="og:type" content="article" />
     <meta property="og:title" content="${title}" />
     <meta property="og:description" content="${description}" />
-    <meta property="og:image" content="${imageUrl}" />
+    <meta property="og:image" content="${imageUrl}?v=${Date.now()}" />
     <meta property="og:url" content="${articleUrl}" />
     <meta property="og:site_name" content="Incluser" />
     <meta property="og:locale" content="ru_RU" />
+    <meta property="og:updated_time" content="${new Date().toISOString()}" />
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -84,6 +85,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 </html>`;
 
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       res.send(html);
     } catch (error) {
       console.error("Error generating meta tags for article:", error);
