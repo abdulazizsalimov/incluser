@@ -169,9 +169,9 @@ export default function Header() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] flex flex-col">
-                <div className="flex-1 overflow-y-auto">
-                  <nav className="flex flex-col space-y-4 mt-8 pb-8">
+              <SheetContent side="right" className="w-[280px] flex flex-col p-4">
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <nav className="flex flex-col space-y-3 mt-4 pb-4">
                     {navItems.map((item) => (
                       <div key={item.href}>
                         <Link 
@@ -211,15 +211,16 @@ export default function Header() {
                       </div>
                     ))}
                     
-                    <div className="border-t pt-4 space-y-2">
+                    <div className="border-t pt-3 space-y-2 mt-3">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setAccessibilityOpen(true)}
-                        className="w-full justify-start"
+                        className="w-full justify-center xs:justify-start"
+                        title="Доступность"
                       >
-                        <Accessibility className="h-4 w-4 mr-2" />
-                        <span className="hidden xs:inline">Доступность</span>
+                        <Accessibility className="h-4 w-4" />
+                        <span className="hidden xs:inline xs:ml-2">Доступность</span>
                       </Button>
                       
                       {!isLoading && (
@@ -231,42 +232,44 @@ export default function Header() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => window.location.href = "/admin"}
-                                  className="w-full justify-start"
+                                  className="w-full justify-center xs:justify-start"
+                                  title="Админ-панель"
                                 >
-                                  <Settings className="h-4 w-4 mr-2" />
-                                  <span className="hidden xs:inline">Админ-панель</span>
+                                  <Settings className="h-4 w-4" />
+                                  <span className="hidden xs:inline xs:ml-2">Админ-панель</span>
                                 </Button>
                               )}
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => window.location.href = "/api/logout"}
-                                className="w-full justify-start"
+                                className="w-full justify-center xs:justify-start"
+                                title="Выход"
                               >
-                                <LogOut className="h-4 w-4 mr-2" />
-                                <span className="hidden xs:inline">Выход</span>
+                                <LogOut className="h-4 w-4" />
+                                <span className="hidden xs:inline xs:ml-2">Выход</span>
                               </Button>
                             </div>
                           ) : (
-                            <div className="flex gap-2">
+                            <div className="flex gap-1">
                               <Button
                                 size="sm"
                                 onClick={() => window.location.href = "/api/login"}
-                                className="flex-1 justify-center"
+                                className="flex-1 justify-center min-w-0 px-2"
                                 title="Вход"
                               >
-                                <LogIn className="h-4 w-4" />
-                                <span className="hidden xs:inline ml-2">Вход</span>
+                                <LogIn className="h-4 w-4 shrink-0" />
+                                <span className="hidden xs:inline xs:ml-2 truncate">Вход</span>
                               </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => window.location.href = "/api/login"}
-                                className="flex-1 justify-center"
+                                className="flex-1 justify-center min-w-0 px-2"
                                 title="Регистрация"
                               >
-                                <UserPlus className="h-4 w-4" />
-                                <span className="hidden xs:inline ml-2">Регистрация</span>
+                                <UserPlus className="h-4 w-4 shrink-0" />
+                                <span className="hidden xs:inline xs:ml-2 truncate">Регистрация</span>
                               </Button>
                             </div>
                           )}
