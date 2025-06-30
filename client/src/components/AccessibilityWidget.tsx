@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn } from "lucide-react";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import AccessibleSlider from "@/components/AccessibleSlider";
 
@@ -26,7 +26,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   
   const [lineHeight, setLineHeight] = useState(() => {
     const saved = localStorage.getItem('accessibility-line-height');
-    return saved ? [parseInt(saved)] : [150];
+    return saved ? [parseInt(saved)] : [100];
   });
   
   const [letterSpacing, setLetterSpacing] = useState(() => {
@@ -58,6 +58,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     const saved = localStorage.getItem('accessibility-text-magnifier');
     return saved === 'true';
   });
+
+  const [showAdvancedFont, setShowAdvancedFont] = useState(false);
 
   const applyFontSize = (size: number) => {
     document.documentElement.style.fontSize = `${size}%`;
@@ -324,13 +326,14 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const resetSettings = () => {
     setFontSize([100]);
-    setLineHeight([150]);
+    setLineHeight([100]);
     setLetterSpacing([100]);
     setHighContrast(false);
     setGrayscale(false);
     setLargeText(false);
     setReducedMotion(false);
     setTextMagnifier(false);
+    setShowAdvancedFont(false);
     
     document.documentElement.style.fontSize = '';
     document.documentElement.style.removeProperty('--line-height-multiplier');
@@ -424,9 +427,24 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
           {/* Font Size */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Type className="h-4 w-4" />
-              <Label id="font-size-label" htmlFor="font-size">Размер шрифта: {fontSize[0]}%</Label>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Type className="h-4 w-4" />
+                <Label id="font-size-label" htmlFor="font-size">Размер шрифта: {fontSize[0]}%</Label>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAdvancedFont(!showAdvancedFont)}
+                className="h-6 w-6 p-0"
+                aria-label={showAdvancedFont ? "Скрыть дополнительные настройки шрифта" : "Показать дополнительные настройки шрифта"}
+              >
+                {showAdvancedFont ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
             </div>
             <Slider
               id="font-size"
@@ -444,54 +462,59 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             <p id="font-size-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 75% до 150%
             </p>
-          </div>
 
-          {/* Line Height */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Type className="h-4 w-4" />
-              <Label id="line-height-label" htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
-            </div>
-            <Slider
-              id="line-height"
-              value={lineHeight}
-              onValueChange={(value) => {
-                setLineHeight(value);
-                applyLineHeight(value[0]);
-              }}
-              min={100}
-              max={200}
-              step={25}
-              className="w-full"
-              thumbAriaLabel={`Междустрочный интервал ${lineHeight[0]} процентов`}
-            />
-            <p id="line-height-desc" className="text-xs text-muted-foreground">
-              Используйте стрелки или перетаскивание для изменения от 100% до 200%
-            </p>
-          </div>
+            {/* Advanced Font Settings */}
+            {showAdvancedFont && (
+              <div className="space-y-4 pl-6 border-l-2 border-muted">
+                {/* Line Height */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Type className="h-4 w-4" />
+                    <Label id="line-height-label" htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
+                  </div>
+                  <Slider
+                    id="line-height"
+                    value={lineHeight}
+                    onValueChange={(value) => {
+                      setLineHeight(value);
+                      applyLineHeight(value[0]);
+                    }}
+                    min={100}
+                    max={200}
+                    step={25}
+                    className="w-full"
+                    thumbAriaLabel={`Междустрочный интервал ${lineHeight[0]} процентов`}
+                  />
+                  <p id="line-height-desc" className="text-xs text-muted-foreground">
+                    Используйте стрелки или перетаскивание для изменения от 100% до 200%
+                  </p>
+                </div>
 
-          {/* Letter Spacing */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Type className="h-4 w-4" />
-              <Label id="letter-spacing-label" htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
-            </div>
-            <Slider
-              id="letter-spacing"
-              value={letterSpacing}
-              onValueChange={(value) => {
-                setLetterSpacing(value);
-                applyLetterSpacing(value[0]);
-              }}
-              min={75}
-              max={150}
-              step={25}
-              className="w-full"
-              thumbAriaLabel={`Межбуквенный интервал ${letterSpacing[0]} процентов`}
-            />
-            <p id="letter-spacing-desc" className="text-xs text-muted-foreground">
-              Используйте стрелки или перетаскивание для изменения от 75% до 150%
-            </p>
+                {/* Letter Spacing */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Type className="h-4 w-4" />
+                    <Label id="letter-spacing-label" htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
+                  </div>
+                  <Slider
+                    id="letter-spacing"
+                    value={letterSpacing}
+                    onValueChange={(value) => {
+                      setLetterSpacing(value);
+                      applyLetterSpacing(value[0]);
+                    }}
+                    min={75}
+                    max={150}
+                    step={25}
+                    className="w-full"
+                    thumbAriaLabel={`Межбуквенный интервал ${letterSpacing[0]} процентов`}
+                  />
+                  <p id="letter-spacing-desc" className="text-xs text-muted-foreground">
+                    Используйте стрелки или перетаскивание для изменения от 75% до 150%
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* High Contrast */}
