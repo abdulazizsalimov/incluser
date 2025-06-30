@@ -83,6 +83,8 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- June 30, 2025. Enhanced hero banner with author photo integration - full-height image on desktop with smooth gradient blending, responsive mobile design with text overlay on photo
+- June 30, 2025. Fixed resource pages routing issues by correcting React Query configuration, all three resource pages (WCAG guides, testing tools, resources) now display properly
 - June 30, 2025. Created comprehensive resource pages (WCAG guides, testing tools, useful resources) with rich content, made editable through admin panel
 - June 30, 2025. Added RSS feed functionality, replaced social media buttons with Facebook/Telegram/VK, enhanced accessibility widget with collapsible advanced settings, improved screen reader support for sliders
 - June 30, 2025. Added professional author page with photo, improved language detection for browsers, implemented favicon

@@ -29,53 +29,75 @@ export default function Home() {
       
       <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-16 sm:py-24 overflow-hidden" aria-labelledby="hero-heading">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[400px]">
-              {/* Photo on the left */}
-              <div className="relative order-2 lg:order-1">
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-700">
-                  <img 
-                    src={heroPhoto} 
-                    alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                    className="w-full h-[300px] sm:h-[400px] object-cover object-center"
-                    loading="eager"
-                  />
-                  {/* Multiple gradient overlays for smooth blending */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-600/10 to-blue-600/40"></div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 via-transparent to-transparent"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-cyan-500/20"></div>
-                </div>
-                
-                {/* Enhanced decorative elements */}
-                <div className="absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br from-cyan-400/30 to-blue-500/20 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-gradient-to-tr from-teal-400/20 to-blue-600/15 rounded-full blur-2xl"></div>
-                <div className="absolute top-1/2 -right-2 w-16 h-16 bg-white/10 rounded-full blur-lg"></div>
+        <section className="relative text-white overflow-hidden min-h-[500px] lg:min-h-[600px]" aria-labelledby="hero-heading">
+          {/* Background: Photo on large screens, gradient on mobile */}
+          <div className="absolute inset-0">
+            {/* Mobile: Just gradient background */}
+            <div className="lg:hidden absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
+            
+            {/* Desktop: Photo with gradient overlay */}
+            <div className="hidden lg:flex absolute inset-0">
+              {/* Photo container taking full height */}
+              <div className="w-1/2 h-full relative">
+                <img 
+                  src={heroPhoto} 
+                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                  className="w-full h-full object-cover object-center"
+                  loading="eager"
+                />
               </div>
               
-              {/* Content on the right */}
-              <div className="order-1 lg:order-2 text-center lg:text-left">
-                <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-                  Incluser
-                  <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
-                    доступный сайт о доступности
-                  </span>
-                </h1>
-                <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed">
-                  Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
-                  которыми могут пользоваться все люди, независимо от их способностей.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <Link href="/articles">
-                    <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
-                      Читать статьи
-                    </Button>
-                  </Link>
-                  <Link href="/about">
-                    <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
-                      Об авторе
-                    </Button>
-                  </Link>
+              {/* Gradient transition area */}
+              <div className="w-1/2 h-full bg-gradient-to-r from-transparent via-blue-600/60 to-blue-600"></div>
+              
+              {/* Additional smooth blending overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/80 lg:via-blue-600/30 lg:to-blue-600"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
+            </div>
+          </div>
+
+          {/* Mobile: Photo overlay for text on image effect */}
+          <div className="lg:hidden absolute inset-0">
+            <img 
+              src={heroPhoto} 
+              alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+              className="w-full h-full object-cover object-center opacity-30"
+              loading="eager"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-600/70 to-teal-600/80"></div>
+          </div>
+          
+          {/* Content */}
+          <div className="relative z-10 h-full flex items-center">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+              <div className="lg:grid lg:grid-cols-2 lg:gap-12 h-full lg:min-h-[600px] flex items-center">
+                {/* Empty space for photo on desktop */}
+                <div className="hidden lg:block"></div>
+                
+                {/* Content - full width on mobile, right side on desktop */}
+                <div className="text-center lg:text-left lg:flex lg:flex-col lg:justify-center">
+                  <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                    Incluser
+                    <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
+                      доступный сайт о доступности
+                    </span>
+                  </h1>
+                  <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                    Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
+                    которыми могут пользоваться все люди, независимо от их способностей.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <Link href="/articles">
+                      <Button size="lg" variant="secondary" className="bg-white text-primary hover:bg-slate-100">
+                        Читать статьи
+                      </Button>
+                    </Link>
+                    <Link href="/about">
+                      <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                        Об авторе
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
