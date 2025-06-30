@@ -8,12 +8,6 @@ export default function SkipLinks() {
         >
           Перейти к основному содержимому
         </a>
-        <a
-          href="#navigation"
-          className="bg-primary text-primary-foreground px-4 py-2 rounded ml-2 focus:outline-none focus:ring-4 focus:ring-accent"
-        >
-          Перейти к навигации
-        </a>
       </div>
     </div>
   );
