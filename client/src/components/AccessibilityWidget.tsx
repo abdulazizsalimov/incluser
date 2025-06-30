@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, HelpCircle, ZoomIn } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 
 interface AccessibilityWidgetProps {
@@ -19,6 +20,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const [highContrast, setHighContrast] = useState(false);
   const [largeText, setLargeText] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [textMagnifier, setTextMagnifier] = useState(false);
 
   const applyFontSize = (size: number) => {
     document.documentElement.style.fontSize = `${size}%`;
@@ -48,19 +50,110 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     }
   };
 
+  const toggleTextMagnifier = (enabled: boolean) => {
+    if (enabled) {
+      document.documentElement.classList.add('text-magnifier-enabled');
+    } else {
+      document.documentElement.classList.remove('text-magnifier-enabled');
+    }
+  };
+
+  // Text magnifier functionality
+  useEffect(() => {
+    if (!textMagnifier) return;
+
+    let magnifierOverlay: HTMLDivElement | null = null;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!e.shiftKey) {
+        if (magnifierOverlay) {
+          magnifierOverlay.remove();
+          magnifierOverlay = null;
+        }
+        return;
+      }
+
+      const target = e.target as HTMLElement;
+      if (!target || !target.textContent || target.textContent.trim() === '') return;
+
+      // Get text content of the element
+      const textContent = target.textContent.trim();
+      if (textContent.length === 0) return;
+
+      // Create or update overlay
+      if (!magnifierOverlay) {
+        magnifierOverlay = document.createElement('div');
+        magnifierOverlay.style.cssText = `
+          position: fixed;
+          background: black;
+          border: 3px solid #00bfff;
+          color: white;
+          font-size: 48px;
+          font-weight: bold;
+          padding: 20px;
+          border-radius: 8px;
+          z-index: 10000;
+          pointer-events: none;
+          max-width: 600px;
+          word-wrap: break-word;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        `;
+        document.body.appendChild(magnifierOverlay);
+      }
+
+      magnifierOverlay.textContent = textContent;
+      
+      // Position overlay near mouse cursor
+      const rect = magnifierOverlay.getBoundingClientRect();
+      let left = e.clientX + 20;
+      let top = e.clientY - rect.height - 20;
+
+      // Adjust position if overlay goes off screen
+      if (left + rect.width > window.innerWidth) {
+        left = e.clientX - rect.width - 20;
+      }
+      if (top < 0) {
+        top = e.clientY + 20;
+      }
+
+      magnifierOverlay.style.left = `${left}px`;
+      magnifierOverlay.style.top = `${top}px`;
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift' && magnifierOverlay) {
+        magnifierOverlay.remove();
+        magnifierOverlay = null;
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('keyup', handleKeyUp);
+      if (magnifierOverlay) {
+        magnifierOverlay.remove();
+      }
+    };
+  }, [textMagnifier]);
+
   const resetSettings = () => {
     setFontSize([100]);
     setHighContrast(false);
     setLargeText(false);
     setReducedMotion(false);
+    setTextMagnifier(false);
     
     document.documentElement.style.fontSize = '';
-    document.documentElement.classList.remove('high-contrast', 'large-text', 'reduce-motion');
+    document.documentElement.classList.remove('high-contrast', 'large-text', 'reduce-motion', 'text-magnifier-enabled');
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md" aria-describedby="accessibility-description">
+    <TooltipProvider>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md" aria-describedby="accessibility-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" />
@@ -192,6 +285,37 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             Отключает анимации и переходы
           </p>
 
+          {/* Text Magnifier */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ZoomIn className="h-4 w-4" />
+              <Label htmlFor="text-magnifier">Увеличение при наведении</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                    <HelpCircle className="h-4 w-4" />
+                    <span className="sr-only">Помощь по увеличению текста</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-xs">
+                  <p>Зажмите клавишу Shift и наведите курсор на любой текст, чтобы увидеть его увеличенным в специальном окне</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+            <Switch
+              id="text-magnifier"
+              checked={textMagnifier}
+              onCheckedChange={(checked) => {
+                setTextMagnifier(checked);
+                toggleTextMagnifier(checked);
+              }}
+              aria-describedby="text-magnifier-desc"
+            />
+          </div>
+          <p id="text-magnifier-desc" className="text-sm text-muted-foreground">
+            Показывает увеличенный текст при наведении курсора с зажатой клавишей Shift
+          </p>
+
           {/* Reset Button */}
           <Button
             variant="outline"
@@ -201,7 +325,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             Сбросить настройки
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </TooltipProvider>
   );
 }
