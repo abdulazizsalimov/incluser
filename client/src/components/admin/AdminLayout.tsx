@@ -24,8 +24,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
+        title: "Нет доступа",
+        description: "Вы не авторизованы. Выполняется вход в систему...",
         variant: "destructive",
       });
       setTimeout(() => {
@@ -36,8 +36,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
     if (!isLoading && isAuthenticated && !user?.isAdmin) {
       toast({
-        title: "Access Denied",
-        description: "Admin access required",
+        title: "Доступ запрещен",
+        description: "Требуются права администратора",
         variant: "destructive",
       });
       setTimeout(() => {
@@ -48,10 +48,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }, [isAuthenticated, isLoading, user, toast]);
 
   const sidebarItems = [
-    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/articles", label: "Articles", icon: FileText },
-    { href: "/admin/categories", label: "Categories", icon: Tags },
-    { href: "/admin/pages", label: "Pages", icon: Settings },
+    { href: "/admin", label: "Панель управления", icon: LayoutDashboard },
+    { href: "/admin/articles", label: "Статьи", icon: FileText },
+    { href: "/admin/categories", label: "Категории", icon: Tags },
+    { href: "/admin/pages", label: "Страницы", icon: Settings },
   ];
 
   if (isLoading) {
@@ -72,12 +72,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Sidebar */}
         <aside className="w-64 bg-card border-r border-border min-h-screen">
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-6">Admin Panel</h2>
+            <h2 className="text-xl font-semibold mb-6">Панель администратора</h2>
             <nav className="space-y-2">
               <Link href="/">
                 <Button variant="ghost" className="w-full justify-start">
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Site
+                  Вернуться на сайт
                 </Button>
               </Link>
               <Separator className="my-4" />

@@ -75,7 +75,7 @@ export default function ManageArticles() {
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
+          title: "Нет доступа",
           description: "You are logged out. Logging in again...",
           variant: "destructive",
         });
@@ -108,7 +108,7 @@ export default function ManageArticles() {
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
+          title: "Нет доступа",
           description: "You are logged out. Logging in again...",
           variant: "destructive",
         });
@@ -139,7 +139,7 @@ export default function ManageArticles() {
     onError: (error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
+          title: "Нет доступа",
           description: "You are logged out. Logging in again...",
           variant: "destructive",
         });
