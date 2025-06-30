@@ -169,8 +169,8 @@ export default function Header() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px]">
-                <nav className="flex flex-col space-y-4 mt-8">
+              <SheetContent side="right" className="w-[300px] overflow-y-auto max-h-screen">
+                <nav className="flex flex-col space-y-4 mt-8 pb-8 min-h-0">
                   {navItems.map((item) => (
                     <div key={item.href}>
                       <Link 
