@@ -380,19 +380,33 @@ export default function ArticleEditor({
                 {/* Preview of current image */}
                 {currentImage && (
                   <div className="mt-4" key={`image-preview-${forceUpdate}`}>
+                    <div className="text-sm text-gray-600 mb-2">
+                      Предварительный просмотр:
+                    </div>
                     <img 
                       src={currentImage} 
                       alt="Preview" 
                       className="max-w-full h-32 object-cover rounded-lg border"
                       onError={(e) => {
+                        console.log('Image error:', currentImage);
                         e.currentTarget.style.display = 'none';
                       }}
                       onLoad={() => {
-                        console.log('Image loaded:', currentImage);
+                        console.log('Image loaded successfully:', currentImage);
                       }}
                     />
+                    <div className="text-xs text-gray-500 mt-1">
+                      {currentImage}
+                    </div>
                   </div>
                 )}
+                
+                {/* Debug info */}
+                <div className="mt-2 text-xs text-gray-400">
+                  Debug: currentImage = {currentImage || 'пусто'}
+                  <br />
+                  forceUpdate = {forceUpdate}
+                </div>
 
                 <FormField
                   control={form.control}

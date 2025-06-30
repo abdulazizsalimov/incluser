@@ -58,7 +58,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'No file uploaded' });
       }
 
-      const imageUrl = `/uploads/${req.file.filename}`;
+      const imageUrl = `/uploads/images/${req.file.filename}`;
       res.json({ 
         message: 'Image uploaded successfully',
         imageUrl: imageUrl,
