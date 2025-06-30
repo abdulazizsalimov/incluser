@@ -83,6 +83,9 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- June 30, 2025. Implemented comprehensive sharing functionality with Open Graph support - added share buttons to articles with social media integration (Telegram, Facebook, VK, WhatsApp), created dynamic server-side meta tag rendering for proper link previews in social networks
+- June 30, 2025. Fixed banner display issues for unauthenticated users, improved photo positioning to prevent cropping, enhanced button styling for better contrast and readability
+- June 30, 2025. Added category filtering system with URL-based navigation, dropdown menu in header for filtering articles by category
 - June 30, 2025. Enhanced hero banner with author photo integration - full-height image on desktop with smooth gradient blending, responsive mobile design with text overlay on photo
 - June 30, 2025. Fixed resource pages routing issues by correcting React Query configuration, all three resource pages (WCAG guides, testing tools, resources) now display properly
 - June 30, 2025. Created comprehensive resource pages (WCAG guides, testing tools, useful resources) with rich content, made editable through admin panel
