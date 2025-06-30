@@ -94,9 +94,14 @@ export default function Articles() {
         {/* Header Section */}
         <section className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold mb-4">Статьи</h1>
+            <h1 className="text-4xl font-bold mb-4">
+              {categoryId !== "all" ? `Статьи: ${categoryDisplayName}` : "Статьи"}
+            </h1>
             <p className="text-xl opacity-90 max-w-2xl">
-              Полная коллекция статей о цифровой доступности, инклюзивном дизайне и веб-разработке
+              {categoryId !== "all" 
+                ? `Статьи в категории "${categoryDisplayName}"` 
+                : "Полная коллекция статей о цифровой доступности, инклюзивном дизайне и веб-разработке"
+              }
             </p>
           </div>
         </section>
@@ -144,129 +149,76 @@ export default function Articles() {
           </div>
         </section>
 
-        {/* Articles */}
+        {/* Articles Grid */}
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Results info */}
-            <div className="mb-8">
-              {isLoading ? (
-                <Skeleton className="h-6 w-48" />
-              ) : (
-                <p className="text-muted-foreground">
-                  {search || (categoryId && categoryId !== "all") ? (
-                    <>
-                      Найдено {articlesData?.totalCount || 0} статей
-                      {search && ` по запросу "${search}"`}
-                      {categoryId && categoryId !== "all" && categoriesData && (
-                        ` в категории "${categoriesData.find(c => c.id.toString() === categoryId)?.name}"`
-                      )}
-                    </>
-                  ) : (
-                    `Всего статей: ${articlesData?.totalCount || 0}`
-                  )}
-                </p>
-              )}
-            </div>
-
-            {/* Articles grid */}
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {Array.from({ length: articlesPerPage }).map((_, i) => (
-                  <div key={i} className="space-y-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="space-y-4">
                     <Skeleton className="h-48 w-full" />
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
-                    <Skeleton className="h-16 w-full" />
                   </div>
                 ))}
               </div>
-            ) : articlesData?.articles.length ? (
+            ) : articlesData?.articles.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-lg">
+                  {search || categoryId !== "all" 
+                    ? "По вашему запросу статей не найдено" 
+                    : "Статей пока нет"
+                  }
+                </p>
+              </div>
+            ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
-                  {articlesData.articles.map((article) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {articlesData?.articles.map((article) => (
                     <ArticleCard key={article.id} article={article} />
                   ))}
                 </div>
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <nav aria-label="Навигация по страницам" className="mt-12">
-                    <div className="flex items-center justify-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
-                        aria-label="Предыдущая страница"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                        Назад
-                      </Button>
-
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                          let pageNum;
-                          if (totalPages <= 5) {
-                            pageNum = i + 1;
-                          } else if (currentPage <= 3) {
-                            pageNum = i + 1;
-                          } else if (currentPage >= totalPages - 2) {
-                            pageNum = totalPages - 4 + i;
-                          } else {
-                            pageNum = currentPage - 2 + i;
-                          }
-
-                          return (
-                            <Button
-                              key={pageNum}
-                              variant={currentPage === pageNum ? "default" : "outline"}
-                              size="sm"
-                              onClick={() => setCurrentPage(pageNum)}
-                              aria-label={`Страница ${pageNum}`}
-                              aria-current={currentPage === pageNum ? "page" : undefined}
-                            >
-                              {pageNum}
-                            </Button>
-                          );
-                        })}
-                      </div>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        disabled={currentPage === totalPages}
-                        aria-label="Следующая страница"
-                      >
-                        Вперёд
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
+                  <div className="flex justify-center items-center space-x-2 mt-12">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      aria-label="Предыдущая страница"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    
+                    <div className="flex space-x-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          aria-label={`Страница ${page}`}
+                          aria-current={currentPage === page ? "page" : undefined}
+                        >
+                          {page}
+                        </Button>
+                      ))}
                     </div>
-
-                    <p className="text-center text-sm text-muted-foreground mt-4">
-                      Страница {currentPage} из {totalPages}
-                    </p>
-                  </nav>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      aria-label="Следующая страница"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 )}
               </>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-lg text-muted-foreground mb-4">
-                  {search || (categoryId && categoryId !== "all") ? "По вашему запросу ничего не найдено" : "Статей пока нет"}
-                </p>
-                {(search || (categoryId && categoryId !== "all")) && (
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSearch("");
-                      setCategoryId("all");
-                      setCurrentPage(1);
-                    }}
-                  >
-                    Сбросить фильтры
-                  </Button>
-                )}
-              </div>
             )}
           </div>
         </section>
