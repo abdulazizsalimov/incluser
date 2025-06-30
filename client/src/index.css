@@ -24,6 +24,10 @@
   --ring: hsl(207, 90%, 54%);
   --radius: 0.5rem;
   
+  /* Accessibility variables */
+  --line-height-multiplier: 1.5;
+  --letter-spacing-multiplier: 0em;
+  
   --chart-1: hsl(207, 90%, 54%);
   --chart-2: hsl(189, 85%, 54%);
   --chart-3: hsl(186, 90%, 54%);
@@ -329,5 +333,22 @@ p,
 li,
 td,
 th {
-  line-height: 1.6;
+  line-height: calc(1.6 * var(--line-height-multiplier));
+  letter-spacing: var(--letter-spacing-multiplier);
+}
+
+/* Apply spacing to all text elements */
+h1, h2, h3, h4, h5, h6,
+span, a, button, label {
+  line-height: calc(1.4 * var(--line-height-multiplier));
+  letter-spacing: var(--letter-spacing-multiplier);
+}
+
+/* Grayscale mode */
+.grayscale {
+  filter: grayscale(100%);
+}
+
+.grayscale * {
+  filter: grayscale(100%);
 }

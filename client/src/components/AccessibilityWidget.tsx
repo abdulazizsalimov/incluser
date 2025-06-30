@@ -17,7 +17,10 @@ interface AccessibilityWidgetProps {
 export default function AccessibilityWidget({ open, onOpenChange }: AccessibilityWidgetProps) {
   const { theme, setTheme } = useTheme();
   const [fontSize, setFontSize] = useState([100]);
+  const [lineHeight, setLineHeight] = useState([150]);
+  const [letterSpacing, setLetterSpacing] = useState([100]);
   const [highContrast, setHighContrast] = useState(false);
+  const [grayscale, setGrayscale] = useState(false);
   const [largeText, setLargeText] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [textMagnifier, setTextMagnifier] = useState(() => {
@@ -30,11 +33,27 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     document.documentElement.style.fontSize = `${size}%`;
   };
 
+  const applyLineHeight = (height: number) => {
+    document.documentElement.style.setProperty('--line-height-multiplier', `${height / 100}`);
+  };
+
+  const applyLetterSpacing = (spacing: number) => {
+    document.documentElement.style.setProperty('--letter-spacing-multiplier', `${(spacing - 100) / 100}em`);
+  };
+
   const toggleHighContrast = (enabled: boolean) => {
     if (enabled) {
       document.documentElement.classList.add('high-contrast');
     } else {
       document.documentElement.classList.remove('high-contrast');
+    }
+  };
+
+  const toggleGrayscale = (enabled: boolean) => {
+    if (enabled) {
+      document.documentElement.classList.add('grayscale');
+    } else {
+      document.documentElement.classList.remove('grayscale');
     }
   };
 
@@ -248,13 +267,18 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const resetSettings = () => {
     setFontSize([100]);
+    setLineHeight([150]);
+    setLetterSpacing([100]);
     setHighContrast(false);
+    setGrayscale(false);
     setLargeText(false);
     setReducedMotion(false);
     setTextMagnifier(false);
     
     document.documentElement.style.fontSize = '';
-    document.documentElement.classList.remove('high-contrast', 'large-text', 'reduce-motion', 'text-magnifier-enabled');
+    document.documentElement.style.removeProperty('--line-height-multiplier');
+    document.documentElement.style.removeProperty('--letter-spacing-multiplier');
+    document.documentElement.classList.remove('high-contrast', 'grayscale', 'large-text', 'reduce-motion', 'text-magnifier-enabled');
     
     // Clear localStorage
     localStorage.removeItem('accessibility-text-magnifier');
@@ -314,6 +338,26 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             </p>
           </div>
 
+          {/* Grayscale Mode */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              <Label htmlFor="grayscale">Черно-белый режим</Label>
+            </div>
+            <Switch
+              id="grayscale"
+              checked={grayscale}
+              onCheckedChange={(checked) => {
+                setGrayscale(checked);
+                toggleGrayscale(checked);
+              }}
+              aria-describedby="grayscale-desc"
+            />
+          </div>
+          <p id="grayscale-desc" className="text-sm text-muted-foreground">
+            Убирает все цвета, оставляя только оттенки серого
+          </p>
+
           {/* Font Size */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -332,6 +376,48 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               step={25}
               className="w-full"
               aria-label="Изменить размер шрифта"
+            />
+          </div>
+
+          {/* Line Height */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Type className="h-4 w-4" />
+              <Label htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
+            </div>
+            <Slider
+              id="line-height"
+              value={lineHeight}
+              onValueChange={(value) => {
+                setLineHeight(value);
+                applyLineHeight(value[0]);
+              }}
+              min={100}
+              max={200}
+              step={25}
+              className="w-full"
+              aria-label="Изменить междустрочный интервал"
+            />
+          </div>
+
+          {/* Letter Spacing */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Type className="h-4 w-4" />
+              <Label htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
+            </div>
+            <Slider
+              id="letter-spacing"
+              value={letterSpacing}
+              onValueChange={(value) => {
+                setLetterSpacing(value);
+                applyLetterSpacing(value[0]);
+              }}
+              min={75}
+              max={150}
+              step={25}
+              className="w-full"
+              aria-label="Изменить межбуквенный интервал"
             />
           </div>
 
