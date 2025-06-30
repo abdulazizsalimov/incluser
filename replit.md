@@ -83,7 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
-- June 30, 2025. Added file upload system for article images - created multer-based image upload API endpoint, updated ArticleEditor with tabbed interface for URL and file upload options, configured 5MB file size limit and image-only restrictions, files stored in uploads/images directory with automatic static serving
+- June 30, 2025. Completed file upload system for article images - fully functional multer-based API endpoint with admin authentication, ArticleEditor with tabbed interface for URL/file upload, 5MB size limit, image-only validation, files stored in uploads/images with static serving, fixed form validation for uploaded image paths
 - June 30, 2025. Replaced Replit authentication with local authentication system - created admin user "Gomer98" with password "12345", removed registration functionality, implemented secure login/logout flow with bcrypt password hashing, fixed article creation routes to work with new authentication structure
 - June 30, 2025. Fixed mobile menu accessibility and responsiveness - added adaptive icon-only buttons for narrow screens, implemented proper vertical scrolling, ensured all navigation elements (accessibility widget, login/registration) remain visible on all screen sizes
 - June 30, 2025. Implemented comprehensive sharing functionality with Open Graph support - added share buttons to articles with social media integration (Telegram, Facebook, VK, WhatsApp), created dynamic server-side meta tag rendering for proper link previews in social networks
