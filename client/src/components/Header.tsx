@@ -37,7 +37,7 @@ export default function Header() {
               <img 
                 src={logoImage} 
                 alt="Incluser - доступный сайт о доступности" 
-                className="h-12 w-auto"
+                className="h-14 w-auto max-w-none"
               />
             </Link>
           </div>
