@@ -48,6 +48,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // Body parser middleware
+  app.use(express.json());
+
   // Serve uploaded images
   app.use('/uploads', express.static('uploads'));
 
@@ -67,6 +70,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error uploading image:', error);
       res.status(500).json({ message: 'Failed to upload image' });
+    }
+  });
+
+  // Admin password change
+  app.post('/api/admin/change-password', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: 'Текущий и новый пароли обязательны' });
+      }
+
+      const userId = (req.user as any).id;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: 'Пользователь не найден' });
+      }
+
+      // Verify current password
+      const bcrypt = require('bcryptjs');
+      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isCurrentPasswordValid) {
+        return res.status(400).json({ message: 'Неверный текущий пароль' });
+      }
+
+      // Update password
+      await storage.updateUserPassword(userId, newPassword);
+      
+      res.json({ message: 'Пароль успешно изменен' });
+    } catch (error) {
+      console.error('Error changing password:', error);
+      res.status(500).json({ message: 'Ошибка при изменении пароля' });
     }
   });
 

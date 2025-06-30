@@ -51,7 +51,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: "/admin", label: "Панель управления", icon: LayoutDashboard },
     { href: "/admin/articles", label: "Статьи", icon: FileText },
     { href: "/admin/categories", label: "Категории", icon: Tags },
-    { href: "/admin/pages", label: "Страницы", icon: Settings },
+    { href: "/admin/pages", label: "Страницы", icon: FileText },
+    { href: "/admin/settings", label: "Настройки", icon: Settings },
   ];
 
   if (isLoading) {
