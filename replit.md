@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- June 30, 2025. Added admin password change functionality - created settings page with secure password change form, API endpoint with current password verification, proper form validation, integrated into admin panel navigation
 - June 30, 2025. Completed file upload system for article images - fully functional multer-based API endpoint with admin authentication, ArticleEditor with tabbed interface for URL/file upload, 5MB size limit, image-only validation, files stored in uploads/images with static serving, fixed form validation for uploaded image paths
 - June 30, 2025. Replaced Replit authentication with local authentication system - created admin user "Gomer98" with password "12345", removed registration functionality, implemented secure login/logout flow with bcrypt password hashing, fixed article creation routes to work with new authentication structure
 - June 30, 2025. Fixed mobile menu accessibility and responsiveness - added adaptive icon-only buttons for narrow screens, implemented proper vertical scrolling, ensured all navigation elements (accessibility widget, login/registration) remain visible on all screen sizes
