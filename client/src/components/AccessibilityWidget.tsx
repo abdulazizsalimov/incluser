@@ -428,7 +428,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <Type className="h-4 w-4" />
               <Label id="font-size-label" htmlFor="font-size">Размер шрифта: {fontSize[0]}%</Label>
             </div>
-            <AccessibleSlider
+            <Slider
               id="font-size"
               value={fontSize}
               onValueChange={(value) => {
@@ -439,8 +439,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              label="Размер шрифта"
-              unit="%"
+              thumbAriaLabel={`Размер шрифта ${fontSize[0]} процентов`}
             />
             <p id="font-size-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 75% до 150%
@@ -453,7 +452,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <Type className="h-4 w-4" />
               <Label id="line-height-label" htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
             </div>
-            <AccessibleSlider
+            <Slider
               id="line-height"
               value={lineHeight}
               onValueChange={(value) => {
@@ -464,8 +463,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={200}
               step={25}
               className="w-full"
-              label="Междустрочный интервал"
-              unit="%"
+              thumbAriaLabel={`Междустрочный интервал ${lineHeight[0]} процентов`}
             />
             <p id="line-height-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 100% до 200%
@@ -478,7 +476,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <Type className="h-4 w-4" />
               <Label id="letter-spacing-label" htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
             </div>
-            <AccessibleSlider
+            <Slider
               id="letter-spacing"
               value={letterSpacing}
               onValueChange={(value) => {
@@ -489,8 +487,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              label="Межбуквенный интервал"
-              unit="%"
+              thumbAriaLabel={`Межбуквенный интервал ${letterSpacing[0]} процентов`}
             />
             <p id="letter-spacing-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 75% до 150%
