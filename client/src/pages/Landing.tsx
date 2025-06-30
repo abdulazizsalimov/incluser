@@ -15,7 +15,7 @@ export default function Landing() {
         <section className="bg-gradient-primary text-primary-foreground py-24 dark:from-primary dark:to-secondary" aria-labelledby="hero-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              Incluser
+              <span lang="en">Incluser</span>
               <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
                 доступный сайт о доступности
               </span>
