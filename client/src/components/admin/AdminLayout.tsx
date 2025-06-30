@@ -50,6 +50,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const sidebarItems = [
     { href: "/admin", label: "Панель управления", icon: LayoutDashboard },
     { href: "/admin/articles", label: "Статьи", icon: FileText },
+    { href: "/admin/categories", label: "Категории", icon: Tags },
     { href: "/admin/pages", label: "Страницы", icon: Settings },
   ];
 

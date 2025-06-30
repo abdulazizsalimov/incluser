@@ -16,6 +16,7 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ManageArticles from "@/pages/admin/ManageArticles";
+import ManageCategories from "@/pages/admin/ManageCategories";
 import ManagePages from "@/pages/admin/ManagePages";
 import NotFound from "@/pages/not-found";
 
@@ -64,7 +65,13 @@ function Router() {
         )}
       </Route>
       
-
+      <Route path="/admin/categories">
+        {(params) => (
+          <AdminLayout>
+            <ManageCategories />
+          </AdminLayout>
+        )}
+      </Route>
       
       <Route path="/admin/pages">
         {(params) => (
