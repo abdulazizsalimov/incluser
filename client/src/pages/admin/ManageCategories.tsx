@@ -23,9 +23,13 @@ export default function ManageCategories() {
   // Check for create parameter and open editor
   useEffect(() => {
     const urlParts = location.split('?');
+    console.log('ManageCategories location:', location, 'urlParts:', urlParts);
     if (urlParts[1]) {
       const params = new URLSearchParams(urlParts[1]);
-      if (params.get('create') === 'true') {
+      const createParam = params.get('create');
+      console.log('Create param:', createParam);
+      if (createParam === 'true') {
+        console.log('Opening category editor');
         setShowEditor(true);
         setEditingCategory(null);
         // Remove the parameter from URL
