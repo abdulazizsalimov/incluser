@@ -9,6 +9,9 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "./RichTextEditor";
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
@@ -41,6 +44,9 @@ export default function ArticleEditor({
   onCancel, 
   isLoading = false 
 }: ArticleEditorProps) {
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const { toast } = useToast();
+  
   const form = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
     defaultValues: {
