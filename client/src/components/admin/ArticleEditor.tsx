@@ -149,8 +149,15 @@ export default function ArticleEditor({
   };
 
   const handleSubmit = async (data: ArticleFormData) => {
+    console.log('Form validation errors:', form.formState.errors);
+    console.log('Submitting data:', data);
+    
     try {
       await onSave(data);
+      toast({
+        title: "Статья сохранена",
+        description: "Статья успешно сохранена.",
+      });
     } catch (error) {
       console.error('Error saving article:', error);
       toast({
