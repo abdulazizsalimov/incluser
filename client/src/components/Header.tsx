@@ -221,23 +221,48 @@ export default function Header() {
                       Доступность
                     </Button>
                     
-                    {!isLoading && !isAuthenticated && (
+                    {!isLoading && (
                       <>
-                        <Button
-                          size="sm"
-                          onClick={() => window.location.href = "/api/login"}
-                          className="w-full"
-                        >
-                          Вход
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.location.href = "/api/login"}
-                          className="w-full"
-                        >
-                          Регистрация
-                        </Button>
+                        {isAuthenticated ? (
+                          <div className="space-y-2">
+                            {user?.isAdmin && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => window.location.href = "/admin"}
+                                className="w-full"
+                              >
+                                Админ-панель
+                              </Button>
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.location.href = "/api/logout"}
+                              className="w-full"
+                            >
+                              Выход
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => window.location.href = "/api/login"}
+                              className="w-full"
+                            >
+                              Вход
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.location.href = "/api/login"}
+                              className="w-full"
+                            >
+                              Регистрация
+                            </Button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
