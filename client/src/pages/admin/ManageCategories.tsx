@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,18 @@ export default function ManageCategories() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [search, setSearch] = useState("");
   const { toast } = useToast();
+  const [location] = useLocation();
+
+  // Check for create parameter and open editor
+  useEffect(() => {
+    const params = new URLSearchParams(location.split('?')[1]);
+    if (params.get('create') === 'true') {
+      setShowEditor(true);
+      setEditingCategory(null);
+      // Remove the parameter from URL
+      window.history.replaceState({}, '', '/admin/categories');
+    }
+  }, [location]);
 
   const { data: categoriesData, isLoading } = useQuery<Category[]>({
     queryKey: ["/api/admin/categories"],

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,18 @@ export default function ManageArticles() {
   const [showEditor, setShowEditor] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleWithRelations | null>(null);
   const { toast } = useToast();
+  const [location] = useLocation();
+
+  // Check for create parameter and open editor
+  useEffect(() => {
+    const params = new URLSearchParams(location.split('?')[1]);
+    if (params.get('create') === 'true') {
+      setShowEditor(true);
+      setEditingArticle(null);
+      // Remove the parameter from URL
+      window.history.replaceState({}, '', '/admin/articles');
+    }
+  }, [location]);
 
   const articlesPerPage = 10;
 

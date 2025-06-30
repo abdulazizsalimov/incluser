@@ -130,10 +130,12 @@ export default function AdminDashboard() {
                   Управлять
                 </Button>
               </Link>
-              <Button size="sm" variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                Создать
-              </Button>
+              <Link href="/admin/articles?create=true">
+                <Button size="sm" variant="outline">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Создать
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -156,10 +158,12 @@ export default function AdminDashboard() {
                   Настроить
                 </Button>
               </Link>
-              <Button size="sm" variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                Добавить
-              </Button>
+              <Link href="/admin/categories?create=true">
+                <Button size="sm" variant="outline">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Добавить
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -241,10 +245,12 @@ export default function AdminDashboard() {
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">Статей пока нет</p>
-              <Button className="mt-4">
-                <Plus className="h-4 w-4 mr-2" />
-                Создать первую статью
-              </Button>
+              <Link href="/admin/articles?create=true">
+                <Button className="mt-4">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Создать первую статью
+                </Button>
+              </Link>
             </div>
           )}
         </CardContent>
