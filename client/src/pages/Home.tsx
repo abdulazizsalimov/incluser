@@ -6,6 +6,7 @@ import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
+import MetaTags from "@/components/MetaTags";
 import heroPhoto from "@/assets/hero-photo.png";
 import type { ArticleWithRelations } from "@shared/schema";
 
@@ -24,6 +25,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <MetaTags
+        title="Incluser - доступный сайт о доступности"
+        description="Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, которыми могут пользоваться все люди, независимо от их способностей."
+        image={`${window.location.origin}${heroPhoto}`}
+        url={window.location.href}
+      />
       <SkipLinks />
       <Header />
       

@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
 import ShareButton from "@/components/ShareButton";
+import MetaTags from "@/components/MetaTags";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function ArticleDetail() {
@@ -88,6 +89,15 @@ export default function ArticleDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      {article && (
+        <MetaTags
+          title={`${article.title} | Incluser`}
+          description={article.excerpt || article.title}
+          image={article.featuredImage || "/favicon.png"}
+          url={`${window.location.origin}/articles/${article.slug}`}
+          type="article"
+        />
+      )}
       <SkipLinks />
       <Header />
       

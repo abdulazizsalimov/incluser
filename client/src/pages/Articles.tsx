@@ -10,6 +10,7 @@ import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
+import MetaTags from "@/components/MetaTags";
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
 export default function Articles() {
@@ -87,6 +88,14 @@ export default function Articles() {
 
   return (
     <div className="min-h-screen bg-background">
+      <MetaTags
+        title={`${categoryId !== "all" ? `Статьи: ${categoryDisplayName}` : "Все статьи"} | Incluser`}
+        description={categoryId !== "all" 
+          ? `Статьи в категории "${categoryDisplayName}" о цифровой доступности и инклюзивном дизайне` 
+          : "Полная коллекция статей о цифровой доступности, инклюзивном дизайне и веб-разработке"
+        }
+        url={window.location.href}
+      />
       <SkipLinks />
       <Header />
       
