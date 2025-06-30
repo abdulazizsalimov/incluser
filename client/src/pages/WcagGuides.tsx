@@ -8,8 +8,10 @@ import { Page } from "@shared/schema";
 
 export default function WcagGuides() {
   const { data: page, isLoading, error } = useQuery<Page>({
-    queryKey: ['/api/pages', 'wcag-guides'],
+    queryKey: ['/api/pages/wcag-guides'],
   });
+
+
 
   if (isLoading) {
     return (

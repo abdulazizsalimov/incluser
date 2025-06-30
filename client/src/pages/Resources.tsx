@@ -8,8 +8,10 @@ import { Page } from "@shared/schema";
 
 export default function Resources() {
   const { data: page, isLoading, error } = useQuery<Page>({
-    queryKey: ['/api/pages', 'resources'],
+    queryKey: ['/api/pages/resources'],
   });
+
+
 
   if (isLoading) {
     return (

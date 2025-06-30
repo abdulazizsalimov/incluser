@@ -8,8 +8,10 @@ import { Page } from "@shared/schema";
 
 export default function TestingTools() {
   const { data: page, isLoading, error } = useQuery<Page>({
-    queryKey: ['/api/pages', 'testing-tools'],
+    queryKey: ['/api/pages/testing-tools'],
   });
+
+
 
   if (isLoading) {
     return (
