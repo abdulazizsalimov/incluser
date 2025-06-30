@@ -8,7 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Import pages
-import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 import Articles from "@/pages/Articles";
 import ArticleDetail from "@/pages/ArticleDetail";
@@ -32,65 +31,26 @@ function Router() {
   return (
     <Switch>
       {/* Public routes - available to everyone */}
-      {isLoading || !isAuthenticated ? (
+      <Route path="/" component={Home} />
+      <Route path="/articles" component={Articles} />
+      <Route path="/articles/:slug" component={ArticleDetail} />
+      <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/wcag-guides" component={WcagGuides} />
+      <Route path="/testing-tools" component={TestingTools} />
+      <Route path="/resources" component={Resources} />
+
+      {/* Admin routes - only for authenticated users */}
+      {isAuthenticated && (
         <>
-          <Route path="/" component={Landing} />
-          <Route path="/articles" component={Articles} />
-          <Route path="/articles/:slug" component={ArticleDetail} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/wcag-guides" component={WcagGuides} />
-          <Route path="/testing-tools" component={TestingTools} />
-          <Route path="/resources" component={Resources} />
-        </>
-      ) : (
-        <>
-          {/* Authenticated user routes */}
-          <Route path="/" component={Home} />
-          <Route path="/articles" component={Articles} />
-          <Route path="/articles/:slug" component={ArticleDetail} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/wcag-guides" component={WcagGuides} />
-          <Route path="/testing-tools" component={TestingTools} />
-          <Route path="/resources" component={Resources} />
+          <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
+          <Route path="/admin/articles" component={() => <AdminLayout><ManageArticles /></AdminLayout>} />
+          <Route path="/admin/categories" component={() => <AdminLayout><ManageCategories /></AdminLayout>} />
+          <Route path="/admin/pages" component={() => <AdminLayout><ManagePages /></AdminLayout>} />
         </>
       )}
 
-      {/* Admin routes - wrapped in AdminLayout */}
-      <Route path="/admin">
-        {(params) => (
-          <AdminLayout>
-            <AdminDashboard />
-          </AdminLayout>
-        )}
-      </Route>
-      
-      <Route path="/admin/articles">
-        {(params) => (
-          <AdminLayout>
-            <ManageArticles />
-          </AdminLayout>
-        )}
-      </Route>
-      
-      <Route path="/admin/categories">
-        {(params) => (
-          <AdminLayout>
-            <ManageCategories />
-          </AdminLayout>
-        )}
-      </Route>
-      
-      <Route path="/admin/pages">
-        {(params) => (
-          <AdminLayout>
-            <ManagePages />
-          </AdminLayout>
-        )}
-      </Route>
-
-      {/* Fallback to 404 */}
+      {/* 404 route */}
       <Route component={NotFound} />
     </Switch>
   );
@@ -98,16 +58,16 @@ function Router() {
 
 function App() {
   return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="system" storageKey="incluser-theme">
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>
-            <Toaster />
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="incluser-theme">
+        <TooltipProvider>
+          <ErrorBoundary>
             <Router />
-          </TooltipProvider>
-        </QueryClientProvider>
+            <Toaster />
+          </ErrorBoundary>
+        </TooltipProvider>
       </ThemeProvider>
-    </ErrorBoundary>
+    </QueryClientProvider>
   );
 }
 
