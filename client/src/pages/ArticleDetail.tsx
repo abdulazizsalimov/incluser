@@ -6,6 +6,7 @@ import { ArrowLeft, Clock, User, Calendar } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
+import ShareButton from "@/components/ShareButton";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function ArticleDetail() {
@@ -131,41 +132,51 @@ export default function ArticleDetail() {
                   </p>
                 )}
 
-                {/* Article meta */}
-                <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-                  {article.publishedAt && (
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" aria-hidden="true" />
-                      <time dateTime={new Date(article.publishedAt).toISOString()}>
-                        {formatDate(new Date(article.publishedAt).toISOString())}
-                      </time>
-                    </div>
-                  )}
+                {/* Article meta and share */}
+                <div className="flex flex-wrap items-center justify-between gap-6">
+                  <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+                    {article.publishedAt && (
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" aria-hidden="true" />
+                        <time dateTime={new Date(article.publishedAt).toISOString()}>
+                          {formatDate(new Date(article.publishedAt).toISOString())}
+                        </time>
+                      </div>
+                    )}
+                    
+                    {article.author && (
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" aria-hidden="true" />
+                        <span>
+                          {article.author.firstName} {article.author.lastName}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {article.readingTime && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4" aria-hidden="true" />
+                        <span>{article.readingTime} мин чтения</span>
+                      </div>
+                    )}
+                  </div>
                   
-                  {article.author && (
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4" aria-hidden="true" />
-                      <span>
-                        {article.author.firstName} {article.author.lastName}
-                      </span>
-                    </div>
-                  )}
-                  
-                  {article.readingTime && (
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" aria-hidden="true" />
-                      <span>{article.readingTime} мин чтения</span>
-                    </div>
-                  )}
+                  <ShareButton
+                    title={article.title}
+                    url={`${window.location.origin}/articles/${article.slug}`}
+                    description={article.excerpt || ""}
+                    size="default"
+                    variant="outline"
+                  />
                 </div>
 
-                {article.category && (
-                  <div className="mt-6">
+                <div className="flex items-center justify-between mt-6">
+                  {article.category && (
                     <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
                       {article.category.name}
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
               </header>
 
               {/* Featured image */}

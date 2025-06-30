@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, User } from "lucide-react";
+import ShareButton from "@/components/ShareButton";
 import type { ArticleWithRelations } from "@shared/schema";
 
 interface ArticleCardProps {
@@ -71,13 +72,20 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             </div>
           )}
         </div>
-        {article.category && (
-          <div className="mt-2">
+        <div className="flex items-center justify-between mt-3">
+          {article.category && (
             <span className="inline-block bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-medium">
               {article.category.name}
             </span>
-          </div>
-        )}
+          )}
+          <ShareButton
+            title={article.title}
+            url={`${window.location.origin}/articles/${article.slug}`}
+            description={article.excerpt || ""}
+            size="sm"
+            variant="ghost"
+          />
+        </div>
       </CardContent>
     </article>
   );
