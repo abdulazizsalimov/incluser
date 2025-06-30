@@ -20,7 +20,15 @@ const articleSchema = z.object({
   slug: z.string().min(1, "URL-адрес обязателен").max(200),
   excerpt: z.string().optional(),
   content: z.string().min(1, "Содержание обязательно"),
-  featuredImage: z.string().url().optional().or(z.literal("")),
+  featuredImage: z.string().optional().refine((val) => {
+    if (!val || val === "") return true;
+    try {
+      new URL(val);
+      return true;
+    } catch {
+      return val.startsWith('/uploads/') || val.startsWith('http');
+    }
+  }, "Неверный URL изображения"),
   featuredImageAlt: z.string().optional(),
   isPublished: z.boolean(),
   categoryId: z.number().optional(),
@@ -140,9 +148,22 @@ export default function ArticleEditor({
     }
   };
 
+  const handleSubmit = async (data: ArticleFormData) => {
+    try {
+      await onSave(data);
+    } catch (error) {
+      console.error('Error saving article:', error);
+      toast({
+        title: "Ошибка сохранения",
+        description: "Не удалось сохранить статью. Проверьте заполнение всех полей.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSave)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
@@ -406,10 +427,12 @@ export default function ArticleEditor({
             </Card>
 
             <div className="flex gap-2">
-              <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? "Сохранение..." : article ? "Обновить" : "Создать"}
+              <Button type="submit" disabled={isLoading || uploadingImage} className="flex-1">
+                {uploadingImage ? "Загрузка изображения..." : 
+                 isLoading ? "Сохранение..." : 
+                 article ? "Обновить" : "Создать"}
               </Button>
-              <Button type="button" variant="outline" onClick={onCancel}>
+              <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading || uploadingImage}>
                 Отмена
               </Button>
             </div>
