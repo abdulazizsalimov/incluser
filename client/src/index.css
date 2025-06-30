@@ -267,28 +267,22 @@
   display: none;
 }
 
-/* Footer always dark blue theme */
-.footer-dark {
-  background-color: rgb(30 41 59) !important; /* slate-800 */
-  color: white !important;
-}
-
-.footer-dark h3,
-.footer-dark h4 {
-  color: white !important;
-}
-
-.footer-dark p,
-.footer-dark a {
-  color: rgb(148 163 184) !important; /* slate-400 */
-}
-
-.footer-dark a:hover {
-  color: white !important;
-}
-
-.footer-dark .text-cyan-400 {
-  color: rgb(34 211 238) !important; /* cyan-400 */
+/* Footer styling - distinct from main content */
+footer {
+  /* Light theme: slate-800 */
+  background-color: rgb(30 41 59);
+  
+  /* Dark theme: slate-700 for contrast with main dark background */
+  .dark & {
+    background-color: rgb(51 65 85);
+  }
+  
+  /* Border for visual separation */
+  border-top: 2px solid rgb(51 65 85);
+  
+  .dark & {
+    border-top-color: rgb(100 116 139);
+  }
 }
 
 body {
