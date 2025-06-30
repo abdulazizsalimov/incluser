@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import AccessibleSlider from "@/components/AccessibleSlider";
 
 interface AccessibilityWidgetProps {
   open: boolean;
@@ -427,7 +428,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <Type className="h-4 w-4" />
               <Label id="font-size-label" htmlFor="font-size">Размер шрифта: {fontSize[0]}%</Label>
             </div>
-            <Slider
+            <AccessibleSlider
               id="font-size"
               value={fontSize}
               onValueChange={(value) => {
@@ -438,8 +439,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              aria-labelledby="font-size-label"
-              aria-describedby="font-size-desc"
+              label="Размер шрифта"
+              unit="%"
             />
             <p id="font-size-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 75% до 150%
@@ -452,7 +453,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <Type className="h-4 w-4" />
               <Label id="line-height-label" htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
             </div>
-            <Slider
+            <AccessibleSlider
               id="line-height"
               value={lineHeight}
               onValueChange={(value) => {
@@ -463,8 +464,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={200}
               step={25}
               className="w-full"
-              aria-labelledby="line-height-label"
-              aria-describedby="line-height-desc"
+              label="Междустрочный интервал"
+              unit="%"
             />
             <p id="line-height-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 100% до 200%
@@ -477,7 +478,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <Type className="h-4 w-4" />
               <Label id="letter-spacing-label" htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
             </div>
-            <Slider
+            <AccessibleSlider
               id="letter-spacing"
               value={letterSpacing}
               onValueChange={(value) => {
@@ -488,8 +489,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              aria-labelledby="letter-spacing-label"
-              aria-describedby="letter-spacing-desc"
+              label="Межбуквенный интервал"
+              unit="%"
             />
             <p id="letter-spacing-desc" className="text-xs text-muted-foreground">
               Используйте стрелки или перетаскивание для изменения от 75% до 150%
