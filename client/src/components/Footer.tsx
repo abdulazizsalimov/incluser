@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Github, Linkedin, Twitter } from "lucide-react";
+import { SiFacebook, SiTelegram, SiVk } from "react-icons/si";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -33,26 +33,30 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/profile.php?id=61577263382434"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-slate-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
-                aria-label="Twitter"
+                aria-label="Перейти на Facebook страницу Incluser"
               >
-                <Twitter className="h-5 w-5" />
+                <SiFacebook className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://t.me/incluseruz"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-slate-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
-                aria-label="LinkedIn"
+                aria-label="Перейти в Telegram канал Incluser"
               >
-                <Linkedin className="h-5 w-5" />
+                <SiTelegram className="h-5 w-5" />
               </a>
-              <a
-                href="#"
-                className="text-slate-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
-                aria-label="GitHub"
+              <span
+                className="text-slate-600 cursor-not-allowed opacity-50"
+                aria-label="VK страница скоро будет доступна"
+                title="VK страница скоро будет доступна"
               >
-                <Github className="h-5 w-5" />
-              </a>
+                <SiVk className="h-5 w-5" />
+              </span>
             </div>
           </div>
 
