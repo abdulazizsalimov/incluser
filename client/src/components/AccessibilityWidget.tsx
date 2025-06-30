@@ -351,8 +351,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   return (
     <TooltipProvider>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md" aria-describedby="accessibility-description">
-        <DialogHeader>
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-hidden flex flex-col" aria-describedby="accessibility-description">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5" />
             Специальные возможности
@@ -363,7 +363,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           Панель настроек специальных возможностей для улучшения доступности сайта
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 overflow-y-auto flex-1 pr-2">
           {/* Theme Selection */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -575,13 +575,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           </p>
 
           {/* Reset Button */}
-          <Button
-            variant="outline"
-            onClick={resetSettings}
-            className="w-full"
-          >
-            Сбросить настройки
-          </Button>
+          <div className="pt-4 border-t flex-shrink-0">
+            <Button
+              variant="outline"
+              onClick={resetSettings}
+              className="w-full"
+            >
+              Сбросить настройки
+            </Button>
+          </div>
         </div>
         </DialogContent>
       </Dialog>
