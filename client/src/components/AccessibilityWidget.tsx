@@ -425,7 +425,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Type className="h-4 w-4" />
-              <Label htmlFor="font-size">Размер шрифта: {fontSize[0]}%</Label>
+              <Label id="font-size-label" htmlFor="font-size">Размер шрифта: {fontSize[0]}%</Label>
             </div>
             <Slider
               id="font-size"
@@ -438,11 +438,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              aria-label={`Размер шрифта: ${fontSize[0]} процентов`}
+              aria-labelledby="font-size-label"
               aria-describedby="font-size-desc"
             />
-            <p id="font-size-desc" className="sr-only">
-              Используйте стрелки или перетаскивание для изменения размера шрифта от 75% до 150%
+            <p id="font-size-desc" className="text-xs text-muted-foreground">
+              Используйте стрелки или перетаскивание для изменения от 75% до 150%
             </p>
           </div>
 
@@ -450,7 +450,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Type className="h-4 w-4" />
-              <Label htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
+              <Label id="line-height-label" htmlFor="line-height">Междустрочный интервал: {lineHeight[0]}%</Label>
             </div>
             <Slider
               id="line-height"
@@ -463,11 +463,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={200}
               step={25}
               className="w-full"
-              aria-label={`Междустрочный интервал: ${lineHeight[0]} процентов`}
+              aria-labelledby="line-height-label"
               aria-describedby="line-height-desc"
             />
-            <p id="line-height-desc" className="sr-only">
-              Используйте стрелки или перетаскивание для изменения междустрочного интервала от 100% до 200%
+            <p id="line-height-desc" className="text-xs text-muted-foreground">
+              Используйте стрелки или перетаскивание для изменения от 100% до 200%
             </p>
           </div>
 
@@ -475,7 +475,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Type className="h-4 w-4" />
-              <Label htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
+              <Label id="letter-spacing-label" htmlFor="letter-spacing">Межбуквенный интервал: {letterSpacing[0]}%</Label>
             </div>
             <Slider
               id="letter-spacing"
@@ -488,11 +488,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               max={150}
               step={25}
               className="w-full"
-              aria-label={`Межбуквенный интервал: ${letterSpacing[0]} процентов`}
+              aria-labelledby="letter-spacing-label"
               aria-describedby="letter-spacing-desc"
             />
-            <p id="letter-spacing-desc" className="sr-only">
-              Используйте стрелки или перетаскивание для изменения межбуквенного интервала от 75% до 150%
+            <p id="letter-spacing-desc" className="text-xs text-muted-foreground">
+              Используйте стрелки или перетаскивание для изменения от 75% до 150%
             </p>
           </div>
 
