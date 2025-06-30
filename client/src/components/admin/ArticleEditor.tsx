@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,6 +46,7 @@ export default function ArticleEditor({
 }: ArticleEditorProps) {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [currentImage, setCurrentImage] = useState(article?.featuredImage || "");
+  const [forceUpdate, setForceUpdate] = useState(0);
   const { toast } = useToast();
   
   const form = useForm<ArticleFormData>({
@@ -62,6 +63,16 @@ export default function ArticleEditor({
       readingTime: article?.readingTime || undefined,
     },
   });
+
+  // Синхронизируем состояние изображения с формой
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'featuredImage') {
+        setCurrentImage(value.featuredImage || '');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   const generateSlug = (title: string) => {
     return title
@@ -106,14 +117,22 @@ export default function ArticleEditor({
       }
 
       const data = await response.json();
+      console.log('Upload response:', data);
+      console.log('Setting image URL:', data.imageUrl);
+      
       form.setValue('featuredImage', data.imageUrl);
       setCurrentImage(data.imageUrl);
+      setForceUpdate(prev => prev + 1);
+      
       // Принудительно обновляем форму
       form.trigger('featuredImage');
       
+      console.log('Current image state after update:', data.imageUrl);
+      console.log('Form value after update:', form.getValues('featuredImage'));
+      
       toast({
         title: "Изображение загружено",
-        description: "Изображение успешно загружено на сервер",
+        description: `URL: ${data.imageUrl}`,
       });
     } catch (error) {
       toast({
@@ -360,13 +379,16 @@ export default function ArticleEditor({
 
                 {/* Preview of current image */}
                 {currentImage && (
-                  <div className="mt-4">
+                  <div className="mt-4" key={`image-preview-${forceUpdate}`}>
                     <img 
                       src={currentImage} 
                       alt="Preview" 
                       className="max-w-full h-32 object-cover rounded-lg border"
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
+                      }}
+                      onLoad={() => {
+                        console.log('Image loaded:', currentImage);
                       }}
                     />
                   </div>
