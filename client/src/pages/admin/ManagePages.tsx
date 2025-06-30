@@ -145,7 +145,7 @@ export default function ManagePages() {
     }
   };
 
-  const formatDate = (date: string | null) => {
+  const formatDate = (date: string | Date | null) => {
     if (!date) return "Неизвестно";
     return new Date(date).toLocaleDateString("ru-RU");
   };
@@ -253,6 +253,8 @@ export default function ManagePages() {
                       size="sm"
                       variant="ghost"
                       onClick={() => window.open(`/${page.slug}`, "_blank")}
+                      aria-label={page.isPublished ? `Просмотреть страницу "${page.title}"` : `Предварительный просмотр страницы "${page.title}"`}
+                      title={page.isPublished ? "Просмотреть опубликованную страницу" : "Предварительный просмотр неопубликованной страницы"}
                     >
                       {page.isPublished ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                     </Button>
@@ -260,6 +262,8 @@ export default function ManagePages() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEdit(page)}
+                      aria-label={`Редактировать страницу "${page.title}"`}
+                      title="Редактировать страницу"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -268,6 +272,8 @@ export default function ManagePages() {
                       variant="ghost"
                       onClick={() => handleDelete(page.id)}
                       disabled={deleteMutation.isPending}
+                      aria-label={`Удалить страницу "${page.title}"`}
+                      title="Удалить страницу"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

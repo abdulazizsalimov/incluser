@@ -64,13 +64,7 @@ function Router() {
         )}
       </Route>
       
-      <Route path="/admin/categories">
-        {(params) => (
-          <AdminLayout>
-            <ManageArticles />
-          </AdminLayout>
-        )}
-      </Route>
+
       
       <Route path="/admin/pages">
         {(params) => (

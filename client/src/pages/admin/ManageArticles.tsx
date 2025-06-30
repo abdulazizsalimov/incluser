@@ -341,6 +341,8 @@ export default function ManageArticles() {
                       size="sm"
                       variant="ghost"
                       onClick={() => window.open(`/articles/${article.slug}`, "_blank")}
+                      aria-label={article.isPublished ? `Просмотреть статью "${article.title}"` : `Предварительный просмотр статьи "${article.title}"`}
+                      title={article.isPublished ? "Просмотреть опубликованную статью" : "Предварительный просмотр неопубликованной статьи"}
                     >
                       {article.isPublished ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                     </Button>
@@ -348,6 +350,8 @@ export default function ManageArticles() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEdit(article)}
+                      aria-label={`Редактировать статью "${article.title}"`}
+                      title="Редактировать статью"
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -356,6 +360,8 @@ export default function ManageArticles() {
                       variant="ghost"
                       onClick={() => handleDelete(article.id)}
                       disabled={deleteMutation.isPending}
+                      aria-label={`Удалить статью "${article.title}"`}
+                      title="Удалить статью"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
