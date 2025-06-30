@@ -1,7 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated, isAdmin } from "./localAuth";
+import { loginSchema, changePasswordSchema } from "@shared/schema";
+import bcrypt from "bcryptjs";
 import { insertArticleSchema, insertCategorySchema, insertPageSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -156,12 +158,40 @@ ${articles.map(article => {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      res.json(req.user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Change password route
+  app.post('/api/auth/change-password', isAuthenticated, async (req: any, res) => {
+    try {
+      const result = changePasswordSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid data", errors: result.error.issues });
+      }
+
+      const { currentPassword, newPassword } = result.data;
+      const user = req.user;
+
+      // Verify current password
+      const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+      if (!isValidPassword) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update password
+      await storage.updateUserPassword(user.id, hashedPassword);
+
+      res.json({ message: "Password changed successfully" });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Failed to change password" });
     }
   });
 
@@ -235,23 +265,8 @@ ${articles.map(article => {
     }
   });
 
-  // Admin routes - require authentication and admin role
-  const requireAdmin = async (req: any, res: any, next: any) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (!user || !user.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-      req.adminUser = user;
-      next();
-    } catch (error) {
-      res.status(500).json({ message: "Error verifying admin status" });
-    }
-  };
-
   // Admin article management
-  app.get('/api/admin/articles', isAuthenticated, requireAdmin, async (req, res) => {
+  app.get('/api/admin/articles', isAdmin, async (req, res) => {
     try {
       const { page = '1', limit = '20', search, categoryId } = req.query;
       const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
@@ -280,7 +295,7 @@ ${articles.map(article => {
     }
   });
 
-  app.get('/api/admin/articles/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.get('/api/admin/articles/:id', isAdmin, async (req, res) => {
     try {
       const article = await storage.getArticleById(parseInt(req.params.id));
       if (!article) {
@@ -293,7 +308,7 @@ ${articles.map(article => {
     }
   });
 
-  app.post('/api/admin/articles', isAuthenticated, requireAdmin, async (req: any, res) => {
+  app.post('/api/admin/articles', isAdmin, async (req: any, res) => {
     try {
       const validatedData = insertArticleSchema.parse({
         ...req.body,
@@ -311,7 +326,7 @@ ${articles.map(article => {
     }
   });
 
-  app.put('/api/admin/articles/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.put('/api/admin/articles/:id', isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertArticleSchema.partial().parse(req.body);
@@ -327,7 +342,7 @@ ${articles.map(article => {
     }
   });
 
-  app.delete('/api/admin/articles/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.delete('/api/admin/articles/:id', isAdmin, async (req, res) => {
     try {
       await storage.deleteArticle(parseInt(req.params.id));
       res.status(204).send();
@@ -338,7 +353,7 @@ ${articles.map(article => {
   });
 
   // Admin category management
-  app.get('/api/admin/categories', isAuthenticated, requireAdmin, async (req, res) => {
+  app.get('/api/admin/categories', isAdmin, async (req, res) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
@@ -348,7 +363,7 @@ ${articles.map(article => {
     }
   });
 
-  app.post('/api/admin/categories', isAuthenticated, requireAdmin, async (req, res) => {
+  app.post('/api/admin/categories', isAdmin, async (req, res) => {
     try {
       const validatedData = insertCategorySchema.parse(req.body);
       const category = await storage.createCategory(validatedData);
@@ -362,7 +377,7 @@ ${articles.map(article => {
     }
   });
 
-  app.put('/api/admin/categories/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.put('/api/admin/categories/:id', isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertCategorySchema.partial().parse(req.body);
@@ -378,7 +393,7 @@ ${articles.map(article => {
     }
   });
 
-  app.delete('/api/admin/categories/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.delete('/api/admin/categories/:id', isAdmin, async (req, res) => {
     try {
       await storage.deleteCategory(parseInt(req.params.id));
       res.status(204).send();
@@ -389,7 +404,7 @@ ${articles.map(article => {
   });
 
   // Admin page management
-  app.get('/api/admin/pages', isAuthenticated, requireAdmin, async (req, res) => {
+  app.get('/api/admin/pages', isAdmin, async (req, res) => {
     try {
       const pages = await storage.getPages();
       res.json(pages);
@@ -399,7 +414,7 @@ ${articles.map(article => {
     }
   });
 
-  app.get('/api/admin/pages/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.get('/api/admin/pages/:id', isAdmin, async (req, res) => {
     try {
       const page = await storage.getPageBySlug(req.params.id);
       if (!page) {
@@ -412,7 +427,7 @@ ${articles.map(article => {
     }
   });
 
-  app.post('/api/admin/pages', isAuthenticated, requireAdmin, async (req, res) => {
+  app.post('/api/admin/pages', isAdmin, async (req, res) => {
     try {
       const validatedData = insertPageSchema.parse(req.body);
       const page = await storage.createPage(validatedData);
@@ -426,7 +441,7 @@ ${articles.map(article => {
     }
   });
 
-  app.put('/api/admin/pages/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.put('/api/admin/pages/:id', isAdmin, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const validatedData = insertPageSchema.partial().parse(req.body);
@@ -442,7 +457,7 @@ ${articles.map(article => {
     }
   });
 
-  app.delete('/api/admin/pages/:id', isAuthenticated, requireAdmin, async (req, res) => {
+  app.delete('/api/admin/pages/:id', isAdmin, async (req, res) => {
     try {
       await storage.deletePage(parseInt(req.params.id));
       res.status(204).send();
