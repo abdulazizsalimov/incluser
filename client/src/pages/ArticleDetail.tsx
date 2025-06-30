@@ -158,9 +158,9 @@ export default function ArticleDetail() {
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4" aria-hidden="true" />
                         <span>
-                          {article.author.firstName && article.author.lastName 
+                          {(article.author.firstName && article.author.lastName) 
                             ? `${article.author.firstName} ${article.author.lastName}` 
-                            : article.author.username || 'Автор'
+                            : (article.author.username || 'Автор')
                           }
                         </span>
                       </div>
