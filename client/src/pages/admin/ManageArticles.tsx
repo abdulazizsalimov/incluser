@@ -36,13 +36,10 @@ export default function ManageArticles() {
 
   // Check for create parameter and open editor
   useEffect(() => {
-    console.log('ManageArticles useEffect triggered, location:', location);
     const urlParams = new URLSearchParams(window.location.search);
     const createParam = urlParams.get('create');
-    console.log('URL search params:', window.location.search, 'create param:', createParam);
     
     if (createParam === 'true') {
-      console.log('Opening article editor automatically');
       setShowEditor(true);
       setEditingArticle(null);
       // Remove the parameter from URL
