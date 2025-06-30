@@ -42,8 +42,9 @@ export default function Home() {
                 <img 
                   src={heroPhoto} 
                   alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-cover object-left"
+                  className="w-full h-full object-cover object-left-top"
                   loading="eager"
+                  style={{ objectPosition: "20% top" }}
                 />
               </div>
               
@@ -59,8 +60,9 @@ export default function Home() {
             <img 
               src={heroPhoto} 
               alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-              className="w-full h-full object-cover object-center opacity-30"
+              className="w-full h-full object-cover opacity-30"
               loading="eager"
+              style={{ objectPosition: "center top" }}
             />
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-600/70 to-teal-600/80"></div>
           </div>
