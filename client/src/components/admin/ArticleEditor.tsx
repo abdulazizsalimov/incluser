@@ -45,6 +45,7 @@ export default function ArticleEditor({
   isLoading = false 
 }: ArticleEditorProps) {
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [currentImage, setCurrentImage] = useState(article?.featuredImage || "");
   const { toast } = useToast();
   
   const form = useForm<ArticleFormData>({
@@ -106,6 +107,9 @@ export default function ArticleEditor({
 
       const data = await response.json();
       form.setValue('featuredImage', data.imageUrl);
+      setCurrentImage(data.imageUrl);
+      // Принудительно обновляем форму
+      form.trigger('featuredImage');
       
       toast({
         title: "Изображение загружено",
@@ -304,7 +308,14 @@ export default function ArticleEditor({
                         <FormItem>
                           <FormLabel>URL изображения</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="https://..." />
+                            <Input 
+                              {...field} 
+                              placeholder="https://..." 
+                              onChange={(e) => {
+                                field.onChange(e);
+                                setCurrentImage(e.target.value);
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -348,10 +359,10 @@ export default function ArticleEditor({
                 </Tabs>
 
                 {/* Preview of current image */}
-                {form.watch("featuredImage") && (
+                {currentImage && (
                   <div className="mt-4">
                     <img 
-                      src={form.watch("featuredImage")} 
+                      src={currentImage} 
                       alt="Preview" 
                       className="max-w-full h-32 object-cover rounded-lg border"
                       onError={(e) => {
