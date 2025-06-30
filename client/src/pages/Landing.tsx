@@ -10,7 +10,7 @@ export default function Landing() {
       <SkipLinks />
       <Header />
       
-      <main id="main-content" role="main">
+      <main id="main-content" role="main" className="pt-16">
         {/* Hero Section */}
         <section className="bg-gradient-primary text-primary-foreground py-24 dark:from-primary dark:to-secondary" aria-labelledby="hero-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -26,7 +26,7 @@ export default function Home() {
       <SkipLinks />
       <Header />
       
-      <main id="main-content" role="main">
+      <main id="main-content" role="main" className="pt-16">
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 text-white py-16 sm:py-24" aria-labelledby="hero-heading">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

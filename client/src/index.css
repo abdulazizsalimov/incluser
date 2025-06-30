@@ -285,6 +285,11 @@ footer {
   }
 }
 
+/* Fixed header layout adjustments */
+main {
+  padding-top: 64px; /* 16 * 4 = 64px (h-16) */
+}
+
 body {
   top: 0 !important;
 }
