@@ -63,12 +63,16 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     if (!textMagnifier) return;
 
     let magnifierOverlay: HTMLDivElement | null = null;
+    let magnifierContent: HTMLDivElement | null = null;
+    let scrollTop = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!e.shiftKey) {
         if (magnifierOverlay) {
           magnifierOverlay.remove();
           magnifierOverlay = null;
+          magnifierContent = null;
+          scrollTop = 0;
         }
         return;
       }
@@ -112,11 +116,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         textContent = directTextNodes.join(' ');
       }
 
-      // Limit text length for readability
+      // Don't limit text length anymore - let it scroll
       if (!textContent || textContent.length === 0) return;
-      if (textContent.length > 200) {
-        textContent = textContent.substring(0, 200) + '...';
-      }
 
       // Create or update overlay
       if (!magnifierOverlay) {
@@ -125,21 +126,59 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           position: fixed;
           background: black;
           border: 3px solid #00bfff;
-          color: white;
-          font-size: 48px;
-          font-weight: bold;
-          padding: 20px;
           border-radius: 8px;
           z-index: 10000;
           pointer-events: none;
           max-width: 600px;
-          word-wrap: break-word;
+          max-height: 400px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+          display: flex;
+          overflow: hidden;
         `;
+
+        magnifierContent = document.createElement('div');
+        magnifierContent.style.cssText = `
+          color: white;
+          font-size: 48px;
+          font-weight: bold;
+          padding: 20px;
+          word-wrap: break-word;
+          overflow-y: auto;
+          flex: 1;
+          scrollbar-width: thin;
+          scrollbar-color: #00bfff #333;
+        `;
+
+        // Custom scrollbar styles for webkit browsers
+        magnifierContent.innerHTML = `
+          <style>
+            .magnifier-content::-webkit-scrollbar {
+              width: 12px;
+            }
+            .magnifier-content::-webkit-scrollbar-track {
+              background: #333;
+            }
+            .magnifier-content::-webkit-scrollbar-thumb {
+              background: #00bfff;
+              border-radius: 6px;
+            }
+            .magnifier-content::-webkit-scrollbar-thumb:hover {
+              background: #0099cc;
+            }
+          </style>
+        `;
+        
+        magnifierContent.className = 'magnifier-content';
+        magnifierOverlay.appendChild(magnifierContent);
         document.body.appendChild(magnifierOverlay);
+
+        scrollTop = 0;
       }
 
-      magnifierOverlay.textContent = textContent;
+      const textNode = document.createTextNode(textContent);
+      magnifierContent!.innerHTML = '';
+      magnifierContent!.appendChild(textNode);
+      magnifierContent!.scrollTop = scrollTop;
       
       // Position overlay near mouse cursor
       const rect = magnifierOverlay.getBoundingClientRect();
@@ -158,18 +197,35 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       magnifierOverlay.style.top = `${top}px`;
     };
 
+    const handleWheel = (e: WheelEvent) => {
+      if (!e.shiftKey || !magnifierContent) return;
+      
+      e.preventDefault();
+      scrollTop += e.deltaY;
+      if (scrollTop < 0) scrollTop = 0;
+      
+      const maxScroll = magnifierContent.scrollHeight - magnifierContent.clientHeight;
+      if (scrollTop > maxScroll) scrollTop = maxScroll;
+      
+      magnifierContent.scrollTop = scrollTop;
+    };
+
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.key === 'Shift' && magnifierOverlay) {
         magnifierOverlay.remove();
         magnifierOverlay = null;
+        magnifierContent = null;
+        scrollTop = 0;
       }
     };
 
     document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('wheel', handleWheel, { passive: false });
     document.addEventListener('keyup', handleKeyUp);
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('wheel', handleWheel);
       document.removeEventListener('keyup', handleKeyUp);
       if (magnifierOverlay) {
         magnifierOverlay.remove();
