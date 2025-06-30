@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, HelpCircle, ZoomIn } from "lucide-react";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 
 interface AccessibilityWidgetProps {
@@ -74,11 +74,49 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       }
 
       const target = e.target as HTMLElement;
-      if (!target || !target.textContent || target.textContent.trim() === '') return;
+      if (!target) return;
 
-      // Get text content of the element
-      const textContent = target.textContent.trim();
-      if (textContent.length === 0) return;
+      // Check if target is a text-containing element with meaningful text
+      const isValidTextElement = (el: HTMLElement): boolean => {
+        // Skip container elements that don't typically contain direct text
+        const containerTags = ['HTML', 'BODY', 'DIV', 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE', 'NAV', 'HEADER', 'FOOTER', 'UL', 'OL'];
+        if (containerTags.includes(el.tagName)) return false;
+        
+        // Accept elements that typically contain text
+        const textTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SPAN', 'A', 'BUTTON', 'LABEL', 'LI', 'TD', 'TH', 'TIME', 'STRONG', 'EM', 'CODE'];
+        if (textTags.includes(el.tagName)) return true;
+        
+        // For other elements, check if they have direct text content (not inherited from children)
+        const textNode = Array.from(el.childNodes).find(node => 
+          node.nodeType === Node.TEXT_NODE && node.textContent?.trim()
+        );
+        return !!textNode;
+      };
+
+      if (!isValidTextElement(target)) return;
+
+      // Get text content - prefer direct text over full element text
+      let textContent = '';
+      
+      // For text elements, use their content directly
+      const textTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'TIME', 'STRONG', 'EM', 'CODE'];
+      if (textTags.includes(target.tagName)) {
+        textContent = target.textContent?.trim() || '';
+      } else {
+        // For other elements, get only direct text nodes
+        const directTextNodes = Array.from(target.childNodes)
+          .filter(node => node.nodeType === Node.TEXT_NODE)
+          .map(node => node.textContent?.trim())
+          .filter(text => text);
+        
+        textContent = directTextNodes.join(' ');
+      }
+
+      // Limit text length for readability
+      if (!textContent || textContent.length === 0) return;
+      if (textContent.length > 200) {
+        textContent = textContent.substring(0, 200) + '...';
+      }
 
       // Create or update overlay
       if (!magnifierOverlay) {
@@ -290,17 +328,6 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             <div className="flex items-center gap-2">
               <ZoomIn className="h-4 w-4" />
               <Label htmlFor="text-magnifier">Увеличение при наведении</Label>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                    <HelpCircle className="h-4 w-4" />
-                    <span className="sr-only">Помощь по увеличению текста</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-xs">
-                  <p>Зажмите клавишу Shift и наведите курсор на любой текст, чтобы увидеть его увеличенным в специальном окне</p>
-                </TooltipContent>
-              </Tooltip>
             </div>
             <Switch
               id="text-magnifier"
@@ -313,7 +340,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             />
           </div>
           <p id="text-magnifier-desc" className="text-sm text-muted-foreground">
-            Показывает увеличенный текст при наведении курсора с зажатой клавишей Shift
+            Зажмите Shift и наведите на текст для увеличения
           </p>
 
           {/* Reset Button */}
