@@ -32,8 +32,12 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold text-slate-900 dark:text-white hover:text-primary dark:hover:text-primary hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
-              Incluser
+            <Link href="/" className="flex items-center hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
+              <img 
+                src="/attached_assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_1751254062366.png" 
+                alt="Incluser - доступный сайт о доступности" 
+                className="h-10 w-auto"
+              />
             </Link>
           </div>
 
