@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Menu, Accessibility } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import logoImage from "@assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_1751254062366.png";
 
 import AccessibilityWidget from "./AccessibilityWidget";
 
@@ -34,7 +35,7 @@ export default function Header() {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
               <img 
-                src="/attached_assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_1751254062366.png" 
+                src={logoImage} 
                 alt="Incluser - доступный сайт о доступности" 
                 className="h-10 w-auto"
               />
