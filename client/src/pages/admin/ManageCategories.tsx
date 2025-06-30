@@ -22,12 +22,15 @@ export default function ManageCategories() {
 
   // Check for create parameter and open editor
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1]);
-    if (params.get('create') === 'true') {
-      setShowEditor(true);
-      setEditingCategory(null);
-      // Remove the parameter from URL
-      window.history.replaceState({}, '', '/admin/categories');
+    const urlParts = location.split('?');
+    if (urlParts[1]) {
+      const params = new URLSearchParams(urlParts[1]);
+      if (params.get('create') === 'true') {
+        setShowEditor(true);
+        setEditingCategory(null);
+        // Remove the parameter from URL
+        window.history.replaceState({}, '', '/admin/categories');
+      }
     }
   }, [location]);
 

@@ -36,12 +36,15 @@ export default function ManageArticles() {
 
   // Check for create parameter and open editor
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1]);
-    if (params.get('create') === 'true') {
-      setShowEditor(true);
-      setEditingArticle(null);
-      // Remove the parameter from URL
-      window.history.replaceState({}, '', '/admin/articles');
+    const urlParts = location.split('?');
+    if (urlParts[1]) {
+      const params = new URLSearchParams(urlParts[1]);
+      if (params.get('create') === 'true') {
+        setShowEditor(true);
+        setEditingArticle(null);
+        // Remove the parameter from URL
+        window.history.replaceState({}, '', '/admin/articles');
+      }
     }
   }, [location]);
 
