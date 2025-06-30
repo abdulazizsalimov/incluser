@@ -16,7 +16,7 @@ import {
   type InsertPage,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, like, count } from "drizzle-orm";
+import { eq, desc, and, like, count, or, ilike } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
