@@ -312,7 +312,7 @@ ${articles.map(article => {
     try {
       const validatedData = insertArticleSchema.parse({
         ...req.body,
-        authorId: req.adminUser.id,
+        authorId: req.user.id,
       });
       
       const article = await storage.createArticle(validatedData);
