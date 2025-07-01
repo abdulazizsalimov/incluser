@@ -62,18 +62,19 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mobile: Photo with left-to-right gradient like desktop */}
+          {/* Mobile: Identical to desktop - Photo with same gradient */}
           <div className="lg:hidden absolute inset-0">
             <img 
               src={heroPhoto} 
               alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-left-top"
               loading="eager"
-              style={{ objectPosition: "left top" }}
+              style={{ objectPosition: "20% top" }}
             />
-            {/* Horizontal gradient from transparent (left) to blue (right) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/60 via-70% to-blue-600"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-cyan-600/40 via-80% to-teal-500"></div>
+            {/* Exact same gradient overlays as desktop */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
           </div>
           
           {/* Content */}
@@ -82,17 +83,17 @@ export default function Home() {
               <div className="h-full lg:min-h-[600px] flex items-center">
                 {/* Content positioned on the right half on desktop, full width on mobile */}
                 <div className="w-full lg:w-1/2 lg:ml-auto text-center lg:text-left lg:flex lg:flex-col lg:justify-center lg:px-8 relative">
-                  <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 relative z-10 drop-shadow-2xl lg:drop-shadow-none">
+                  <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                     Incluser
                     <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
                       доступный сайт о доступности
                     </span>
                   </h1>
-                  <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto lg:mx-0 relative z-10 drop-shadow-lg lg:drop-shadow-none">
+                  <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-10">
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                     <Link href="/articles">
                       <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
                         Читать статьи
