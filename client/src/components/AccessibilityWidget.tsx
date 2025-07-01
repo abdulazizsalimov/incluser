@@ -175,24 +175,34 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     if (textMagnifier) {
       document.documentElement.classList.add('text-magnifier-enabled');
     }
+
+    // Set default color scheme based on theme if user hasn't set one
+    const savedScheme = localStorage.getItem('accessibility-magnifier-color-scheme');
+    const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
+    
+    if (!savedScheme || !userSet) {
+      const defaultScheme = actualTheme === 'dark' ? 'black-white' : 'light-blue';
+      setMagnifierColorScheme(defaultScheme);
+      localStorage.setItem('accessibility-magnifier-color-scheme', defaultScheme);
+    }
   }, []);
 
-  // Auto-switch magnifier color scheme based on theme
+  // Auto-switch magnifier color scheme when theme changes
   useEffect(() => {
-    if (hasUserSetMagnifierScheme) return; // Don't override user choice
+    const savedTheme = localStorage.getItem('accessibility-last-theme');
     
-    const newScheme = actualTheme === 'dark' ? 'black-white' : 'light-blue';
-    if (newScheme !== magnifierColorScheme) {
+    // If theme changed, reset user choice and apply new default
+    if (savedTheme && savedTheme !== theme) {
+      const newScheme = actualTheme === 'dark' ? 'black-white' : 'light-blue';
       setMagnifierColorScheme(newScheme);
+      setHasUserSetMagnifierScheme(false);
       localStorage.setItem('accessibility-magnifier-color-scheme', newScheme);
+      localStorage.setItem('accessibility-magnifier-user-set', 'false');
     }
-  }, [actualTheme, hasUserSetMagnifierScheme, magnifierColorScheme]);
-
-  // Reset user choice flag when theme changes
-  useEffect(() => {
-    setHasUserSetMagnifierScheme(false);
-    localStorage.setItem('accessibility-magnifier-user-set', 'false');
-  }, [theme]);
+    
+    // Save current theme
+    localStorage.setItem('accessibility-last-theme', theme);
+  }, [theme, actualTheme]);
 
   // Text magnifier functionality
   useEffect(() => {
@@ -458,6 +468,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.removeItem('accessibility-text-magnifier');
     localStorage.removeItem('accessibility-magnifier-color-scheme');
     localStorage.removeItem('accessibility-magnifier-font-size');
+    localStorage.removeItem('accessibility-magnifier-user-set');
+    localStorage.removeItem('accessibility-last-theme');
   };
 
   return (
