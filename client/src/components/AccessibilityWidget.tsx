@@ -271,17 +271,52 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       magnifierContent!.appendChild(textNode);
       magnifierContent!.scrollTop = scrollTop;
       
-      // Position overlay near mouse cursor
+      // Position overlay near mouse cursor with smart positioning
       const rect = magnifierOverlay.getBoundingClientRect();
-      let left = e.clientX + 20;
-      let top = e.clientY - rect.height - 20;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const margin = 20;
+      
+      let left = e.clientX + margin;
+      let top = e.clientY - rect.height - margin;
 
-      // Adjust position if overlay goes off screen
-      if (left + rect.width > window.innerWidth) {
-        left = e.clientX - rect.width - 20;
+      // Adjust horizontal position if overlay goes off screen
+      if (left + rect.width > viewportWidth) {
+        left = e.clientX - rect.width - margin;
+        // If still doesn't fit, align to the right edge
+        if (left < 0) {
+          left = viewportWidth - rect.width - margin;
+        }
       }
+      
+      // Adjust vertical position with smart logic
       if (top < 0) {
-        top = e.clientY + 20;
+        // If doesn't fit above cursor, try below
+        top = e.clientY + margin;
+        
+        // If still doesn't fit below (goes past bottom), position to fit in viewport
+        if (top + rect.height > viewportHeight) {
+          // Try to center vertically around cursor
+          top = e.clientY - rect.height / 2;
+          
+          // Ensure it doesn't go above viewport
+          if (top < margin) {
+            top = margin;
+          }
+          
+          // Ensure it doesn't go below viewport
+          if (top + rect.height > viewportHeight - margin) {
+            top = viewportHeight - rect.height - margin;
+          }
+        }
+      } else if (top + rect.height > viewportHeight) {
+        // If positioned above but still goes past bottom, move up
+        top = viewportHeight - rect.height - margin;
+        
+        // If even at top of viewport it doesn't fit, keep at top with margin
+        if (top < margin) {
+          top = margin;
+        }
       }
 
       magnifierOverlay.style.left = `${left}px`;
