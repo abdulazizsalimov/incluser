@@ -401,7 +401,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         magnifierOverlay.remove();
       }
     };
-  }, [textMagnifier]);
+  }, [textMagnifier, magnifierColorScheme, magnifierFontSize]);
 
   const resetSettings = () => {
     setFontSize([100]);
