@@ -31,7 +31,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <img
           src={article.featuredImage}
           alt={article.featuredImageAlt || ""}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-contain bg-gray-50"
           loading="lazy"
         />
       )}
