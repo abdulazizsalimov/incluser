@@ -90,7 +90,7 @@ export default function Home() {
             <div className="w-full h-full flex items-center">
               {/* Text positioned to follow the right edge of the photo */}
               <div className="w-full flex justify-end pr-4 sm:pr-6 lg:pr-8">
-                <div className="text-center lg:text-left text-white max-w-md lg:max-w-lg xl:max-w-xl">
+                <div className="text-center lg:text-left text-white max-w-md lg:max-w-lg xl:max-w-xl mt-16 lg:mt-20">
                   <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                     Incluser
                     <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
