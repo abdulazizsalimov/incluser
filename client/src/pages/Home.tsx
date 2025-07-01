@@ -57,10 +57,10 @@ export default function Home() {
               {/* Blue background for areas not covered by photo */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 -z-10"></div>
               
-              {/* Gradient overlays on top of photo - extended for smoother transition */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-20% via-blue-600/20 via-40% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-blue-600/50 via-70% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent from-30% via-cyan-600/30 via-60% to-teal-500/60"></div>
+              {/* Gradient overlays on top of photo - very early start for seamless transition */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80"></div>
             </div>
           </div>
 
@@ -79,10 +79,10 @@ export default function Home() {
             {/* Blue background for areas not covered by photo */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 -z-10"></div>
             
-            {/* Gradient overlays on top of photo - extended for smoother transition */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-20% via-blue-600/20 via-40% to-blue-600"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-blue-600/50 via-70% to-blue-600"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent from-30% via-cyan-600/30 via-60% to-teal-500/60"></div>
+            {/* Gradient overlays on top of photo - very early start for seamless transition */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80"></div>
           </div>
           
           {/* Content */}
