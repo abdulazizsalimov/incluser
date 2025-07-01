@@ -561,6 +561,50 @@ ${articles.map(article => {
     }
   });
 
+  // RHVoice TTS endpoint
+  app.post('/api/rhvoice/speak', async (req, res) => {
+    try {
+      const { text, voice = 'anna', rate = 1.0, format = 'wav' } = req.body;
+      
+      if (!text || text.trim().length === 0) {
+        return res.status(400).json({ error: 'Text is required' });
+      }
+
+      // RHVoice API call (replace with actual RHVoice server URL)
+      const rhvoiceUrl = process.env.RHVOICE_URL || 'http://localhost:8080';
+      
+      const response = await fetch(`${rhvoiceUrl}/say`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: text,
+          voice: voice,
+          rate: rate,
+          format: format
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`RHVoice server error: ${response.status}`);
+      }
+
+      const audioBuffer = await response.arrayBuffer();
+      
+      res.setHeader('Content-Type', 'audio/wav');
+      res.setHeader('Content-Length', audioBuffer.byteLength);
+      res.send(Buffer.from(audioBuffer));
+      
+    } catch (error) {
+      console.error('RHVoice TTS error:', error);
+      res.status(503).json({ 
+        error: 'Text-to-speech service unavailable',
+        message: 'Please try the browser synthesizer instead'
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

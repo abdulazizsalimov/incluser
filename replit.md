@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 1, 2025. Added comprehensive text-to-speech functionality with RHVoice integration - created speech synthesis system with both browser and RHVoice options, keyboard shortcut Ctrl+Shift+S for selected text, configurable speech speed, automatic fallback from RHVoice to browser speech, complete accessibility widget integration with settings panel
 - June 30, 2025. Added automatic initialization system - created seed functions that automatically generate admin user (Gomer98/12345), basic category, welcome article, and resource pages on first startup, making deployment much easier with zero manual setup required
 - June 30, 2025. Fixed JavaScript errors in author display - simplified author name rendering to use only username, eliminated complex conditional logic that was causing runtime errors, ensured all article views work properly
 - June 30, 2025. Added admin password change functionality - created settings page with secure password change form, API endpoint with current password verification, proper form validation, integrated into admin panel navigation
