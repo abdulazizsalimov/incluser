@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight } from "lucide-react";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import AccessibleSlider from "@/components/AccessibleSlider";
 
@@ -59,6 +59,18 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     return saved === 'true';
   });
 
+  // Text magnifier settings
+  const [magnifierColorScheme, setMagnifierColorScheme] = useState(() => {
+    const saved = localStorage.getItem('accessibility-magnifier-color-scheme');
+    return saved || 'black-white';
+  });
+
+  const [magnifierFontSize, setMagnifierFontSize] = useState(() => {
+    const saved = localStorage.getItem('accessibility-magnifier-font-size');
+    return saved || 'large';
+  });
+
+  const [showMagnifierSettings, setShowMagnifierSettings] = useState(false);
   const [showAdvancedFont, setShowAdvancedFont] = useState(false);
 
   const applyFontSize = (size: number) => {
@@ -120,6 +132,16 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     }
     // Save state to localStorage
     localStorage.setItem('accessibility-text-magnifier', enabled.toString());
+  };
+
+  const updateMagnifierColorScheme = (scheme: string) => {
+    setMagnifierColorScheme(scheme);
+    localStorage.setItem('accessibility-magnifier-color-scheme', scheme);
+  };
+
+  const updateMagnifierFontSize = (size: string) => {
+    setMagnifierFontSize(size);
+    localStorage.setItem('accessibility-magnifier-font-size', size);
   };
 
   // Apply saved settings on component mount
@@ -212,11 +234,29 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
       // Create or update overlay
       if (!magnifierOverlay) {
+        // Get color scheme settings
+        const colorSchemes = {
+          'black-white': { bg: 'black', color: 'white', border: '#00bfff', scrollbar: '#00bfff #333' },
+          'white-black': { bg: 'white', color: 'black', border: '#333', scrollbar: '#333 #ddd' },
+          'sepia': { bg: '#f4f1e8', color: '#5c4b37', border: '#8b7355', scrollbar: '#8b7355 #e8dcc0' }
+        };
+        
+        const currentScheme = colorSchemes[magnifierColorScheme as keyof typeof colorSchemes] || colorSchemes['black-white'];
+        
+        // Get font size settings
+        const fontSizes = {
+          'medium': '36px',
+          'large': '48px',
+          'very-large': '64px'
+        };
+        
+        const currentFontSize = fontSizes[magnifierFontSize as keyof typeof fontSizes] || fontSizes['large'];
+
         magnifierOverlay = document.createElement('div');
         magnifierOverlay.style.cssText = `
           position: fixed;
-          background: black;
-          border: 3px solid #00bfff;
+          background: ${currentScheme.bg};
+          border: 3px solid ${currentScheme.border};
           border-radius: 8px;
           z-index: 10000;
           pointer-events: none;
@@ -229,32 +269,36 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
         magnifierContent = document.createElement('div');
         magnifierContent.style.cssText = `
-          color: white;
-          font-size: 48px;
+          color: ${currentScheme.color};
+          font-size: ${currentFontSize};
           font-weight: bold;
           padding: 20px;
           word-wrap: break-word;
           overflow-y: auto;
           flex: 1;
           scrollbar-width: thin;
-          scrollbar-color: #00bfff #333;
+          scrollbar-color: ${currentScheme.scrollbar};
         `;
 
         // Custom scrollbar styles for webkit browsers
+        const scrollbarColors = currentScheme.scrollbar.split(' ');
+        const thumbColor = scrollbarColors[0];
+        const trackColor = scrollbarColors[1];
+        
         magnifierContent.innerHTML = `
           <style>
             .magnifier-content::-webkit-scrollbar {
               width: 12px;
             }
             .magnifier-content::-webkit-scrollbar-track {
-              background: #333;
+              background: ${trackColor};
             }
             .magnifier-content::-webkit-scrollbar-thumb {
-              background: #00bfff;
+              background: ${thumbColor};
               border-radius: 6px;
             }
             .magnifier-content::-webkit-scrollbar-thumb:hover {
-              background: #0099cc;
+              background: ${thumbColor}dd;
             }
           </style>
         `;
@@ -368,7 +412,10 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     setLargeText(false);
     setReducedMotion(false);
     setTextMagnifier(false);
+    setMagnifierColorScheme('black-white');
+    setMagnifierFontSize('large');
     setShowAdvancedFont(false);
+    setShowMagnifierSettings(false);
     
     document.documentElement.style.fontSize = '';
     document.documentElement.style.removeProperty('--line-height-multiplier');
@@ -384,6 +431,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.removeItem('accessibility-large-text');
     localStorage.removeItem('accessibility-reduced-motion');
     localStorage.removeItem('accessibility-text-magnifier');
+    localStorage.removeItem('accessibility-magnifier-color-scheme');
+    localStorage.removeItem('accessibility-magnifier-font-size');
   };
 
   return (
@@ -613,24 +662,145 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           </p>
 
           {/* Text Magnifier */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <ZoomIn className="h-4 w-4" />
-              <Label htmlFor="text-magnifier">Увеличение при наведении</Label>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ZoomIn className="h-4 w-4" />
+                <Label htmlFor="text-magnifier">Увеличение при наведении</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setShowMagnifierSettings(!showMagnifierSettings)}
+                      aria-label="Настройки увеличения текста"
+                      disabled={!textMagnifier}
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Настройки</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Switch
+                  id="text-magnifier"
+                  checked={textMagnifier}
+                  onCheckedChange={(checked) => {
+                    setTextMagnifier(checked);
+                    toggleTextMagnifier(checked);
+                    if (!checked) setShowMagnifierSettings(false);
+                  }}
+                  aria-describedby="text-magnifier-desc"
+                />
+              </div>
             </div>
-            <Switch
-              id="text-magnifier"
-              checked={textMagnifier}
-              onCheckedChange={(checked) => {
-                setTextMagnifier(checked);
-                toggleTextMagnifier(checked);
-              }}
-              aria-describedby="text-magnifier-desc"
-            />
+            <p id="text-magnifier-desc" className="text-sm text-muted-foreground">
+              Зажмите Shift и наведите на текст для увеличения
+            </p>
+
+            {/* Magnifier Settings */}
+            {showMagnifierSettings && textMagnifier && (
+              <div className="space-y-4 pl-6 border-l-2 border-muted">
+                {/* Color Scheme Selection */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Цветовая схема</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center text-white font-bold text-lg transition-colors ${
+                            magnifierColorScheme === 'black-white' 
+                              ? 'border-blue-500 bg-black' 
+                              : 'border-gray-300 bg-black hover:border-gray-400'
+                          }`}
+                          onClick={() => updateMagnifierColorScheme('black-white')}
+                          aria-label="Черный фон, белый текст"
+                        >
+                          T
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Черный фон, белый текст</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center text-black font-bold text-lg transition-colors ${
+                            magnifierColorScheme === 'white-black' 
+                              ? 'border-blue-500 bg-white' 
+                              : 'border-gray-300 bg-white hover:border-gray-400'
+                          }`}
+                          onClick={() => updateMagnifierColorScheme('white-black')}
+                          aria-label="Белый фон, черный текст"
+                        >
+                          T
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Белый фон, черный текст</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center font-bold text-lg transition-colors ${
+                            magnifierColorScheme === 'sepia' 
+                              ? 'border-blue-500 bg-[#f4f1e8] text-[#5c4b37]' 
+                              : 'border-gray-300 bg-[#f4f1e8] text-[#5c4b37] hover:border-gray-400'
+                          }`}
+                          onClick={() => updateMagnifierColorScheme('sepia')}
+                          aria-label="Режим защиты глаз"
+                        >
+                          T
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Режим защиты глаз</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                {/* Font Size Selection */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Размер шрифта</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      variant={magnifierFontSize === 'medium' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => updateMagnifierFontSize('medium')}
+                      className="text-xs"
+                    >
+                      Средний
+                    </Button>
+                    <Button
+                      variant={magnifierFontSize === 'large' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => updateMagnifierFontSize('large')}
+                      className="text-xs"
+                    >
+                      Большой
+                    </Button>
+                    <Button
+                      variant={magnifierFontSize === 'very-large' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => updateMagnifierFontSize('very-large')}
+                      className="text-xs"
+                    >
+                      Очень большой
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <p id="text-magnifier-desc" className="text-sm text-muted-foreground">
-            Зажмите Shift и наведите на текст для увеличения
-          </p>
 
           {/* Reset Button */}
           <div className="pt-4 border-t flex-shrink-0">
