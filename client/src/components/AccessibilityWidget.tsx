@@ -16,7 +16,7 @@ interface AccessibilityWidgetProps {
 }
 
 export default function AccessibilityWidget({ open, onOpenChange }: AccessibilityWidgetProps) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, actualTheme } = useTheme();
   
   // Load all settings from localStorage
   const [fontSize, setFontSize] = useState(() => {
@@ -63,6 +63,10 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const [magnifierColorScheme, setMagnifierColorScheme] = useState(() => {
     const saved = localStorage.getItem('accessibility-magnifier-color-scheme');
     return saved || 'black-white';
+  });
+
+  const [hasUserSetMagnifierScheme, setHasUserSetMagnifierScheme] = useState(() => {
+    return localStorage.getItem('accessibility-magnifier-user-set') === 'true';
   });
 
   const [magnifierFontSize, setMagnifierFontSize] = useState(() => {
@@ -137,6 +141,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const updateMagnifierColorScheme = (scheme: string) => {
     setMagnifierColorScheme(scheme);
     localStorage.setItem('accessibility-magnifier-color-scheme', scheme);
+    setHasUserSetMagnifierScheme(true);
+    localStorage.setItem('accessibility-magnifier-user-set', 'true');
   };
 
   const updateMagnifierFontSize = (size: string) => {
@@ -170,6 +176,23 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       document.documentElement.classList.add('text-magnifier-enabled');
     }
   }, []);
+
+  // Auto-switch magnifier color scheme based on theme
+  useEffect(() => {
+    if (hasUserSetMagnifierScheme) return; // Don't override user choice
+    
+    const newScheme = actualTheme === 'dark' ? 'black-white' : 'light-blue';
+    if (newScheme !== magnifierColorScheme) {
+      setMagnifierColorScheme(newScheme);
+      localStorage.setItem('accessibility-magnifier-color-scheme', newScheme);
+    }
+  }, [actualTheme, hasUserSetMagnifierScheme, magnifierColorScheme]);
+
+  // Reset user choice flag when theme changes
+  useEffect(() => {
+    setHasUserSetMagnifierScheme(false);
+    localStorage.setItem('accessibility-magnifier-user-set', 'false');
+  }, [theme]);
 
   // Text magnifier functionality
   useEffect(() => {
@@ -413,8 +436,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     setLargeText(false);
     setReducedMotion(false);
     setTextMagnifier(false);
-    setMagnifierColorScheme('black-white');
+    setMagnifierColorScheme(actualTheme === 'dark' ? 'black-white' : 'light-blue');
     setMagnifierFontSize('large');
+    setHasUserSetMagnifierScheme(false);
     setShowAdvancedFont(false);
     setShowMagnifierSettings(false);
     
