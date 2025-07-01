@@ -745,11 +745,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                 {/* Color Scheme Selection */}
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Цветовая схема</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-4 gap-1">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
-                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center text-white font-bold text-lg transition-colors ${
+                          className={`h-8 w-full border-2 rounded-md flex items-center justify-center text-white font-bold text-sm transition-colors ${
                             magnifierColorScheme === 'black-white' 
                               ? 'border-blue-500 bg-black' 
                               : 'border-gray-300 bg-black hover:border-gray-400'
@@ -768,7 +768,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
-                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center text-black font-bold text-lg transition-colors ${
+                          className={`h-8 w-full border-2 rounded-md flex items-center justify-center text-black font-bold text-sm transition-colors ${
                             magnifierColorScheme === 'white-black' 
                               ? 'border-blue-500 bg-white' 
                               : 'border-gray-300 bg-white hover:border-gray-400'
@@ -787,7 +787,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
-                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center font-bold text-lg transition-colors ${
+                          className={`h-8 w-full border-2 rounded-md flex items-center justify-center font-bold text-sm transition-colors ${
                             magnifierColorScheme === 'sepia' 
                               ? 'border-blue-500 bg-[#f4f1e8] text-[#5c4b37]' 
                               : 'border-gray-300 bg-[#f4f1e8] text-[#5c4b37] hover:border-gray-400'
@@ -806,7 +806,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
-                          className={`h-12 w-full border-2 rounded-md flex items-center justify-center font-bold text-lg transition-colors ${
+                          className={`h-8 w-full border-2 rounded-md flex items-center justify-center font-bold text-sm transition-colors ${
                             magnifierColorScheme === 'light-blue' 
                               ? 'border-blue-500 bg-[#f0fbff] text-[#4285f4]' 
                               : 'border-gray-300 bg-[#f0fbff] text-[#4285f4] hover:border-gray-400'
