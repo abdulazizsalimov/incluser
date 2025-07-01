@@ -181,7 +181,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
     
     if (!savedScheme || !userSet) {
-      const defaultScheme = actualTheme === 'dark' ? 'black-white' : 'light-blue';
+      const defaultScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
       setMagnifierColorScheme(defaultScheme);
       localStorage.setItem('accessibility-magnifier-color-scheme', defaultScheme);
     }
@@ -193,7 +193,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     
     // If theme changed, reset user choice and apply new default
     if (savedTheme && savedTheme !== theme) {
-      const newScheme = actualTheme === 'dark' ? 'black-white' : 'light-blue';
+      const newScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
       setMagnifierColorScheme(newScheme);
       setHasUserSetMagnifierScheme(false);
       localStorage.setItem('accessibility-magnifier-color-scheme', newScheme);
@@ -446,7 +446,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     setLargeText(false);
     setReducedMotion(false);
     setTextMagnifier(false);
-    setMagnifierColorScheme(actualTheme === 'dark' ? 'black-white' : 'light-blue');
+    setMagnifierColorScheme(actualTheme === 'dark' ? 'white-black' : 'black-white');
     setMagnifierFontSize('large');
     setHasUserSetMagnifierScheme(false);
     setShowAdvancedFont(false);
