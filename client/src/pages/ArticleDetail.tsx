@@ -104,7 +104,7 @@ export default function ArticleDetail() {
       <main id="main-content" role="main">
         {/* Back button */}
         <div className="border-b border-border">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <Link href="/articles">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -115,7 +115,7 @@ export default function ArticleDetail() {
         </div>
 
         {isLoading ? (
-          <article className="py-12">
+          <div className="py-12">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <Skeleton className="h-12 w-3/4 mb-4" />
               <Skeleton className="h-6 w-1/2 mb-8" />
@@ -126,85 +126,100 @@ export default function ArticleDetail() {
                 <Skeleton className="h-4 w-3/4" />
               </div>
             </div>
-          </article>
+          </div>
         ) : article ? (
-          <article className="py-12">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              {/* Article header */}
-              <header className="mb-12">
-                <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6 leading-tight">
-                  {article.title}
-                </h1>
-                
-                {article.excerpt && (
-                  <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                    {article.excerpt}
-                  </p>
-                )}
-
-                {/* Article meta and share */}
-                <div className="flex flex-wrap items-center justify-between gap-6">
-                  <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-                    {article.publishedAt && (
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" aria-hidden="true" />
-                        <time dateTime={new Date(article.publishedAt).toISOString()}>
-                          {formatDate(new Date(article.publishedAt).toISOString())}
-                        </time>
-                      </div>
-                    )}
-                    
-                    {article.author && (
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4" aria-hidden="true" />
-                        <span>{article.author?.username || 'Автор'}</span>
-                      </div>
-                    )}
-                    
-                    {article.readingTime && (
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" aria-hidden="true" />
-                        <span>{article.readingTime} мин чтения</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <ShareButton
-                    title={article.title}
-                    url={`${window.location.origin}/articles/${article.slug}`}
-                    description={article.excerpt || ""}
-                    size="default"
-                    variant="outline"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between mt-6">
-                  {article.category && (
-                    <span className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                      {article.category.name}
-                    </span>
-                  )}
-                </div>
-              </header>
-
-              {/* Featured image */}
-              {article.featuredImage && (
-                <div className="mb-12">
-                  <img
+          <>
+            {/* Article Hero Banner */}
+            <section className="relative h-[500px] lg:h-[600px] overflow-hidden">
+              {/* Background Image */}
+              {article.featuredImage ? (
+                <div className="absolute inset-0">
+                  <img 
                     src={article.featuredImage}
                     alt={article.featuredImageAlt || ""}
-                    className="w-full h-auto rounded-lg shadow-lg"
+                    className="w-full h-full object-cover"
+                    loading="eager"
                   />
+                  {/* Dark overlay for text readability */}
+                  <div className="absolute inset-0 bg-black/50"></div>
                 </div>
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
               )}
+              
+              {/* Content */}
+              <div className="relative z-10 h-full flex items-center">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                  <div className="max-w-4xl">
+                    <header className="text-white">
+                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        {article.title}
+                      </h1>
+                      
+                      {article.excerpt && (
+                        <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed">
+                          {article.excerpt}
+                        </p>
+                      )}
 
-              {/* Article content */}
-              <div 
-                className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-foreground prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded"
-                dangerouslySetInnerHTML={{ __html: formatContent(article.content) }}
-              />
-            </div>
-          </article>
+                      {/* Article meta */}
+                      <div className="flex flex-wrap items-center gap-6 text-base mb-6">
+                        {article.publishedAt && (
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-5 w-5" aria-hidden="true" />
+                            <time dateTime={new Date(article.publishedAt).toISOString()}>
+                              {formatDate(new Date(article.publishedAt).toISOString())}
+                            </time>
+                          </div>
+                        )}
+                        
+                        {article.author && (
+                          <div className="flex items-center gap-2">
+                            <User className="h-5 w-5" aria-hidden="true" />
+                            <span>{article.author?.username || 'Автор'}</span>
+                          </div>
+                        )}
+                        
+                        {article.readingTime && (
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-5 w-5" aria-hidden="true" />
+                            <span>{article.readingTime} мин чтения</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Category and Share */}
+                      <div className="flex flex-wrap items-center justify-between gap-4">
+                        {article.category && (
+                          <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full text-sm font-medium border border-white/30">
+                            {article.category.name}
+                          </span>
+                        )}
+                        
+                        <ShareButton
+                          title={article.title}
+                          url={`${window.location.origin}/articles/${article.slug}`}
+                          description={article.excerpt || ""}
+                          size="default"
+                          variant="outline"
+                        />
+                      </div>
+                    </header>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Article Content */}
+            <article className="py-12">
+              <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div 
+                  className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-foreground prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded"
+                  dangerouslySetInnerHTML={{ __html: formatContent(article.content) }}
+                />
+              </div>
+            </article>
+          </>
         ) : null}
       </main>
       
