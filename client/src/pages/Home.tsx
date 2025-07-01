@@ -49,9 +49,8 @@ export default function Home() {
                 <img 
                   src={heroPhoto} 
                   alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-cover object-left-top"
+                  className="w-full h-full object-contain object-left"
                   loading="eager"
-                  style={{ objectPosition: "20% top" }}
                 />
               </div>
               
@@ -67,9 +66,8 @@ export default function Home() {
             <img 
               src={heroPhoto} 
               alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-              className="w-full h-full object-cover object-left-top"
+              className="w-full h-full object-contain object-left"
               loading="eager"
-              style={{ objectPosition: "20% top" }}
             />
             {/* Exact same gradient overlays as desktop */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
