@@ -86,8 +86,8 @@ export default function Home() {
           </div>
           
           {/* Content */}
-          <div className="relative z-10 h-full flex items-center">
-            <div className="w-full h-full flex items-center">
+          <div className="relative z-10 h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               {/* Text positioned to follow the right edge of the photo */}
               <div className="w-full flex justify-end pr-4 sm:pr-6 lg:pr-8">
                 <div className="text-center lg:text-left text-white max-w-md lg:max-w-lg xl:max-w-xl">
