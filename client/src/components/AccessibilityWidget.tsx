@@ -239,7 +239,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           'black-white': { bg: 'black', color: 'white', border: '#00bfff', scrollbar: '#00bfff #333' },
           'white-black': { bg: 'white', color: 'black', border: '#333', scrollbar: '#333 #ddd' },
           'sepia': { bg: '#f4f1e8', color: '#5c4b37', border: '#8b7355', scrollbar: '#8b7355 #e8dcc0' },
-          'light-blue': { bg: '#f0fbff', color: '#5fc9e5', border: '#5fc9e5', scrollbar: '#5fc9e5 #e6f7ff' }
+          'light-blue': { bg: '#f0fbff', color: '#4285f4', border: '#4285f4', scrollbar: '#4285f4 #e6f7ff' }
         };
         
         const currentScheme = colorSchemes[magnifierColorScheme as keyof typeof colorSchemes] || colorSchemes['black-white'];
@@ -772,8 +772,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <button
                           className={`h-12 w-full border-2 rounded-md flex items-center justify-center font-bold text-lg transition-colors ${
                             magnifierColorScheme === 'light-blue' 
-                              ? 'border-blue-500 bg-[#f0fbff] text-[#5fc9e5]' 
-                              : 'border-gray-300 bg-[#f0fbff] text-[#5fc9e5] hover:border-gray-400'
+                              ? 'border-blue-500 bg-[#f0fbff] text-[#4285f4]' 
+                              : 'border-gray-300 bg-[#f0fbff] text-[#4285f4] hover:border-gray-400'
                           }`}
                           onClick={() => updateMagnifierColorScheme('light-blue')}
                           aria-label="Светло-голубая схема"
