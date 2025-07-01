@@ -148,63 +148,69 @@ export default function ArticleDetail() {
               )}
               
               {/* Content */}
-              <div className="relative z-10 h-full flex items-center">
+              <div className="relative z-10 h-full flex items-end pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                  <div className="max-w-4xl">
-                    <header className="text-white">
-                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                        {article.title}
-                      </h1>
-                      
-                      {article.excerpt && (
-                        <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed">
-                          {article.excerpt}
-                        </p>
-                      )}
-
-                      {/* Article meta */}
-                      <div className="flex flex-wrap items-center gap-6 text-base mb-6">
-                        {article.publishedAt && (
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-5 w-5" aria-hidden="true" />
-                            <time dateTime={new Date(article.publishedAt).toISOString()}>
-                              {formatDate(new Date(article.publishedAt).toISOString())}
-                            </time>
-                          </div>
-                        )}
+                  <div className="flex justify-between items-end">
+                    {/* Main content */}
+                    <div className="max-w-4xl">
+                      <header className="text-white">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                          {article.title}
+                        </h1>
                         
-                        {article.author && (
-                          <div className="flex items-center gap-2">
-                            <User className="h-5 w-5" aria-hidden="true" />
-                            <span>{article.author?.username || 'Автор'}</span>
-                          </div>
+                        {article.excerpt && (
+                          <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed">
+                            {article.excerpt}
+                          </p>
                         )}
-                        
-                        {article.readingTime && (
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-5 w-5" aria-hidden="true" />
-                            <span>{article.readingTime} мин чтения</span>
-                          </div>
-                        )}
-                      </div>
 
-                      {/* Category and Share */}
-                      <div className="flex flex-wrap items-center justify-between gap-4">
+                        {/* Article meta */}
+                        <div className="flex flex-wrap items-center gap-6 text-base mb-6">
+                          {article.publishedAt && (
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-5 w-5" aria-hidden="true" />
+                              <time dateTime={new Date(article.publishedAt).toISOString()}>
+                                {formatDate(new Date(article.publishedAt).toISOString())}
+                              </time>
+                            </div>
+                          )}
+                          
+                          {article.author && (
+                            <div className="flex items-center gap-2">
+                              <User className="h-5 w-5" aria-hidden="true" />
+                              <span>{article.author?.username || 'Автор'}</span>
+                            </div>
+                          )}
+                          
+                          {article.readingTime && (
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-5 w-5" aria-hidden="true" />
+                              <span>{article.readingTime} мин чтения</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Category */}
                         {article.category && (
                           <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full text-sm font-medium border border-white/30">
                             {article.category.name}
                           </span>
                         )}
-                        
+                      </header>
+                    </div>
+                    
+                    {/* Share button in bottom right */}
+                    <div className="ml-4">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-white/30 shadow-lg">
                         <ShareButton
                           title={article.title}
                           url={`${window.location.origin}/articles/${article.slug}`}
                           description={article.excerpt || ""}
                           size="default"
-                          variant="outline"
+                          variant="ghost"
                         />
                       </div>
-                    </header>
+                    </div>
                   </div>
                 </div>
               </div>
