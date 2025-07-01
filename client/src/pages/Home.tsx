@@ -42,39 +42,53 @@ export default function Home() {
             {/* Mobile: Just gradient background */}
             <div className="lg:hidden absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
             
-            {/* Desktop: Photo with gradient overlay - always covers full area */}
+            {/* Desktop: Photo with adaptive gradient */}
             <div className="hidden lg:block absolute inset-0">
-              <div className="absolute inset-0">
-                <img 
-                  src={heroPhoto} 
-                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-cover object-left-top"
-                  loading="eager"
-                  style={{ objectPosition: "20% top" }}
-                />
+              {/* Blue background for right side */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
+              
+              {/* Photo container that scales properly */}
+              <div className="absolute inset-0 flex items-center justify-start">
+                <div className="relative" style={{ 
+                  width: '70%', 
+                  height: '100%',
+                  background: `linear-gradient(to right, transparent 0%, transparent 60%, rgba(59, 130, 246, 0.3) 80%, rgba(59, 130, 246, 0.7) 90%, rgb(59, 130, 246) 100%)`
+                }}>
+                  <img 
+                    src={heroPhoto} 
+                    alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                    className="w-full h-full object-contain object-left"
+                    loading="eager"
+                  />
+                  {/* Gradient overlay that follows the image */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent from-60% via-blue-600/40 via-80% to-blue-600/90"></div>
+                </div>
               </div>
-              {/* Background extension for full coverage */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-blue-600/60 via-70% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-60% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
             </div>
           </div>
 
-          {/* Mobile: Identical to desktop - Photo with same gradient */}
+          {/* Mobile: Identical to desktop - Photo with adaptive gradient */}
           <div className="lg:hidden absolute inset-0">
-            <div className="absolute inset-0">
-              <img 
-                src={heroPhoto} 
-                alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                className="w-full h-full object-cover object-left-top"
-                loading="eager"
-                style={{ objectPosition: "20% top" }}
-              />
+            {/* Blue background for right side */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
+            
+            {/* Photo container that scales properly */}
+            <div className="absolute inset-0 flex items-center justify-start">
+              <div className="relative" style={{ 
+                width: '70%', 
+                height: '100%',
+                background: `linear-gradient(to right, transparent 0%, transparent 60%, rgba(59, 130, 246, 0.3) 80%, rgba(59, 130, 246, 0.7) 90%, rgb(59, 130, 246) 100%)`
+              }}>
+                <img 
+                  src={heroPhoto} 
+                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                  className="w-full h-full object-contain object-left"
+                  loading="eager"
+                />
+                {/* Gradient overlay that follows the image */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent from-60% via-blue-600/40 via-80% to-blue-600/90"></div>
+              </div>
             </div>
-            {/* Background extension for full coverage */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-blue-600/60 via-70% to-blue-600"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-60% to-blue-600"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
           </div>
           
           {/* Content */}
