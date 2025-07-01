@@ -87,17 +87,17 @@ export default function Home() {
           
           {/* Content */}
           <div className="relative z-10 h-full flex items-center">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-              <div className="h-full lg:min-h-[600px] flex items-center">
-                {/* Content positioned on the right half on desktop, full width on mobile */}
-                <div className="w-full lg:w-1/2 lg:ml-auto text-center lg:text-left lg:flex lg:flex-col lg:justify-center lg:px-8 relative">
+            <div className="w-full h-full flex items-center">
+              {/* Text positioned to follow the right edge of the photo */}
+              <div className="w-full flex justify-end pr-4 sm:pr-6 lg:pr-8">
+                <div className="text-center lg:text-left text-white max-w-md lg:max-w-lg xl:max-w-xl">
                   <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
                     Incluser
                     <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
                       доступный сайт о доступности
                     </span>
                   </h1>
-                  <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                  <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90 leading-relaxed">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
