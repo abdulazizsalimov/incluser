@@ -44,35 +44,42 @@ export default function Home() {
             
             {/* Desktop: Photo with gradient overlay */}
             <div className="hidden lg:block absolute inset-0">
-              {/* Photo taking wider space to avoid cropping */}
-              <div className="absolute inset-0">
-                <img 
-                  src={heroPhoto} 
-                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-contain object-left"
-                  loading="eager"
-                />
+              {/* Container that scales with photo */}
+              <div className="absolute inset-0 flex items-center">
+                <div className="relative w-full h-full">
+                  <img 
+                    src={heroPhoto} 
+                    alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                    className="w-full h-full object-cover object-left-top"
+                    loading="eager"
+                    style={{ objectPosition: "20% top" }}
+                  />
+                  {/* Gradient overlays attached to the image */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
+                </div>
               </div>
-              
-              {/* Multiple gradient overlays for smooth fade to background */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
             </div>
           </div>
 
           {/* Mobile: Identical to desktop - Photo with same gradient */}
           <div className="lg:hidden absolute inset-0">
-            <img 
-              src={heroPhoto} 
-              alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-              className="w-full h-full object-contain object-left"
-              loading="eager"
-            />
-            {/* Exact same gradient overlays as desktop */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
+            <div className="absolute inset-0 flex items-center">
+              <div className="relative w-full h-full">
+                <img 
+                  src={heroPhoto} 
+                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                  className="w-full h-full object-cover object-left-top"
+                  loading="eager"
+                  style={{ objectPosition: "20% top" }}
+                />
+                {/* Gradient overlays attached to the image */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
+              </div>
+            </div>
           </div>
           
           {/* Content */}
