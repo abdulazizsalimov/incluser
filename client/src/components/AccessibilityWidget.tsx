@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings } from "lucide-react";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings, VolumeX, Play, Square } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import AccessibleSlider from "@/components/AccessibleSlider";
 
@@ -58,6 +58,24 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     const saved = localStorage.getItem('accessibility-text-magnifier');
     return saved === 'true';
   });
+
+  const [textToSpeech, setTextToSpeech] = useState(() => {
+    const saved = localStorage.getItem('accessibility-text-to-speech');
+    return saved === 'true';
+  });
+
+  const [speechVoice, setSpeechVoice] = useState(() => {
+    const saved = localStorage.getItem('accessibility-speech-voice') || 'browser';
+    return saved;
+  });
+
+  const [speechSpeed, setSpeechSpeed] = useState(() => {
+    const saved = localStorage.getItem('accessibility-speech-speed');
+    return saved ? [parseFloat(saved)] : [1.0];
+  });
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showSpeechSettings, setShowSpeechSettings] = useState(false);
 
   // Text magnifier settings
   const [magnifierColorScheme, setMagnifierColorScheme] = useState(() => {
@@ -138,6 +156,132 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.setItem('accessibility-text-magnifier', enabled.toString());
   };
 
+  const toggleTextToSpeech = (enabled: boolean) => {
+    setTextToSpeech(enabled);
+    localStorage.setItem('accessibility-text-to-speech', enabled.toString());
+    
+    if (!enabled) {
+      stopSpeech();
+      setShowSpeechSettings(false);
+    }
+  };
+
+  const updateSpeechVoice = (voice: string) => {
+    setSpeechVoice(voice);
+    localStorage.setItem('accessibility-speech-voice', voice);
+  };
+
+  const updateSpeechSpeed = (speed: number[]) => {
+    setSpeechSpeed(speed);
+    localStorage.setItem('accessibility-speech-speed', speed[0].toString());
+  };
+
+  // Speech synthesis functions
+  const speakText = async (text: string) => {
+    if (!text.trim()) return;
+    
+    setIsPlaying(true);
+    
+    try {
+      if (speechVoice === 'rhvoice') {
+        await speakWithRHVoice(text);
+      } else {
+        await speakWithBrowser(text);
+      }
+    } catch (error) {
+      console.error('Speech synthesis error:', error);
+    } finally {
+      setIsPlaying(false);
+    }
+  };
+
+  const speakWithBrowser = (text: string): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (!('speechSynthesis' in window)) {
+        reject(new Error('Speech synthesis not supported'));
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = speechSpeed[0];
+      utterance.lang = 'ru-RU';
+      
+      // Find Russian voice if available
+      const voices = speechSynthesis.getVoices();
+      const russianVoice = voices.find(voice => voice.lang.startsWith('ru'));
+      if (russianVoice) {
+        utterance.voice = russianVoice;
+      }
+
+      utterance.onend = () => resolve();
+      utterance.onerror = (event) => reject(new Error(`Speech synthesis error: ${event.error}`));
+
+      speechSynthesis.speak(utterance);
+    });
+  };
+
+  const speakWithRHVoice = async (text: string): Promise<void> => {
+    try {
+      // RHVoice API endpoint (you'll need to set up your own server or use existing one)
+      const response = await fetch('/api/rhvoice/speak', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: text,
+          voice: 'anna', // Default Russian voice
+          rate: speechSpeed[0],
+          format: 'wav'
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('RHVoice service unavailable');
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      
+      return new Promise((resolve, reject) => {
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          resolve();
+        };
+        audio.onerror = () => {
+          URL.revokeObjectURL(audioUrl);
+          reject(new Error('Audio playback error'));
+        };
+        audio.play();
+      });
+    } catch (error) {
+      // Fallback to browser speech if RHVoice fails
+      console.warn('RHVoice failed, falling back to browser speech:', error);
+      return speakWithBrowser(text);
+    }
+  };
+
+  const stopSpeech = () => {
+    setIsPlaying(false);
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+    }
+  };
+
+  const speakSelectedText = () => {
+    const selection = window.getSelection();
+    const selectedText = selection?.toString().trim();
+    
+    if (selectedText) {
+      speakText(selectedText);
+    } else {
+      // If no text selected, speak the current page title
+      const title = document.title || 'Заголовок страницы отсутствует';
+      speakText(title);
+    }
+  };
+
   const updateMagnifierColorScheme = (scheme: string) => {
     setMagnifierColorScheme(scheme);
     localStorage.setItem('accessibility-magnifier-color-scheme', scheme);
@@ -174,6 +318,22 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     
     if (textMagnifier) {
       document.documentElement.classList.add('text-magnifier-enabled');
+    }
+
+    if (textToSpeech) {
+      // Setup keyboard shortcut for speech (Ctrl+Shift+S)
+      const handleKeyboard = (e: KeyboardEvent) => {
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          speakSelectedText();
+        }
+      };
+      document.addEventListener('keydown', handleKeyboard);
+      
+      // Cleanup on unmount
+      return () => {
+        document.removeEventListener('keydown', handleKeyboard);
+      };
     }
 
     // Set default color scheme based on theme if user hasn't set one
@@ -451,6 +611,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     setHasUserSetMagnifierScheme(false);
     setShowAdvancedFont(false);
     setShowMagnifierSettings(false);
+    setTextToSpeech(false);
+    setSpeechVoice('browser');
+    setSpeechSpeed([1.0]);
+    setShowSpeechSettings(false);
+    stopSpeech();
     
     document.documentElement.style.fontSize = '';
     document.documentElement.style.removeProperty('--line-height-multiplier');
@@ -470,6 +635,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.removeItem('accessibility-magnifier-font-size');
     localStorage.removeItem('accessibility-magnifier-user-set');
     localStorage.removeItem('accessibility-last-theme');
+    localStorage.removeItem('accessibility-text-to-speech');
+    localStorage.removeItem('accessibility-speech-voice');
+    localStorage.removeItem('accessibility-speech-speed');
   };
 
   return (
@@ -853,6 +1021,122 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                       Очень большой
                     </Button>
                   </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Text to Speech */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Volume2 className="h-4 w-4" />
+                <Label htmlFor="text-to-speech">Озвучивание текста</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={() => setShowSpeechSettings(!showSpeechSettings)}
+                      aria-label="Настройки озвучивания"
+                      disabled={!textToSpeech}
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Настройки</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Switch
+                  id="text-to-speech"
+                  checked={textToSpeech}
+                  onCheckedChange={(checked) => {
+                    toggleTextToSpeech(checked);
+                    if (!checked) setShowSpeechSettings(false);
+                  }}
+                  aria-describedby="text-to-speech-desc"
+                />
+              </div>
+            </div>
+            
+            <p id="text-to-speech-desc" className="text-sm text-muted-foreground">
+              Озвучивает выделенный текст (Ctrl+Shift+S)
+            </p>
+
+            {textToSpeech && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={speakSelectedText}
+                  disabled={isPlaying}
+                  className="flex items-center gap-2"
+                >
+                  {isPlaying ? (
+                    <>
+                      <Square className="h-4 w-4" />
+                      Озвучивается...
+                    </>
+                  ) : (
+                    <>
+                      <Play className="h-4 w-4" />
+                      Озвучить
+                    </>
+                  )}
+                </Button>
+                
+                {isPlaying && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={stopSpeech}
+                    className="flex items-center gap-2"
+                  >
+                    <VolumeX className="h-4 w-4" />
+                    Стоп
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {showSpeechSettings && textToSpeech && (
+              <div className="space-y-4 pl-4 border-l-2 border-muted">
+                <div>
+                  <Label htmlFor="speech-voice">Голос</Label>
+                  <Select value={speechVoice} onValueChange={updateSpeechVoice}>
+                    <SelectTrigger id="speech-voice" className="mt-2">
+                      <SelectValue placeholder="Выберите голос" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="browser">Браузерный синтезатор</SelectItem>
+                      <SelectItem value="rhvoice">RHVoice (высокое качество)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {speechVoice === 'rhvoice' 
+                      ? 'Профессиональный русский синтезатор речи'
+                      : 'Встроенный синтезатор браузера'
+                    }
+                  </p>
+                </div>
+
+                <div>
+                  <Label id="speech-speed-label">Скорость речи: {speechSpeed[0].toFixed(1)}x</Label>
+                  <AccessibleSlider
+                    id="speech-speed"
+                    value={speechSpeed}
+                    onValueChange={updateSpeechSpeed}
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    label="Скорость речи"
+                    unit="x"
+                    className="mt-2"
+                  />
                 </div>
               </div>
             )}
