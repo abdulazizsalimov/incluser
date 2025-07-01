@@ -67,11 +67,14 @@ export default function Home() {
             <img 
               src={heroPhoto} 
               alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-              className="w-full h-full object-cover opacity-30"
+              className="w-full h-full object-cover opacity-60"
               loading="eager"
               style={{ objectPosition: "center top" }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-600/70 to-teal-600/80"></div>
+            {/* Lighter gradient for better photo visibility */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-800/50 via-blue-600/40 to-teal-600/50"></div>
+            {/* Additional subtle overlay for text readability */}
+            <div className="absolute inset-0 bg-black/20"></div>
           </div>
           
           {/* Content */}
@@ -79,18 +82,20 @@ export default function Home() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
               <div className="h-full lg:min-h-[600px] flex items-center">
                 {/* Content positioned on the right half on desktop, full width on mobile */}
-                <div className="w-full lg:w-1/2 lg:ml-auto text-center lg:text-left lg:flex lg:flex-col lg:justify-center lg:px-8">
-                  <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                <div className="w-full lg:w-1/2 lg:ml-auto text-center lg:text-left lg:flex lg:flex-col lg:justify-center lg:px-8 relative">
+                  {/* Background for text readability on mobile */}
+                  <div className="lg:hidden absolute inset-0 bg-black/30 rounded-lg backdrop-blur-sm mx-4 my-8"></div>
+                  <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 relative z-10 drop-shadow-2xl lg:drop-shadow-none">
                     Incluser
                     <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
                       доступный сайт о доступности
                     </span>
                   </h1>
-                  <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                  <p className="text-xl sm:text-2xl mb-8 opacity-90 leading-relaxed max-w-2xl mx-auto lg:mx-0 relative z-10 drop-shadow-lg lg:drop-shadow-none">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative z-10">
                     <Link href="/articles">
                       <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
                         Читать статьи
