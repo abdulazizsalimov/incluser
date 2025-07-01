@@ -42,42 +42,39 @@ export default function Home() {
             {/* Mobile: Just gradient background */}
             <div className="lg:hidden absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
             
-            {/* Desktop: Photo with gradient overlay */}
+            {/* Desktop: Photo with gradient overlay - always covers full area */}
             <div className="hidden lg:block absolute inset-0">
-              {/* Container that scales with photo */}
-              <div className="absolute inset-0 flex items-center">
-                <div className="relative w-full h-full">
-                  <img 
-                    src={heroPhoto} 
-                    alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                    className="w-full h-full object-contain object-left"
-                    loading="eager"
-                  />
-                  {/* Gradient overlays attached to the image */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
-                </div>
+              <div className="absolute inset-0">
+                <img 
+                  src={heroPhoto} 
+                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                  className="w-full h-full object-cover object-left-top"
+                  loading="eager"
+                  style={{ objectPosition: "20% top" }}
+                />
               </div>
+              {/* Background extension for full coverage */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-blue-600/60 via-70% to-blue-600"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-60% to-blue-600"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
             </div>
           </div>
 
           {/* Mobile: Identical to desktop - Photo with same gradient */}
           <div className="lg:hidden absolute inset-0">
-            <div className="absolute inset-0 flex items-center">
-              <div className="relative w-full h-full">
-                <img 
-                  src={heroPhoto} 
-                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-contain object-left"
-                  loading="eager"
-                />
-                {/* Gradient overlays attached to the image */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-blue-600/90"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/40 via-60% to-blue-600"></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
-              </div>
+            <div className="absolute inset-0">
+              <img 
+                src={heroPhoto} 
+                alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                className="w-full h-full object-cover object-left-top"
+                loading="eager"
+                style={{ objectPosition: "20% top" }}
+              />
             </div>
+            {/* Background extension for full coverage */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-blue-600/60 via-70% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-60% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-cyan-600/20 to-teal-500/40"></div>
           </div>
           
           {/* Content */}
