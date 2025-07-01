@@ -62,19 +62,18 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Mobile: Photo overlay for text on image effect */}
+          {/* Mobile: Photo with left-to-right gradient like desktop */}
           <div className="lg:hidden absolute inset-0">
             <img 
               src={heroPhoto} 
               alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-              className="w-full h-full object-cover opacity-60"
+              className="w-full h-full object-cover"
               loading="eager"
-              style={{ objectPosition: "center top" }}
+              style={{ objectPosition: "left top" }}
             />
-            {/* Lighter gradient for better photo visibility */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-800/50 via-blue-600/40 to-teal-600/50"></div>
-            {/* Additional subtle overlay for text readability */}
-            <div className="absolute inset-0 bg-black/20"></div>
+            {/* Horizontal gradient from transparent (left) to blue (right) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-30% via-blue-600/60 via-70% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-40% via-cyan-600/40 via-80% to-teal-500"></div>
           </div>
           
           {/* Content */}
@@ -83,8 +82,6 @@ export default function Home() {
               <div className="h-full lg:min-h-[600px] flex items-center">
                 {/* Content positioned on the right half on desktop, full width on mobile */}
                 <div className="w-full lg:w-1/2 lg:ml-auto text-center lg:text-left lg:flex lg:flex-col lg:justify-center lg:px-8 relative">
-                  {/* Background for text readability on mobile */}
-                  <div className="lg:hidden absolute inset-0 bg-black/30 rounded-lg backdrop-blur-sm mx-4 my-8"></div>
                   <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 relative z-10 drop-shadow-2xl lg:drop-shadow-none">
                     Incluser
                     <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
