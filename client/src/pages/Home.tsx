@@ -58,14 +58,17 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
           </div>
 
-          {/* Mobile: Photo with gradient overlay - uses object-cover to fill screen */}
+          {/* Mobile: Photo with gradient background - uses object-contain to show full image */}
           <div className="lg:hidden absolute inset-0">
-            {/* Photo with cover to fill screen on mobile */}
+            {/* Adaptive background gradient to fill areas not covered by photo */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900"></div>
+            
+            {/* Photo without cropping */}
             <div className="absolute inset-0">
               <img 
                 src={heroPhoto} 
                 alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-contain object-center"
                 loading="eager"
               />
             </div>
