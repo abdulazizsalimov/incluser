@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings, VolumeX, Play, Square } from "lucide-react";
+import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings, VolumeX, Play, Square, X } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import AccessibleSlider from "@/components/AccessibleSlider";
@@ -608,20 +607,43 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   return (
     <TooltipProvider>
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-hidden flex flex-col" aria-describedby="accessibility-description">
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="flex items-center gap-2">
+      {/* Backdrop */}
+      {open && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300"
+          onClick={() => onOpenChange(false)}
+        />
+      )}
+
+      {/* Side Panel */}
+      <div 
+        className={`fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        aria-describedby="accessibility-description"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
             <Eye className="h-5 w-5" />
             Специальные возможности
-          </DialogTitle>
-        </DialogHeader>
+          </h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+            aria-label="Закрыть панель"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
         
         <div id="accessibility-description" className="sr-only">
           Панель настроек специальных возможностей для улучшения доступности сайта
         </div>
 
-        <div className="space-y-6 overflow-y-auto flex-1 pr-2">
+        {/* Scrollable Content */}
+        <div className="space-y-6 overflow-y-auto flex-1 p-4">
           {/* Theme Selection */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -1187,19 +1209,19 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             )}
           </div>
 
-          {/* Reset Button */}
-          <div className="pt-4 border-t flex-shrink-0">
-            <Button
-              variant="outline"
-              onClick={resetSettings}
-              className="w-full"
-            >
-              Сбросить настройки
-            </Button>
-          </div>
         </div>
-        </DialogContent>
-      </Dialog>
+
+        {/* Fixed Bottom Section with Reset Button */}
+        <div className="p-4 border-t flex-shrink-0">
+          <Button
+            variant="outline"
+            onClick={resetSettings}
+            className="w-full"
+          >
+            Сбросить настройки
+          </Button>
+        </div>
+      </div>
       
       {/* Floating Speech Button */}
       <FloatingSpeechButton
