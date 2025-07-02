@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 1, 2025. Fixed light background artifacts in dark theme - removed white/gray backgrounds from article cards and other components that were causing visual inconsistencies in dark mode, updated all page backgrounds to use semantic CSS variables for proper theme adaptation
 - July 1, 2025. Implemented cosmic-themed dark mode - redesigned dark theme with purple-blue gradients inspired by modern space/tech aesthetics, added animated starfield background, updated hero banner gradients to adapt between light (blue-cyan-teal) and dark (purple-blue-indigo) themes, improved visual consistency across all pages
 - July 1, 2025. Enhanced article page banners with responsive design - created dedicated mobile and desktop layouts for article banners, positioned text at bottom with proper mobile centering, improved share button readability with white background and dark text, fixed image display without cropping on main page mobile version
 - July 1, 2025. Added comprehensive text-to-speech functionality with RHVoice integration - created speech synthesis system with both browser and RHVoice options, keyboard shortcut Ctrl+Shift+S for selected text, configurable speech speed, automatic fallback from RHVoice to browser speech, complete accessibility widget integration with settings panel
