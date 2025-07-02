@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -18,17 +18,63 @@ interface AccessibilityWidgetProps {
 
 export default function AccessibilityWidget({ open, onOpenChange }: AccessibilityWidgetProps) {
   const { theme, setTheme, actualTheme } = useTheme();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
-  // Handle Escape key to close panel and return focus
+  // Focus management when panel opens/closes
+  useEffect(() => {
+    if (open) {
+      // Focus first element when panel opens
+      setTimeout(() => {
+        firstFocusableRef.current?.focus();
+      }, 100);
+    } else {
+      // Return focus to accessibility button when panel closes
+      const accessibilityButton = document.querySelector('[aria-label="Панель специальных возможностей"]') as HTMLElement;
+      if (accessibilityButton) {
+        accessibilityButton.focus();
+      }
+    }
+  }, [open]);
+
+  // Focus trap implementation
+  useEffect(() => {
+    if (!open || !panelRef.current) return;
+
+    const panel = panelRef.current;
+    const focusableElements = panel.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        // Shift + Tab: moving backwards
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        // Tab: moving forwards
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    panel.addEventListener('keydown', handleTab);
+    return () => panel.removeEventListener('keydown', handleTab);
+  }, [open]);
+
+  // Handle Escape key to close panel
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && open) {
         onOpenChange(false);
-        // Return focus to accessibility button in header
-        const accessibilityButton = document.querySelector('[aria-label="Панель специальных возможностей"]') as HTMLElement;
-        if (accessibilityButton) {
-          accessibilityButton.focus();
-        }
       }
     };
 
@@ -641,10 +687,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
       {/* Side Panel */}
       <div 
+        ref={panelRef}
         className={`fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col ${
           open ? 'translate-x-0' : 'translate-x-full'
         } accessibility-panel`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="accessibility-title"
         aria-describedby="accessibility-description"
+        aria-hidden={!open}
         style={{
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
@@ -657,11 +708,12 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
-          <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <h2 id="accessibility-title" className="flex items-center gap-2 text-lg font-semibold">
             <Eye className="h-5 w-5" />
             Специальные возможности
           </h2>
           <Button
+            ref={firstFocusableRef}
             variant="ghost"
             size="sm"
             onClick={() => onOpenChange(false)}
