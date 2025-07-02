@@ -25,10 +25,25 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   useEffect(() => {
     if (!panelRef.current) return;
     
-    // More comprehensive selector to catch all focusable elements including slider components
-    const focusableElements = panelRef.current.querySelectorAll(
-      'button, [href], input, select, textarea, [role="slider"], [tabindex="0"], [data-radix-slider-thumb]'
-    );
+    // Get ALL elements and filter focusable ones
+    const allElements = panelRef.current.querySelectorAll('*');
+    const focusableElements = Array.from(allElements).filter((el) => {
+      const element = el as HTMLElement;
+      const tagName = element.tagName.toLowerCase();
+      const hasTabindex = element.hasAttribute('tabindex');
+      const tabindex = element.getAttribute('tabindex');
+      
+      return (
+        tagName === 'button' ||
+        tagName === 'a' ||
+        tagName === 'input' ||
+        tagName === 'select' ||
+        tagName === 'textarea' ||
+        element.hasAttribute('role') && ['button', 'slider'].includes(element.getAttribute('role') || '') ||
+        (hasTabindex && tabindex !== '-1') ||
+        element.hasAttribute('data-radix-slider-thumb')
+      );
+    });
     
     if (open) {
       // When open, restore original tabindex or remove it
@@ -64,7 +79,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             if (node.nodeType === Node.ELEMENT_NODE) {
               const element = node as Element;
               const focusableElements = element.querySelectorAll(
-                'button, [href], input, select, textarea, [role="slider"], [tabindex="0"], [data-radix-slider-thumb]'
+                'button, [href], input, select, textarea, [role="slider"], [tabindex="0"], [data-radix-slider-thumb], [role="button"]'
               );
               focusableElements.forEach(el => {
                 (el as HTMLElement).setAttribute('tabindex', '-1');

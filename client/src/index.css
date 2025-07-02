@@ -446,3 +446,18 @@ span, a, button, label {
 .grayscale .accessibility-panel * {
   filter: none !important;
 }
+
+/* Hide all panel content from tab navigation when closed */
+.accessibility-panel[aria-hidden="true"] * {
+  pointer-events: none !important;
+}
+
+.accessibility-panel[aria-hidden="true"] button,
+.accessibility-panel[aria-hidden="true"] [role="button"],
+.accessibility-panel[aria-hidden="true"] input,
+.accessibility-panel[aria-hidden="true"] select,
+.accessibility-panel[aria-hidden="true"] textarea,
+.accessibility-panel[aria-hidden="true"] [tabindex],
+.accessibility-panel[aria-hidden="true"] [role="slider"] {
+  tabindex: -1 !important;
+}
