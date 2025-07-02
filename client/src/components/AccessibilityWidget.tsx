@@ -413,21 +413,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       document.documentElement.classList.add('text-magnifier-enabled');
     }
 
-    if (textToSpeech) {
-      // Setup keyboard shortcut for speech (Ctrl+Shift+S)
-      const handleKeyboard = (e: KeyboardEvent) => {
-        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 's') {
-          e.preventDefault();
-          speakSelectedText();
-        }
-      };
-      document.addEventListener('keydown', handleKeyboard);
-      
-      // Cleanup on unmount
-      return () => {
-        document.removeEventListener('keydown', handleKeyboard);
-      };
-    }
+    // Text-to-speech is now controlled via UI buttons only
 
     // Set default color scheme based on theme if user hasn't set one
     const savedScheme = localStorage.getItem('accessibility-magnifier-color-scheme');
@@ -1280,7 +1266,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             </div>
             
             <p id="text-to-speech-desc" className="text-sm text-muted-foreground">
-              Озвучивает выделенный текст (Ctrl+Shift+S)
+              Озвучивает выделенный текст
             </p>
 
             {textToSpeech && (
