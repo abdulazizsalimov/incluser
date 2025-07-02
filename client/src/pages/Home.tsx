@@ -36,7 +36,7 @@ export default function Home() {
       
       <main id="main-content" role="main">
         {/* Hero Section */}
-        <section className="relative text-white overflow-hidden min-h-[500px] lg:min-h-[600px]" aria-labelledby="hero-heading">
+        <section className="relative text-white overflow-hidden lg:min-h-[600px]" aria-labelledby="hero-heading">
           {/* Desktop: Photo with gradient overlay */}
           <div className="hidden lg:block absolute inset-0">
             {/* Photo without cropping */}
@@ -58,44 +58,69 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
           </div>
 
-          {/* Mobile: Photo with gradient background - uses object-contain to show full image */}
-          <div className="lg:hidden absolute inset-0">
-            {/* Adaptive background gradient to fill areas not covered by photo */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900"></div>
-            
-            {/* Photo without cropping */}
-            <div className="absolute inset-0">
+          {/* Mobile: Photo with overlay and content - natural height */}
+          <div className="lg:hidden relative">
+            {/* Photo without cropping - natural height */}
+            <div className="relative">
               <img 
                 src={heroPhoto} 
                 alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                className="w-full h-full object-contain object-center"
+                className="w-full h-auto object-contain"
                 loading="eager"
               />
-            </div>
-            
-            {/* Adaptive gradient overlays on top of photo for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600 dark:via-purple-600/10 dark:via-purple-600/30 dark:to-purple-700"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600 dark:via-purple-600/20 dark:via-purple-600/60 dark:to-purple-700"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
-          </div>
-          
-          {/* Content */}
-          <div className="relative z-10 h-full flex items-center">
-            <div className="w-full h-full flex items-center">
-              {/* Text positioned to follow the right edge of the photo */}
-              <div className="w-full flex justify-end pr-4 sm:pr-6 lg:pr-8">
-                <div className="text-center lg:text-left text-white max-w-md lg:max-w-lg xl:max-w-xl mt-16 lg:mt-20">
-                  <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+              
+              {/* Adaptive gradient overlays on top of photo for text readability */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600 dark:via-purple-600/10 dark:via-purple-600/30 dark:to-purple-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600 dark:via-purple-600/20 dark:via-purple-600/60 dark:to-purple-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
+              
+              {/* Content overlay - centered */}
+              <div className="absolute inset-0 flex items-center justify-center px-4">
+                <div className="text-center text-white max-w-md">
+                  <h1 id="hero-heading" className="text-4xl sm:text-5xl font-bold mb-6">
                     Incluser
-                    <span className="block text-2xl sm:text-3xl lg:text-4xl font-medium mt-2 opacity-90">
+                    <span className="block text-2xl sm:text-3xl font-medium mt-2 opacity-90">
                       доступный сайт о доступности
                     </span>
                   </h1>
-                  <p className="text-base sm:text-lg lg:text-xl mb-8 opacity-90 leading-relaxed">
+                  <p className="text-base sm:text-lg mb-8 opacity-90 leading-relaxed">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Link href="/articles">
+                      <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
+                        Читать статьи
+                      </Button>
+                    </Link>
+                    <Link href="/about">
+                      <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10">
+                        Об авторе
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Desktop Content */}
+          <div className="hidden lg:block relative z-10 h-full">
+            <div className="w-full h-full flex items-center">
+              {/* Text positioned to follow the right edge of the photo */}
+              <div className="w-full flex justify-end pr-4 sm:pr-6 lg:pr-8">
+                <div className="text-left text-white max-w-lg xl:max-w-xl mt-20">
+                  <h1 id="hero-heading-desktop" className="text-6xl font-bold mb-6">
+                    Incluser
+                    <span className="block text-4xl font-medium mt-2 opacity-90">
+                      доступный сайт о доступности
+                    </span>
+                  </h1>
+                  <p className="text-xl mb-8 opacity-90 leading-relaxed">
+                    Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
+                    которыми могут пользоваться все люди, независимо от их способностей.
+                  </p>
+                  <div className="flex gap-4">
                     <Link href="/articles">
                       <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
                         Читать статьи
