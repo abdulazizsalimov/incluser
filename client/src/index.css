@@ -45,40 +45,76 @@
 }
 
 .dark {
-  --background: hsl(222, 84%, 4.9%);
-  --foreground: hsl(210, 40%, 98%);
-  --muted: hsl(217, 32.6%, 17.5%);
-  --muted-foreground: hsl(215, 20.2%, 65.1%);
-  --popover: hsl(222, 84%, 4.9%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --card: hsl(222, 84%, 4.9%);
-  --card-foreground: hsl(210, 40%, 98%);
-  --border: hsl(217, 32.6%, 17.5%);
-  --input: hsl(217, 32.6%, 17.5%);
-  --primary: hsl(207, 90%, 61%);
-  --primary-foreground: hsl(222, 84%, 4.9%);
-  --secondary: hsl(189, 85%, 61%);
-  --secondary-foreground: hsl(222, 84%, 4.9%);
-  --accent: hsl(217, 32.6%, 17.5%);
-  --accent-foreground: hsl(210, 40%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --ring: hsl(207, 90%, 61%);
+  /* Cosmic dark theme with purple-blue gradients */
+  --background: hsl(240, 25%, 8%);
+  --foreground: hsl(240, 15%, 92%);
+  --muted: hsl(240, 20%, 12%);
+  --muted-foreground: hsl(240, 10%, 65%);
+  --popover: hsl(240, 25%, 10%);
+  --popover-foreground: hsl(240, 15%, 92%);
+  --card: hsl(240, 20%, 10%);
+  --card-foreground: hsl(240, 15%, 92%);
+  --border: hsl(240, 15%, 18%);
+  --input: hsl(240, 15%, 15%);
+  --primary: hsl(263, 70%, 65%);
+  --primary-foreground: hsl(240, 25%, 8%);
+  --secondary: hsl(220, 80%, 60%);
+  --secondary-foreground: hsl(240, 25%, 8%);
+  --accent: hsl(240, 15%, 15%);
+  --accent-foreground: hsl(240, 15%, 92%);
+  --destructive: hsl(0, 70%, 55%);
+  --destructive-foreground: hsl(240, 15%, 92%);
+  --ring: hsl(263, 70%, 65%);
   
-  --chart-1: hsl(207, 90%, 61%);
-  --chart-2: hsl(189, 85%, 61%);
-  --chart-3: hsl(186, 90%, 61%);
-  --chart-4: hsl(173, 80%, 50%);
-  --chart-5: hsl(158, 75%, 45%);
+  --chart-1: hsl(263, 70%, 65%);
+  --chart-2: hsl(220, 80%, 60%);
+  --chart-3: hsl(250, 75%, 65%);
+  --chart-4: hsl(200, 85%, 60%);
+  --chart-5: hsl(280, 65%, 65%);
   
-  --sidebar-background: hsl(222, 84%, 4.9%);
-  --sidebar-foreground: hsl(210, 40%, 98%);
-  --sidebar-primary: hsl(207, 90%, 61%);
-  --sidebar-primary-foreground: hsl(222, 84%, 4.9%);
-  --sidebar-accent: hsl(217, 32.6%, 17.5%);
-  --sidebar-accent-foreground: hsl(210, 40%, 98%);
-  --sidebar-border: hsl(217, 32.6%, 17.5%);
-  --sidebar-ring: hsl(207, 90%, 61%);
+  --sidebar-background: hsl(240, 25%, 8%);
+  --sidebar-foreground: hsl(240, 15%, 92%);
+  --sidebar-primary: hsl(263, 70%, 65%);
+  --sidebar-primary-foreground: hsl(240, 25%, 8%);
+  --sidebar-accent: hsl(240, 15%, 15%);
+  --sidebar-accent-foreground: hsl(240, 15%, 92%);
+  --sidebar-border: hsl(240, 15%, 18%);
+  --sidebar-ring: hsl(263, 70%, 65%);
+}
+
+/* Cosmic background for dark theme */
+.dark {
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, hsl(240, 25%, 8%) 0%, hsl(250, 30%, 12%) 50%, hsl(260, 25%, 8%) 100%);
+}
+
+/* Stars pattern for cosmic theme */
+.dark::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.9), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.8; }
 }
 
 .dark.high-contrast {
