@@ -25,34 +25,63 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   useEffect(() => {
     if (!panelRef.current) return;
     
+    // More comprehensive selector to catch all focusable elements including slider components
     const focusableElements = panelRef.current.querySelectorAll(
-      'button, [href], input, select, textarea'
+      'button, [href], input, select, textarea, [role="slider"], [tabindex="0"], [data-radix-slider-thumb]'
     );
     
     if (open) {
-      // When open, make elements tabbable
+      // When open, restore original tabindex or remove it
       focusableElements.forEach(el => {
-        (el as HTMLElement).removeAttribute('tabindex');
+        const originalTabIndex = (el as HTMLElement).dataset.originalTabindex;
+        if (originalTabIndex) {
+          (el as HTMLElement).setAttribute('tabindex', originalTabIndex);
+          delete (el as HTMLElement).dataset.originalTabindex;
+        } else {
+          (el as HTMLElement).removeAttribute('tabindex');
+        }
       });
     } else {
-      // When closed, make elements not tabbable
+      // When closed, store original tabindex and set to -1
       focusableElements.forEach(el => {
+        const currentTabIndex = (el as HTMLElement).getAttribute('tabindex');
+        if (currentTabIndex && currentTabIndex !== '-1') {
+          (el as HTMLElement).dataset.originalTabindex = currentTabIndex;
+        }
         (el as HTMLElement).setAttribute('tabindex', '-1');
       });
     }
   }, [open]); // Run whenever open state changes
 
-  // Initial setup to make elements not tabbable
+  // Observer to handle dynamically added elements
   useEffect(() => {
-    if (panelRef.current) {
-      const focusableElements = panelRef.current.querySelectorAll(
-        'button, [href], input, select, textarea'
-      );
-      focusableElements.forEach(el => {
-        (el as HTMLElement).setAttribute('tabindex', '-1');
-      });
-    }
-  }, []); // Run once on mount
+    if (!panelRef.current) return;
+
+    const observer = new MutationObserver((mutations) => {
+      if (!open) {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as Element;
+              const focusableElements = element.querySelectorAll(
+                'button, [href], input, select, textarea, [role="slider"], [tabindex="0"], [data-radix-slider-thumb]'
+              );
+              focusableElements.forEach(el => {
+                (el as HTMLElement).setAttribute('tabindex', '-1');
+              });
+            }
+          });
+        });
+      }
+    });
+
+    observer.observe(panelRef.current, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => observer.disconnect();
+  }, [open]);
 
   // Focus management when panel opens/closes
   useEffect(() => {
@@ -63,10 +92,12 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       }, 100);
     } else {
       // Return focus to accessibility button when panel closes
-      const accessibilityButton = document.querySelector('[aria-label="Панель специальных возможностей"]') as HTMLElement;
-      if (accessibilityButton) {
-        accessibilityButton.focus();
-      }
+      setTimeout(() => {
+        const accessibilityButton = document.querySelector('[aria-label="Специальные возможности"]') as HTMLElement;
+        if (accessibilityButton) {
+          accessibilityButton.focus();
+        }
+      }, 50); // Small delay to ensure panel is closed
     }
   }, [open]);
 
