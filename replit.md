@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 2, 2025. Added floating speech button for text selection - created smart floating button that appears when text is selected, allows one-click speech synthesis, toggles between play/stop states, positions intelligently near selection area
 - July 2, 2025. Redesigned mobile banner layout - removed fixed height constraints, banner now adapts to natural image dimensions, text is perfectly centered over image, eliminated blue border artifacts by removing background gradients
 - July 2, 2025. Migrated from Neon to standard PostgreSQL - switched database driver from @neondatabase/serverless to pg for self-hosted deployment, updated connection configuration for production environments with SSL support
 - July 1, 2025. Fixed content styling issues in dark theme - added comprehensive prose styles for proper text rendering in dark mode, fixed emphasized text (em/i tags) visibility with dedicated CSS rules, ensured all article content displays correctly with proper contrast

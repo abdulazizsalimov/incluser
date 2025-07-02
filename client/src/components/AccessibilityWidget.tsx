@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings, VolumeX, Play, Square } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import AccessibleSlider from "@/components/AccessibleSlider";
+import FloatingSpeechButton from "@/components/FloatingSpeechButton";
 
 interface AccessibilityWidgetProps {
   open: boolean;
@@ -1155,6 +1156,16 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Floating Speech Button */}
+      <FloatingSpeechButton
+        isEnabled={textToSpeech}
+        speechVoice={speechVoice}
+        speechSpeed={speechSpeed}
+        onSpeak={speakText}
+        onStop={stopSpeech}
+        isPlaying={isPlaying}
+      />
     </TooltipProvider>
   );
 }
