@@ -147,10 +147,71 @@ export default function ArticleDetail() {
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
               )}
               
-              {/* Content */}
-              <div className="relative z-10 h-full flex items-end pb-12">
+              {/* Content - responsive layout */}
+              <div className="relative z-10 h-full flex items-end pb-8 sm:pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-                  <div className="flex justify-between items-end">
+                  {/* Mobile: Stack vertically */}
+                  <div className="lg:hidden">
+                    <header className="text-white text-center mb-6">
+                      <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">
+                        {article.title}
+                      </h1>
+                      
+                      {article.excerpt && (
+                        <p className="text-lg sm:text-xl mb-6 opacity-90 leading-relaxed">
+                          {article.excerpt}
+                        </p>
+                      )}
+
+                      {/* Article meta */}
+                      <div className="flex flex-col sm:flex-row sm:justify-center gap-4 text-sm mb-6">
+                        {article.publishedAt && (
+                          <div className="flex items-center justify-center gap-2">
+                            <Calendar className="h-4 w-4" aria-hidden="true" />
+                            <time dateTime={new Date(article.publishedAt).toISOString()}>
+                              {formatDate(new Date(article.publishedAt).toISOString())}
+                            </time>
+                          </div>
+                        )}
+                        
+                        {article.author && (
+                          <div className="flex items-center justify-center gap-2">
+                            <User className="h-4 w-4" aria-hidden="true" />
+                            <span>{article.author?.username || 'Автор'}</span>
+                          </div>
+                        )}
+                        
+                        {article.readingTime && (
+                          <div className="flex items-center justify-center gap-2">
+                            <Clock className="h-4 w-4" aria-hidden="true" />
+                            <span>{article.readingTime} мин чтения</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Category and Share */}
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        {article.category && (
+                          <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full text-sm font-medium border border-white/30">
+                            {article.category.name}
+                          </span>
+                        )}
+                        
+                        <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-white/30 shadow-lg">
+                          <ShareButton
+                            title={article.title}
+                            url={`${window.location.origin}/articles/${article.slug}`}
+                            description={article.excerpt || ""}
+                            size="default"
+                            variant="ghost"
+                          />
+                        </div>
+                      </div>
+                    </header>
+                  </div>
+
+                  {/* Desktop: Side by side layout */}
+                  <div className="hidden lg:flex justify-between items-end">
                     {/* Main content */}
                     <div className="max-w-4xl">
                       <header className="text-white">
