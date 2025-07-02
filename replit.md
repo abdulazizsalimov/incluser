@@ -63,7 +63,7 @@ The database includes tables for:
 
 ## External Dependencies
 
-- **Database**: PostgreSQL via Neon Database (@neondatabase/serverless)
+- **Database**: PostgreSQL with standard pg driver for self-hosted deployment
 - **Authentication**: Replit Auth using OpenID Connect
 - **UI Components**: Radix UI primitives for accessibility
 - **Translation**: Google Translate integration
@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 2, 2025. Migrated from Neon to standard PostgreSQL - switched database driver from @neondatabase/serverless to pg for self-hosted deployment, updated connection configuration for production environments with SSL support
 - July 1, 2025. Fixed content styling issues in dark theme - added comprehensive prose styles for proper text rendering in dark mode, fixed emphasized text (em/i tags) visibility with dedicated CSS rules, ensured all article content displays correctly with proper contrast
 - July 1, 2025. Improved text readability in dark theme - increased muted-foreground contrast from 65% to 80% brightness for better text visibility, updated high contrast mode settings for enhanced accessibility
 - July 1, 2025. Fixed light background artifacts in dark theme - removed white/gray backgrounds from article cards and other components that were causing visual inconsistencies in dark mode, updated all page backgrounds to use semantic CSS variables for proper theme adaptation
