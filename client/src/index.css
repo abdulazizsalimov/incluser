@@ -416,38 +416,33 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Grayscale mode - apply to body content only, not modals */
-.grayscale main,
-.grayscale header,
-.grayscale footer,
-.grayscale nav {
+/* Grayscale mode - apply to body but exclude accessibility elements */
+.grayscale body {
   filter: grayscale(100%);
 }
 
-.grayscale main *,
-.grayscale header *,
-.grayscale footer *,
-.grayscale nav * {
-  filter: grayscale(100%);
-}
-
-/* Ensure modals and dialogs remain in color */
-[role="dialog"],
-[data-state="open"],
-[data-radix-portal],
-[data-radix-popper-content-wrapper],
-[data-radix-dialog-content],
-.accessibility-dialog,
-.accessibility-panel {
+/* Force accessibility panel and backdrop to remain in color */
+.accessibility-panel,
+.accessibility-panel *,
+.accessibility-panel button,
+.accessibility-panel input,
+.accessibility-panel select,
+.accessibility-panel svg,
+.accessibility-panel div,
+.accessibility-panel span,
+.accessibility-panel h2,
+.accessibility-panel h3,
+.accessibility-panel label,
+.accessibility-backdrop {
   filter: none !important;
 }
 
-[role="dialog"] *,
-[data-state="open"] *,
-[data-radix-portal] *,
-[data-radix-popper-content-wrapper] *,
-[data-radix-dialog-content] *,
-.accessibility-dialog *,
-.accessibility-panel * {
+/* Additional protection for all child elements */
+.grayscale .accessibility-panel {
+  filter: none !important;
+  isolation: isolate;
+}
+
+.grayscale .accessibility-panel * {
   filter: none !important;
 }
