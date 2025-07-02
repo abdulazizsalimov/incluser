@@ -769,9 +769,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       {/* Side Panel */}
       <div 
         ref={panelRef}
-        className={`fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col ${
-          open ? 'translate-x-0' : 'translate-x-full'
-        } accessibility-panel`}
+        className="accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col"
         role="dialog"
         aria-modal="true"
         aria-labelledby="accessibility-title"
