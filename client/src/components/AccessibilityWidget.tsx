@@ -46,24 +46,30 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     });
     
     if (open) {
-      // When open, restore original tabindex or remove it
+      // When open, restore original state and enable interaction
       focusableElements.forEach(el => {
-        const originalTabIndex = (el as HTMLElement).dataset.originalTabindex;
+        const element = el as HTMLElement;
+        const originalTabIndex = element.dataset.originalTabindex;
         if (originalTabIndex) {
-          (el as HTMLElement).setAttribute('tabindex', originalTabIndex);
-          delete (el as HTMLElement).dataset.originalTabindex;
+          element.setAttribute('tabindex', originalTabIndex);
+          delete element.dataset.originalTabindex;
         } else {
-          (el as HTMLElement).removeAttribute('tabindex');
+          element.removeAttribute('tabindex');
         }
+        element.style.pointerEvents = '';
+        element.removeAttribute('aria-hidden');
       });
     } else {
-      // When closed, store original tabindex and set to -1
+      // When closed, store original tabindex and completely block all interaction
       focusableElements.forEach(el => {
-        const currentTabIndex = (el as HTMLElement).getAttribute('tabindex');
+        const element = el as HTMLElement;
+        const currentTabIndex = element.getAttribute('tabindex');
         if (currentTabIndex && currentTabIndex !== '-1') {
-          (el as HTMLElement).dataset.originalTabindex = currentTabIndex;
+          element.dataset.originalTabindex = currentTabIndex;
         }
-        (el as HTMLElement).setAttribute('tabindex', '-1');
+        element.setAttribute('tabindex', '-1');
+        element.style.pointerEvents = 'none';
+        element.setAttribute('aria-hidden', 'true');
       });
     }
   }, [open]); // Run whenever open state changes
@@ -769,7 +775,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       {/* Side Panel */}
       <div 
         ref={panelRef}
-        className="accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col"
+        className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        }`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="accessibility-title"
