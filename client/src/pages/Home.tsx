@@ -75,15 +75,15 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
               
               {/* Content overlay - positioned at bottom */}
-              <div className="absolute inset-0 flex items-end justify-center pb-8 px-4">
+              <div className="absolute inset-0 flex items-end justify-center pb-6 px-4">
                 <div className="text-center text-white max-w-sm">
-                  <h1 id="hero-heading" className="text-2xl sm:text-3xl font-bold mb-4">
+                  <h1 id="hero-heading" className="text-xl sm:text-2xl font-bold mb-3">
                     Incluser
-                    <span className="block text-lg sm:text-xl font-medium mt-1 opacity-90">
-                      доступный сайт о доступности
-                    </span>
                   </h1>
-                  <p className="text-sm sm:text-base mb-6 opacity-90 leading-relaxed">
+                  <h2 className="text-base sm:text-lg font-medium mb-4 opacity-90">
+                    доступный сайт о доступности
+                  </h2>
+                  <p className="text-sm sm:text-base mb-5 opacity-90 leading-tight">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
