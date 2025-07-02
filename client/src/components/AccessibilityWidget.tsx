@@ -632,98 +632,107 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
             </div>
             <div className="grid grid-cols-3 gap-3">
               {/* Light Theme */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setTheme('light')}
-                    className={`relative p-3 rounded-lg border-2 transition-all hover:scale-105 ${
-                      theme === 'light' 
-                        ? 'border-blue-500 ring-2 ring-blue-200' 
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    aria-label="Светлая тема"
-                  >
-                    <div className="w-full h-16 rounded bg-white border border-gray-200 overflow-hidden">
-                      {/* Mini site preview - light theme */}
-                      <div className="h-3 bg-blue-50 border-b border-gray-200 flex items-center px-2">
-                        <div className="w-1 h-1 bg-blue-500 rounded-full mr-1"></div>
-                        <div className="w-4 h-0.5 bg-gray-300 rounded"></div>
+              <div className="text-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setTheme('light')}
+                      className={`relative p-3 rounded-lg border-2 transition-all hover:scale-105 w-full ${
+                        theme === 'light' 
+                          ? 'border-blue-500 ring-2 ring-blue-200' 
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                      aria-label="Светлая тема"
+                    >
+                      <div className="w-full h-16 rounded bg-white border border-gray-200 overflow-hidden">
+                        {/* Mini site preview - light theme */}
+                        <div className="h-3 bg-blue-50 border-b border-gray-200 flex items-center px-2">
+                          <div className="w-1 h-1 bg-blue-500 rounded-full mr-1"></div>
+                          <div className="w-4 h-0.5 bg-gray-300 rounded"></div>
+                        </div>
+                        <div className="p-1 space-y-1">
+                          <div className="w-full h-1 bg-blue-500 rounded"></div>
+                          <div className="w-4/5 h-0.5 bg-gray-400 rounded"></div>
+                          <div className="w-3/5 h-0.5 bg-gray-300 rounded"></div>
+                        </div>
                       </div>
-                      <div className="p-1 space-y-1">
-                        <div className="w-full h-1 bg-blue-500 rounded"></div>
-                        <div className="w-4/5 h-0.5 bg-gray-400 rounded"></div>
-                        <div className="w-3/5 h-0.5 bg-gray-300 rounded"></div>
+                      <div className="absolute -top-1 -right-1">
+                        <Sun className="h-3 w-3 text-yellow-500" />
                       </div>
-                    </div>
-                    <div className="absolute -top-1 -right-1">
-                      <Sun className="h-3 w-3 text-yellow-500" />
-                    </div>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Светлая тема</TooltipContent>
-              </Tooltip>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Светлая тема</TooltipContent>
+                </Tooltip>
+                <p className="text-xs text-muted-foreground mt-2">Светлая</p>
+              </div>
 
               {/* Dark Theme */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setTheme('dark')}
-                    className={`relative p-3 rounded-lg border-2 transition-all hover:scale-105 ${
-                      theme === 'dark' 
-                        ? 'border-purple-500 ring-2 ring-purple-200' 
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    aria-label="Темная тема"
-                  >
-                    <div className="w-full h-16 rounded bg-gray-900 border border-gray-700 overflow-hidden">
-                      {/* Mini site preview - dark theme */}
-                      <div className="h-3 bg-gray-800 border-b border-gray-700 flex items-center px-2">
-                        <div className="w-1 h-1 bg-purple-500 rounded-full mr-1"></div>
-                        <div className="w-4 h-0.5 bg-gray-500 rounded"></div>
+              <div className="text-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setTheme('dark')}
+                      className={`relative p-3 rounded-lg border-2 transition-all hover:scale-105 w-full ${
+                        theme === 'dark' 
+                          ? 'border-purple-500 ring-2 ring-purple-200' 
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                      aria-label="Темная тема"
+                    >
+                      <div className="w-full h-16 rounded bg-gray-900 border border-gray-700 overflow-hidden">
+                        {/* Mini site preview - dark theme */}
+                        <div className="h-3 bg-gray-800 border-b border-gray-700 flex items-center px-2">
+                          <div className="w-1 h-1 bg-purple-500 rounded-full mr-1"></div>
+                          <div className="w-4 h-0.5 bg-gray-500 rounded"></div>
+                        </div>
+                        <div className="p-1 space-y-1">
+                          <div className="w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded"></div>
+                          <div className="w-4/5 h-0.5 bg-gray-400 rounded"></div>
+                          <div className="w-3/5 h-0.5 bg-gray-500 rounded"></div>
+                        </div>
                       </div>
-                      <div className="p-1 space-y-1">
-                        <div className="w-full h-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded"></div>
-                        <div className="w-4/5 h-0.5 bg-gray-400 rounded"></div>
-                        <div className="w-3/5 h-0.5 bg-gray-500 rounded"></div>
+                      <div className="absolute -top-1 -right-1">
+                        <Moon className="h-3 w-3 text-purple-400" />
                       </div>
-                    </div>
-                    <div className="absolute -top-1 -right-1">
-                      <Moon className="h-3 w-3 text-purple-400" />
-                    </div>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Темная тема</TooltipContent>
-              </Tooltip>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Темная тема</TooltipContent>
+                </Tooltip>
+                <p className="text-xs text-muted-foreground mt-2">Темная</p>
+              </div>
 
               {/* System Theme */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setTheme('system')}
-                    className={`relative p-3 rounded-lg border-2 transition-all hover:scale-105 ${
-                      theme === 'system' 
-                        ? 'border-green-500 ring-2 ring-green-200' 
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                    aria-label="Как в системе"
-                  >
-                    <div className="w-full h-16 rounded border border-gray-300 overflow-hidden bg-gradient-to-b from-white via-gray-100 to-gray-900">
-                      {/* Mini site preview - split theme */}
-                      <div className="h-3 bg-gray-100 border-b border-gray-300 flex items-center px-2">
-                        <div className="w-1 h-1 bg-blue-500 rounded-full mr-1"></div>
-                        <div className="w-4 h-0.5 bg-gray-400 rounded"></div>
+              <div className="text-center">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setTheme('system')}
+                      className={`relative p-3 rounded-lg border-2 transition-all hover:scale-105 w-full ${
+                        theme === 'system' 
+                          ? 'border-green-500 ring-2 ring-green-200' 
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                      aria-label="Как в системе"
+                    >
+                      <div className="w-full h-16 rounded border border-gray-300 overflow-hidden bg-gradient-to-b from-white via-gray-100 to-gray-900">
+                        {/* Mini site preview - split theme */}
+                        <div className="h-3 bg-gray-100 border-b border-gray-300 flex items-center px-2">
+                          <div className="w-1 h-1 bg-blue-500 rounded-full mr-1"></div>
+                          <div className="w-4 h-0.5 bg-gray-400 rounded"></div>
+                        </div>
+                        <div className="h-8 bg-gradient-to-b from-white to-gray-900 flex items-center justify-center">
+                          <div className="w-6 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded opacity-70"></div>
+                        </div>
                       </div>
-                      <div className="h-8 bg-gradient-to-b from-white to-gray-900 flex items-center justify-center">
-                        <div className="w-6 h-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded opacity-70"></div>
+                      <div className="absolute -top-1 -right-1">
+                        <Monitor className="h-3 w-3 text-green-500" />
                       </div>
-                    </div>
-                    <div className="absolute -top-1 -right-1">
-                      <Monitor className="h-3 w-3 text-green-500" />
-                    </div>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Как в системе</TooltipContent>
-              </Tooltip>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Как в системе</TooltipContent>
+                </Tooltip>
+                <p className="text-xs text-muted-foreground mt-2">Авто</p>
+              </div>
             </div>
             <p className="text-sm text-muted-foreground">
               Выберите предпочитаемую цветовую схему
