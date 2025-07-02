@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings, VolumeX, Play, Square } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import AccessibleSlider from "@/components/AccessibleSlider";
 import FloatingSpeechButton from "@/components/FloatingSpeechButton";
 
@@ -75,7 +76,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     return saved ? [parseFloat(saved)] : [1.0];
   });
 
-  const [isPlaying, setIsPlaying] = useState(false);
+  const { isPlaying, speakText, stopSpeech: globalStopSpeech } = useSpeechSynthesis();
   const [showSpeechSettings, setShowSpeechSettings] = useState(false);
 
   // Text magnifier settings
@@ -177,48 +178,19 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.setItem('accessibility-speech-speed', speed[0].toString());
   };
 
-  // Speech synthesis functions
-  const speakText = async (text: string) => {
+  // Speech synthesis functions using centralized hook
+  const handleSpeakText = async (text: string) => {
     if (!text.trim()) return;
-    
-    setIsPlaying(true);
     
     try {
       if (speechVoice === 'rhvoice') {
         await speakWithRHVoice(text);
       } else {
-        await speakWithBrowser(text);
+        await speakText(text, { rate: speechSpeed[0] });
       }
     } catch (error) {
       console.error('Speech synthesis error:', error);
-    } finally {
-      setIsPlaying(false);
     }
-  };
-
-  const speakWithBrowser = (text: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (!('speechSynthesis' in window)) {
-        reject(new Error('Speech synthesis not supported'));
-        return;
-      }
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = speechSpeed[0];
-      utterance.lang = 'ru-RU';
-      
-      // Find Russian voice if available
-      const voices = speechSynthesis.getVoices();
-      const russianVoice = voices.find(voice => voice.lang.startsWith('ru'));
-      if (russianVoice) {
-        utterance.voice = russianVoice;
-      }
-
-      utterance.onend = () => resolve();
-      utterance.onerror = (event) => reject(new Error(`Speech synthesis error: ${event.error}`));
-
-      speechSynthesis.speak(utterance);
-    });
   };
 
   const speakWithRHVoice = async (text: string): Promise<void> => {
@@ -259,14 +231,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } catch (error) {
       // Fallback to browser speech if RHVoice fails
       console.warn('RHVoice failed, falling back to browser speech:', error);
-      return speakWithBrowser(text);
-    }
-  };
-
-  const stopSpeech = () => {
-    setIsPlaying(false);
-    if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
+      return speakText(text, { rate: speechSpeed[0] });
     }
   };
 
@@ -275,11 +240,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     const selectedText = selection?.toString().trim();
     
     if (selectedText) {
-      speakText(selectedText);
+      handleSpeakText(selectedText);
     } else {
       // If no text selected, speak the current page title
       const title = document.title || 'Заголовок страницы отсутствует';
-      speakText(title);
+      handleSpeakText(title);
     }
   };
 

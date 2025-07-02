@@ -3,19 +3,17 @@ import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Clock, User, Calendar, Volume2, Pause } from "lucide-react";
-import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
 import ShareButton from "@/components/ShareButton";
 import MetaTags from "@/components/MetaTags";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesisUtterance | null>(null);
+  const { isPlaying, isPaused, speakText, toggleSpeech, stopSpeech } = useSpeechSynthesis();
 
   const { data: article, isLoading, error } = useQuery<ArticleWithRelations>({
     queryKey: ["/api/articles", slug],
@@ -76,101 +74,12 @@ export default function ArticleDetail() {
     return `${article.title}. ${article.excerpt || ''}. ${plainText}`;
   };
 
-  const speakArticle = async () => {
-    if (!('speechSynthesis' in window)) {
-      alert('Синтез речи не поддерживается в вашем браузере');
-      return;
-    }
-
+  const handleSpeakArticle = async () => {
     const textToSpeak = getTextToSpeak();
     if (!textToSpeak) return;
-
-    if (isPaused && speechSynthesis) {
-      // Resume if paused
-      window.speechSynthesis.resume();
-      setIsPaused(false);
-      setIsPlaying(true);
-      return;
-    }
-
-    if (isPlaying) {
-      // Pause if playing
-      window.speechSynthesis.pause();
-      setIsPaused(true);
-      setIsPlaying(false);
-      return;
-    }
-
-    // Start new speech
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
     
-    // Configure speech settings
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-    utterance.lang = 'ru-RU';
-
-    // Find Russian voice if available
-    const voices = window.speechSynthesis.getVoices();
-    const russianVoice = voices.find(voice => voice.lang.startsWith('ru'));
-    if (russianVoice) {
-      utterance.voice = russianVoice;
-    }
-
-    // Set up event handlers
-    utterance.onstart = () => {
-      setIsPlaying(true);
-      setIsPaused(false);
-    };
-
-    utterance.onend = () => {
-      setIsPlaying(false);
-      setIsPaused(false);
-      setSpeechSynthesis(null);
-    };
-
-    utterance.onerror = () => {
-      setIsPlaying(false);
-      setIsPaused(false);
-      setSpeechSynthesis(null);
-    };
-
-    setSpeechSynthesis(utterance);
-    window.speechSynthesis.speak(utterance);
+    await toggleSpeech(textToSpeak, { rate: 1.0 });
   };
-
-  const stopSpeech = () => {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    setIsPlaying(false);
-    setIsPaused(false);
-    setSpeechSynthesis(null);
-  };
-
-  // Clean up speech synthesis on component unmount
-  useEffect(() => {
-    return () => {
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
-
-  // Load voices when available
-  useEffect(() => {
-    if ('speechSynthesis' in window) {
-      const loadVoices = () => {
-        window.speechSynthesis.getVoices();
-      };
-      
-      if (window.speechSynthesis.onvoiceschanged !== undefined) {
-        window.speechSynthesis.onvoiceschanged = loadVoices;
-      }
-      
-      loadVoices();
-    }
-  }, []);
 
   if (error) {
     return (
@@ -314,7 +223,7 @@ export default function ArticleDetail() {
                           {/* Listen Button */}
                           <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
                             <Button
-                              onClick={speakArticle}
+                              onClick={handleSpeakArticle}
                               variant="ghost"
                               size="default"
                               className="!text-gray-900 hover:!text-gray-700 flex items-center gap-2"
@@ -404,7 +313,7 @@ export default function ArticleDetail() {
                       {/* Listen Button */}
                       <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
                         <Button
-                          onClick={speakArticle}
+                          onClick={handleSpeakArticle}
                           variant="ghost"
                           size="default"
                           className="!text-gray-900 hover:!text-gray-700 flex items-center gap-2"
