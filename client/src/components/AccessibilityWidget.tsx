@@ -20,59 +20,35 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const { theme, setTheme, actualTheme } = useTheme();
   const panelRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  // Initialize and update panel elements tabindex based on open state
+  // Handle panel visibility and animation
   useEffect(() => {
-    if (!panelRef.current) return;
-    
-    // Get ALL elements and filter focusable ones
-    const allElements = panelRef.current.querySelectorAll('*');
-    const focusableElements = Array.from(allElements).filter((el) => {
-      const element = el as HTMLElement;
-      const tagName = element.tagName.toLowerCase();
-      const hasTabindex = element.hasAttribute('tabindex');
-      const tabindex = element.getAttribute('tabindex');
-      
-      return (
-        tagName === 'button' ||
-        tagName === 'a' ||
-        tagName === 'input' ||
-        tagName === 'select' ||
-        tagName === 'textarea' ||
-        element.hasAttribute('role') && ['button', 'slider'].includes(element.getAttribute('role') || '') ||
-        (hasTabindex && tabindex !== '-1') ||
-        element.hasAttribute('data-radix-slider-thumb')
-      );
-    });
-    
     if (open) {
-      // When open, restore original state and enable interaction
-      focusableElements.forEach(el => {
-        const element = el as HTMLElement;
-        const originalTabIndex = element.dataset.originalTabindex;
-        if (originalTabIndex) {
-          element.setAttribute('tabindex', originalTabIndex);
-          delete element.dataset.originalTabindex;
-        } else {
-          element.removeAttribute('tabindex');
-        }
-        element.style.pointerEvents = '';
-        element.removeAttribute('aria-hidden');
-      });
-    } else {
-      // When closed, store original tabindex and completely block all interaction
-      focusableElements.forEach(el => {
-        const element = el as HTMLElement;
-        const currentTabIndex = element.getAttribute('tabindex');
-        if (currentTabIndex && currentTabIndex !== '-1') {
-          element.dataset.originalTabindex = currentTabIndex;
-        }
-        element.setAttribute('tabindex', '-1');
-        element.style.pointerEvents = 'none';
-        element.setAttribute('aria-hidden', 'true');
-      });
+      // Opening: show panel first, then animate
+      setIsVisible(true);
+      setTimeout(() => {
+        setIsAnimating(true);
+      }, 10); // Small delay to ensure DOM update
+    } else if (isVisible) {
+      // Closing: animate out first, then hide
+      setIsAnimating(false);
+      setTimeout(() => {
+        setIsVisible(false);
+      }, 300); // Match animation duration
     }
-  }, [open]); // Run whenever open state changes
+  }, [open, isVisible]);
+
+  // Focus management when panel opens
+  useEffect(() => {
+    if (open && firstFocusableRef.current) {
+      // Focus the close button when panel opens
+      setTimeout(() => {
+        firstFocusableRef.current?.focus();
+      }, 350); // Wait for animation to complete
+    }
+  }, [open]);
 
   // Observer to handle dynamically added elements
   useEffect(() => {
@@ -776,14 +752,10 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       <div 
         ref={panelRef}
         className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out ${
-          open ? 'translate-x-0' : 'translate-x-full'
+          isAnimating ? 'translate-x-0' : 'translate-x-full'
         }`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="accessibility-title"
-        aria-describedby="accessibility-description"
-        aria-hidden={!open}
         style={{
+          display: isVisible ? 'flex' : 'none',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
           filter: 'none',
@@ -792,6 +764,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           borderColor: actualTheme === 'dark' ? 'hsl(217.2, 32.6%, 17.5%)' : 'hsl(214.3, 31.8%, 91.4%)',
           color: actualTheme === 'dark' ? 'hsl(210, 40%, 98%)' : 'hsl(222.2, 84%, 4.9%)'
         }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="accessibility-title"
+        aria-describedby="accessibility-description"
+        aria-hidden={!open}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b flex-shrink-0">

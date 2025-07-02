@@ -447,19 +447,4 @@ span, a, button, label {
   filter: none !important;
 }
 
-/* Hide panel content from tab navigation when closed, but allow animation */
-.accessibility-panel[aria-hidden="true"] * {
-  pointer-events: none !important;
-}
-
-/* Force all interactive elements to be non-focusable when panel is hidden */
-.accessibility-panel[aria-hidden="true"] button,
-.accessibility-panel[aria-hidden="true"] [role="button"],
-.accessibility-panel[aria-hidden="true"] input,
-.accessibility-panel[aria-hidden="true"] select,
-.accessibility-panel[aria-hidden="true"] textarea,
-.accessibility-panel[aria-hidden="true"] [tabindex]:not([tabindex="-1"]),
-.accessibility-panel[aria-hidden="true"] [role="slider"],
-.accessibility-panel[aria-hidden="true"] [data-radix-slider-thumb] {
-  visibility: hidden !important;
-}
+/* Panel is now fully controlled by display: none in JavaScript */
