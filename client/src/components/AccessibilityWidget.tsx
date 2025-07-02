@@ -21,6 +21,39 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const panelRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
+  // Initialize and update panel elements tabindex based on open state
+  useEffect(() => {
+    if (!panelRef.current) return;
+    
+    const focusableElements = panelRef.current.querySelectorAll(
+      'button, [href], input, select, textarea'
+    );
+    
+    if (open) {
+      // When open, make elements tabbable
+      focusableElements.forEach(el => {
+        (el as HTMLElement).removeAttribute('tabindex');
+      });
+    } else {
+      // When closed, make elements not tabbable
+      focusableElements.forEach(el => {
+        (el as HTMLElement).setAttribute('tabindex', '-1');
+      });
+    }
+  }, [open]); // Run whenever open state changes
+
+  // Initial setup to make elements not tabbable
+  useEffect(() => {
+    if (panelRef.current) {
+      const focusableElements = panelRef.current.querySelectorAll(
+        'button, [href], input, select, textarea'
+      );
+      focusableElements.forEach(el => {
+        (el as HTMLElement).setAttribute('tabindex', '-1');
+      });
+    }
+  }, []); // Run once on mount
+
   // Focus management when panel opens/closes
   useEffect(() => {
     if (open) {
@@ -74,13 +107,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && open) {
+        e.preventDefault();
+        e.stopPropagation();
         onOpenChange(false);
       }
     };
 
     if (open) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
+      document.addEventListener('keydown', handleEscape, true); // Use capture phase
+      return () => document.removeEventListener('keydown', handleEscape, true);
     }
   }, [open, onOpenChange]);
   
