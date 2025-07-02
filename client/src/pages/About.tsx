@@ -74,7 +74,7 @@ export default function About() {
       
       <main id="main-content" role="main">
         {/* Header Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-16">
+        <section className="bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-purple-700 dark:via-blue-700 dark:to-indigo-700 text-white py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             {isLoading ? (
               <Skeleton className="h-12 w-64 bg-white/20" />
