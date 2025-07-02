@@ -74,27 +74,27 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600 dark:via-purple-600/20 dark:via-purple-600/60 dark:to-purple-700"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
               
-              {/* Content overlay - centered */}
-              <div className="absolute inset-0 flex items-center justify-center px-4">
-                <div className="text-center text-white max-w-md">
-                  <h1 id="hero-heading" className="text-4xl sm:text-5xl font-bold mb-6">
+              {/* Content overlay - positioned at bottom */}
+              <div className="absolute inset-0 flex items-end justify-center pb-8 px-4">
+                <div className="text-center text-white max-w-sm">
+                  <h1 id="hero-heading" className="text-2xl sm:text-3xl font-bold mb-4">
                     Incluser
-                    <span className="block text-2xl sm:text-3xl font-medium mt-2 opacity-90">
+                    <span className="block text-lg sm:text-xl font-medium mt-1 opacity-90">
                       доступный сайт о доступности
                     </span>
                   </h1>
-                  <p className="text-base sm:text-lg mb-8 opacity-90 leading-relaxed">
+                  <p className="text-sm sm:text-base mb-6 opacity-90 leading-relaxed">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="flex flex-col gap-3 justify-center">
                     <Link href="/articles">
-                      <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
+                      <Button size="default" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg w-full">
                         Читать статьи
                       </Button>
                     </Link>
                     <Link href="/about">
-                      <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10">
+                      <Button size="default" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10 w-full">
                         Об авторе
                       </Button>
                     </Link>
