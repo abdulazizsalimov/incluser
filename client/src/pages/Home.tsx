@@ -37,35 +37,8 @@ export default function Home() {
       <main id="main-content" role="main">
         {/* Hero Section */}
         <section className="relative text-white overflow-hidden min-h-[500px] lg:min-h-[600px]" aria-labelledby="hero-heading">
-          {/* Background: Photo on large screens, gradient on mobile */}
-          <div className="absolute inset-0">
-            {/* Mobile: Just gradient background */}
-            <div className="lg:hidden absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
-            
-            {/* Desktop: Photo with gradient overlay */}
-            <div className="hidden lg:block absolute inset-0">
-              {/* Photo without cropping */}
-              <div className="absolute inset-0">
-                <img 
-                  src={heroPhoto} 
-                  alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
-                  className="w-full h-full object-contain object-left"
-                  loading="eager"
-                />
-              </div>
-              
-              {/* Blue background for areas not covered by photo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 -z-10"></div>
-              
-              {/* Gradient overlays on top of photo - very early start for seamless transition */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80"></div>
-            </div>
-          </div>
-
-          {/* Mobile: Identical to desktop - Photo with gradient overlay */}
-          <div className="lg:hidden absolute inset-0">
+          {/* Desktop: Photo with gradient overlay */}
+          <div className="hidden lg:block absolute inset-0">
             {/* Photo without cropping */}
             <div className="absolute inset-0">
               <img 
@@ -80,6 +53,24 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 -z-10"></div>
             
             {/* Gradient overlays on top of photo - very early start for seamless transition */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80"></div>
+          </div>
+
+          {/* Mobile: Photo with gradient overlay - uses object-cover to fill screen */}
+          <div className="lg:hidden absolute inset-0">
+            {/* Photo with cover to fill screen on mobile */}
+            <div className="absolute inset-0">
+              <img 
+                src={heroPhoto} 
+                alt="Автор блога работает за компьютером, демонстрируя использование цифровых технологий"
+                className="w-full h-full object-cover object-center"
+                loading="eager"
+              />
+            </div>
+            
+            {/* Gradient overlays on top of photo for text readability */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent from-10% via-blue-600/10 via-25% via-blue-600/30 via-50% to-blue-600"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600"></div>
             <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80"></div>
