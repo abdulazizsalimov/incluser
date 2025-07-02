@@ -74,27 +74,27 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent from-15% via-blue-600/20 via-35% via-blue-600/60 via-65% to-blue-600 dark:via-purple-600/20 dark:via-purple-600/60 dark:to-purple-700"></div>
               <div className="absolute inset-0 bg-gradient-to-br from-transparent from-20% via-cyan-600/20 via-45% via-teal-500/40 via-70% to-teal-500/80 dark:via-blue-600/20 dark:via-indigo-500/40 dark:to-purple-500/80"></div>
               
-              {/* Content overlay - positioned at bottom */}
-              <div className="absolute inset-0 flex items-end justify-center pb-6 px-4">
-                <div className="text-center text-white max-w-sm">
-                  <h1 id="hero-heading" className="text-xl sm:text-2xl font-bold mb-3">
+              {/* Content overlay - centered vertically with compact layout */}
+              <div className="absolute inset-0 flex items-center justify-center px-4">
+                <div className="text-center text-white max-w-xs">
+                  <h1 id="hero-heading" className="text-lg sm:text-xl font-bold mb-2">
                     Incluser
                   </h1>
-                  <h2 className="text-base sm:text-lg font-medium mb-4 opacity-90">
+                  <h2 className="text-sm sm:text-base font-medium mb-3 opacity-90">
                     доступный сайт о доступности
                   </h2>
-                  <p className="text-sm sm:text-base mb-5 opacity-90 leading-tight">
+                  <p className="text-xs sm:text-sm mb-4 opacity-90 leading-tight">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
-                  <div className="flex flex-col gap-3 justify-center">
+                  <div className="flex gap-2 justify-center">
                     <Link href="/articles">
-                      <Button size="default" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg w-full">
+                      <Button size="sm" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg text-xs px-3">
                         Читать статьи
                       </Button>
                     </Link>
                     <Link href="/about">
-                      <Button size="default" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10 w-full">
+                      <Button size="sm" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10 text-xs px-3">
                         Об авторе
                       </Button>
                     </Link>
