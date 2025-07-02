@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Clock, User, Calendar } from "lucide-react";
+import { ArrowLeft, Clock, User, Calendar, Volume2, Pause } from "lucide-react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SkipLinks from "@/components/SkipLinks";
@@ -12,6 +13,9 @@ import type { ArticleWithRelations } from "@shared/schema";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesisUtterance | null>(null);
 
   const { data: article, isLoading, error } = useQuery<ArticleWithRelations>({
     queryKey: ["/api/articles", slug],
@@ -58,6 +62,115 @@ export default function ArticleDetail() {
       .replace(/<p><h([1-6])>/g, '<h$1>')
       .replace(/<\/h([1-6])><\/p>/g, '</h$1>');
   };
+
+  // Speech synthesis functions
+  const getTextToSpeak = () => {
+    if (!article) return "";
+    
+    // Extract plain text from article content
+    const plainText = article.content
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
+    
+    return `${article.title}. ${article.excerpt || ''}. ${plainText}`;
+  };
+
+  const speakArticle = async () => {
+    if (!('speechSynthesis' in window)) {
+      alert('Синтез речи не поддерживается в вашем браузере');
+      return;
+    }
+
+    const textToSpeak = getTextToSpeak();
+    if (!textToSpeak) return;
+
+    if (isPaused && speechSynthesis) {
+      // Resume if paused
+      window.speechSynthesis.resume();
+      setIsPaused(false);
+      setIsPlaying(true);
+      return;
+    }
+
+    if (isPlaying) {
+      // Pause if playing
+      window.speechSynthesis.pause();
+      setIsPaused(true);
+      setIsPlaying(false);
+      return;
+    }
+
+    // Start new speech
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    
+    // Configure speech settings
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    utterance.lang = 'ru-RU';
+
+    // Find Russian voice if available
+    const voices = window.speechSynthesis.getVoices();
+    const russianVoice = voices.find(voice => voice.lang.startsWith('ru'));
+    if (russianVoice) {
+      utterance.voice = russianVoice;
+    }
+
+    // Set up event handlers
+    utterance.onstart = () => {
+      setIsPlaying(true);
+      setIsPaused(false);
+    };
+
+    utterance.onend = () => {
+      setIsPlaying(false);
+      setIsPaused(false);
+      setSpeechSynthesis(null);
+    };
+
+    utterance.onerror = () => {
+      setIsPlaying(false);
+      setIsPaused(false);
+      setSpeechSynthesis(null);
+    };
+
+    setSpeechSynthesis(utterance);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeech = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsPlaying(false);
+    setIsPaused(false);
+    setSpeechSynthesis(null);
+  };
+
+  // Clean up speech synthesis on component unmount
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  // Load voices when available
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      const loadVoices = () => {
+        window.speechSynthesis.getVoices();
+      };
+      
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+      
+      loadVoices();
+    }
+  }, []);
 
   if (error) {
     return (
@@ -189,7 +302,7 @@ export default function ArticleDetail() {
                         )}
                       </div>
 
-                      {/* Category and Share */}
+                      {/* Category, Listen and Share */}
                       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                         {article.category && (
                           <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-2 rounded-full text-sm font-medium border border-white/30">
@@ -197,14 +310,40 @@ export default function ArticleDetail() {
                           </span>
                         )}
                         
-                        <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg [&_button]:!text-gray-900 [&_button:hover]:!text-gray-700">
-                          <ShareButton
-                            title={article.title}
-                            url={`${window.location.origin}/articles/${article.slug}`}
-                            description={article.excerpt || ""}
-                            size="default"
-                            variant="ghost"
-                          />
+                        <div className="flex items-center gap-2">
+                          {/* Listen Button */}
+                          <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
+                            <Button
+                              onClick={speakArticle}
+                              variant="ghost"
+                              size="default"
+                              className="!text-gray-900 hover:!text-gray-700 flex items-center gap-2"
+                              title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
+                            >
+                              {isPlaying ? (
+                                <>
+                                  <Pause className="h-4 w-4" />
+                                  Пауза
+                                </>
+                              ) : (
+                                <>
+                                  <Volume2 className="h-4 w-4" />
+                                  {isPaused ? "Продолжить" : "Прослушать"}
+                                </>
+                              )}
+                            </Button>
+                          </div>
+
+                          {/* Share Button */}
+                          <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg [&_button]:!text-gray-900 [&_button:hover]:!text-gray-700">
+                            <ShareButton
+                              title={article.title}
+                              url={`${window.location.origin}/articles/${article.slug}`}
+                              description={article.excerpt || ""}
+                              size="default"
+                              variant="ghost"
+                            />
+                          </div>
                         </div>
                       </div>
                     </header>
@@ -260,8 +399,32 @@ export default function ArticleDetail() {
                       </header>
                     </div>
                     
-                    {/* Share button in bottom right */}
-                    <div className="ml-4">
+                    {/* Listen and Share buttons in bottom right */}
+                    <div className="ml-4 flex items-center gap-3">
+                      {/* Listen Button */}
+                      <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
+                        <Button
+                          onClick={speakArticle}
+                          variant="ghost"
+                          size="default"
+                          className="!text-gray-900 hover:!text-gray-700 flex items-center gap-2"
+                          title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
+                        >
+                          {isPlaying ? (
+                            <>
+                              <Pause className="h-5 w-5" />
+                              Пауза
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="h-5 w-5" />
+                              {isPaused ? "Продолжить" : "Прослушать"}
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      {/* Share Button */}
                       <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg [&_button]:!text-gray-900 [&_button:hover]:!text-gray-700">
                         <ShareButton
                           title={article.title}
