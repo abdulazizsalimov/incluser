@@ -344,6 +344,42 @@ body {
   }
 }
 
+/* Enhanced prose styles for dark theme */
+.dark .prose {
+  color: hsl(var(--foreground));
+}
+
+.dark .prose em,
+.dark .prose i {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.dark .prose strong {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose h1,
+.dark .prose h2, 
+.dark .prose h3,
+.dark .prose h4,
+.dark .prose h5,
+.dark .prose h6 {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose p {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose li {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose ul,
+.dark .prose ol {
+  color: hsl(var(--foreground)) !important;
+}
+
 /* Enhanced focus styles for keyboard navigation */
 button:focus-visible,
 a:focus-visible,

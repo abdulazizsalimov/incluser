@@ -281,7 +281,7 @@ export default function ArticleDetail() {
             <article className="py-12">
               <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div 
-                  className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-foreground prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded"
+                  className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-foreground prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-li:text-foreground [&_em]:!text-muted-foreground"
                   dangerouslySetInnerHTML={{ __html: formatContent(article.content) }}
                 />
               </div>

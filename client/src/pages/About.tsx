@@ -99,7 +99,7 @@ export default function About() {
               </div>
             ) : page ? (
               <div 
-                className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-ul:text-foreground prose-li:text-foreground"
+                className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-ul:text-foreground prose-li:text-foreground"
                 dangerouslySetInnerHTML={{ __html: page.content }}
               />
             ) : (
