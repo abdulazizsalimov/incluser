@@ -77,13 +77,13 @@ export default function Home() {
               {/* Content overlay - centered vertically with compact layout */}
               <div className="absolute inset-0 flex items-center justify-center px-4">
                 <div className="text-center text-white max-w-sm">
-                  <h1 id="hero-heading" className="text-2xl sm:text-3xl font-bold mb-2">
+                  <h1 id="hero-heading" className="text-3xl sm:text-4xl font-bold mb-3">
                     Incluser
                   </h1>
-                  <h2 className="text-base sm:text-lg font-medium mb-3 opacity-90">
+                  <h2 className="text-lg sm:text-xl font-medium mb-4 opacity-90">
                     доступный сайт о доступности
                   </h2>
-                  <p className="text-sm sm:text-base mb-4 opacity-90 leading-relaxed">
+                  <p className="text-base sm:text-lg mb-5 opacity-90 leading-relaxed">
                     Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, 
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
