@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 2, 2025. Replaced theme selector with visual thumbnails - replaced dropdown with three clickable preview cards showing miniature site interface in light theme (blue accents), dark theme (purple-blue cosmic gradient), and system theme (split light/dark), each with hover animations and proper accessibility labels
 - July 2, 2025. Added "Listen" button to article banners - created speech synthesis functionality for full article reading with play/pause toggle, button changes between "Прослушать", "Пауза", and "Продолжить" states, positioned alongside share button in both mobile and desktop layouts
 - July 2, 2025. Added floating speech button for text selection - created smart floating button that appears when text is selected, allows one-click speech synthesis, toggles between play/stop states, positions intelligently near selection area
 - July 2, 2025. Redesigned mobile banner layout - removed fixed height constraints, banner now adapts to natural image dimensions, text is perfectly centered over image, eliminated blue border artifacts by removing background gradients
