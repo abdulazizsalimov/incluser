@@ -197,7 +197,7 @@ export default function ArticleDetail() {
                           </span>
                         )}
                         
-                        <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-white/30 shadow-lg">
+                        <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
                           <ShareButton
                             title={article.title}
                             url={`${window.location.origin}/articles/${article.slug}`}
@@ -262,7 +262,7 @@ export default function ArticleDetail() {
                     
                     {/* Share button in bottom right */}
                     <div className="ml-4">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-white/30 shadow-lg">
+                      <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
                         <ShareButton
                           title={article.title}
                           url={`${window.location.origin}/articles/${article.slug}`}
