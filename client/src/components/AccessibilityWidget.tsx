@@ -163,7 +163,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.setItem('accessibility-text-to-speech', enabled.toString());
     
     if (!enabled) {
-      stopSpeech();
+      globalStopSpeech();
       setShowSpeechSettings(false);
     }
   };
@@ -581,7 +581,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     setSpeechVoice('browser');
     setSpeechSpeed([1.0]);
     setShowSpeechSettings(false);
-    stopSpeech();
+    globalStopSpeech();
     
     document.documentElement.style.fontSize = '';
     document.documentElement.style.removeProperty('--line-height-multiplier');
@@ -1059,7 +1059,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={stopSpeech}
+                    onClick={globalStopSpeech}
                     className="flex items-center gap-2"
                   >
                     <VolumeX className="h-4 w-4" />
@@ -1127,8 +1127,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         isEnabled={textToSpeech}
         speechVoice={speechVoice}
         speechSpeed={speechSpeed}
-        onSpeak={speakText}
-        onStop={stopSpeech}
+        onSpeak={handleSpeakText}
+        onStop={globalStopSpeech}
         isPlaying={isPlaying}
       />
     </TooltipProvider>
