@@ -437,7 +437,8 @@ span, a, button, label {
 [data-radix-portal],
 [data-radix-popper-content-wrapper],
 [data-radix-dialog-content],
-.accessibility-dialog {
+.accessibility-dialog,
+.accessibility-panel {
   filter: none !important;
 }
 
@@ -446,6 +447,7 @@ span, a, button, label {
 [data-radix-portal] *,
 [data-radix-popper-content-wrapper] *,
 [data-radix-dialog-content] *,
-.accessibility-dialog * {
+.accessibility-dialog *,
+.accessibility-panel * {
   filter: none !important;
 }

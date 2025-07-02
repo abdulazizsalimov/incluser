@@ -18,6 +18,25 @@ interface AccessibilityWidgetProps {
 
 export default function AccessibilityWidget({ open, onOpenChange }: AccessibilityWidgetProps) {
   const { theme, setTheme, actualTheme } = useTheme();
+
+  // Handle Escape key to close panel and return focus
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open) {
+        onOpenChange(false);
+        // Return focus to accessibility button in header
+        const accessibilityButton = document.querySelector('[aria-label="Панель специальных возможностей"]') as HTMLElement;
+        if (accessibilityButton) {
+          accessibilityButton.focus();
+        }
+      }
+    };
+
+    if (open) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [open, onOpenChange]);
   
   // Load all settings from localStorage
   const [fontSize, setFontSize] = useState(() => {
@@ -619,8 +638,14 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       <div 
         className={`fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
           open ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        } accessibility-panel`}
         aria-describedby="accessibility-description"
+        style={{
+          // Force colors even in grayscale mode
+          backgroundColor: actualTheme === 'dark' ? 'hsl(222.2, 84%, 4.9%)' : 'hsl(0, 0%, 100%)',
+          borderColor: actualTheme === 'dark' ? 'hsl(217.2, 32.6%, 17.5%)' : 'hsl(214.3, 31.8%, 91.4%)',
+          color: actualTheme === 'dark' ? 'hsl(210, 40%, 98%)' : 'hsl(222.2, 84%, 4.9%)'
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
