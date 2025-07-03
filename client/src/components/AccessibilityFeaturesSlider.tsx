@@ -99,27 +99,33 @@ const slides = [
 
 export default function AccessibilityFeaturesSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [nextSlide, setNextSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
+      const next = (currentSlide + 1) % slides.length;
+      setNextSlide(next);
       setIsTransitioning(true);
+      
       setTimeout(() => {
-        setCurrentSlide((prev) => (prev + 1) % slides.length);
+        setCurrentSlide(next);
         setIsTransitioning(false);
-      }, 150);
+      }, 300);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentSlide]);
 
   const handleSlideChange = (index: number) => {
-    if (index !== currentSlide) {
+    if (index !== currentSlide && !isTransitioning) {
+      setNextSlide(index);
       setIsTransitioning(true);
+      
       setTimeout(() => {
         setCurrentSlide(index);
         setIsTransitioning(false);
-      }, 150);
+      }, 300);
     }
   };
 
@@ -161,10 +167,11 @@ export default function AccessibilityFeaturesSlider() {
         </div>
 
         {/* Slide Content - Fixed Height Container */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-white/20 h-[500px] relative overflow-hidden">
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 h-[500px] relative overflow-hidden">
+          {/* Current Slide */}
           <div 
-            className={`absolute inset-0 p-8 md:p-12 transition-all duration-300 ease-in-out ${
-              isTransitioning ? 'transform -translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'
+            className={`absolute inset-0 p-8 md:p-12 transition-transform duration-300 ease-in-out ${
+              isTransitioning ? 'transform -translate-x-full' : 'transform translate-x-0'
             }`}
           >
             <div className="flex flex-col items-center justify-center h-full text-center">
@@ -200,6 +207,46 @@ export default function AccessibilityFeaturesSlider() {
               </div>
             </div>
           </div>
+
+          {/* Next Slide (coming from right) */}
+          {isTransitioning && (
+            <div 
+              className="absolute inset-0 p-8 md:p-12 animate-slide-in-right"
+            >
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                {/* Next Slide Illustration */}
+                <div className="mb-8">
+                  {slides[nextSlide].illustration}
+                </div>
+
+                {/* Next Slide Title */}
+                <h3 className="text-2xl md:text-3xl font-bold mb-6">
+                  {slides[nextSlide].title}
+                </h3>
+
+                {/* Next Slide Description */}
+                <div className="flex-1 flex items-center">
+                  <p className="text-lg md:text-xl opacity-90 leading-relaxed max-w-2xl mx-auto mb-8">
+                    {slides[nextSlide].description}
+                  </p>
+                </div>
+
+                {/* Try Button */}
+                <div className="mt-auto">
+                  <button 
+                    onClick={handleTryClick}
+                    className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+                    aria-describedby="try-accessibility-desc-next"
+                  >
+                    Попробовать
+                  </button>
+                  <p id="try-accessibility-desc-next" className="text-sm opacity-75 mt-3">
+                    Откроет панель специальных возможностей для настройки сайта
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Slide Indicators */}

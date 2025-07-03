@@ -448,3 +448,30 @@ span, a, button, label {
 }
 
 /* Panel is now fully controlled by display: none in JavaScript */
+
+/* Slide animations for accessibility features slider */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 300ms ease-in-out forwards;
+}
+
+.animate-slide-out-left {
+  animation: slideOutLeft 300ms ease-in-out forwards;
+}
