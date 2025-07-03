@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
-import accessibilityImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_08_58_1751515789099.png";
+import accessibilitySettingsImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_08_58_1751517384820.png";
+import speechSynthesisImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_23_28_1751517391589.png";
+import visualEnhancementsImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_26_51_1751517398839.png";
+import themeOptionsImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_29_32_1751517404453.png";
+import keyboardNavigationImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_35_07_1751517409719.png";
 
 const slides = [
   {
     id: 1,
     illustration: (
       <img 
-        src={accessibilityImage} 
+        src={accessibilitySettingsImage} 
         alt="Человек настраивает доступность на компьютере с иконками глаза, текста и уха"
         className="w-full h-full object-cover"
       />
@@ -17,15 +21,11 @@ const slides = [
   {
     id: 2,
     illustration: (
-      <svg className="w-full h-full" viewBox="0 0 120 120" fill="none">
-        <circle cx="60" cy="60" r="45" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
-        <path d="M40 50 L40 70 L50 65 L70 80 L70 40 L50 55 Z" fill="currentColor"/>
-        <path d="M75 45 C85 50 95 55 95 60 C95 65 85 70 75 75" stroke="currentColor" strokeWidth="3" fill="none"/>
-        <path d="M80 35 C95 45 105 52 105 60 C105 68 95 75 80 85" stroke="currentColor" strokeWidth="3" fill="none"/>
-        <circle cx="35" cy="35" r="4" fill="currentColor"/>
-        <circle cx="25" cy="45" r="3" fill="currentColor"/>
-        <circle cx="30" cy="25" r="2" fill="currentColor"/>
-      </svg>
+      <img 
+        src={speechSynthesisImage} 
+        alt="Человек с наушниками слушает озвучивание текста с компьютера"
+        className="w-full h-full object-cover"
+      />
     ),
     title: "Озвучивание текста",
     description: "Предпочитаете воспринимать информацию на слух? Выделите текст для озвучивания."
@@ -33,17 +33,11 @@ const slides = [
   {
     id: 3,
     illustration: (
-      <svg className="w-full h-full" viewBox="0 0 120 120" fill="none">
-        <circle cx="60" cy="50" r="25" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
-        <circle cx="60" cy="50" r="15" fill="currentColor"/>
-        <circle cx="60" cy="50" r="6" fill="white"/>
-        <path d="M30 85 Q60 70 90 85" stroke="currentColor" strokeWidth="4" fill="none"/>
-        <rect x="20" y="95" width="15" height="15" fill="currentColor"/>
-        <rect x="35" y="95" width="15" height="15" fill="currentColor" opacity="0.7"/>
-        <rect x="50" y="95" width="15" height="15" fill="currentColor" opacity="0.4"/>
-        <rect x="65" y="95" width="15" height="15" fill="currentColor" opacity="0.2"/>
-        <rect x="80" y="95" width="15" height="15" fill="currentColor" opacity="0.1"/>
-      </svg>
+      <img 
+        src={visualEnhancementsImage} 
+        alt="Человек настраивает визуальные параметры интерфейса с лупой и переключателями"
+        className="w-full h-full object-cover"
+      />
     ),
     title: "Визуальные улучшения",
     description: "Проблемы с восприятием цветов? Включите черно-белый режим или увеличение текста."
@@ -51,16 +45,11 @@ const slides = [
   {
     id: 4,
     illustration: (
-      <svg className="w-full h-full" viewBox="0 0 120 120" fill="none">
-        <circle cx="45" cy="60" r="35" fill="#FCD34D"/>
-        <circle cx="75" cy="60" r="35" fill="#1F2937"/>
-        <path d="M60 20 L75 40 L45 40 Z" fill="currentColor"/>
-        <circle cx="35" cy="55" r="5" fill="#1F2937"/>
-        <path d="M20 70 Q45 85 60 70" stroke="#1F2937" strokeWidth="3" fill="none"/>
-        <circle cx="85" cy="55" r="5" fill="white"/>
-        <path d="M100 70 Q75 85 60 70" stroke="white" strokeWidth="3" fill="none"/>
-        <rect x="55" y="95" width="10" height="15" fill="currentColor"/>
-      </svg>
+      <img 
+        src={themeOptionsImage} 
+        alt="Человек настраивает темы оформления в браузере с переключателями"
+        className="w-full h-full object-cover"
+      />
     ),
     title: "Темы оформления",
     description: "Чувствительны к яркому свету? Переключитесь на темную тему."
@@ -68,37 +57,14 @@ const slides = [
   {
     id: 5,
     illustration: (
-      <svg className="w-full h-full" viewBox="0 0 120 120" fill="none">
-        <rect x="20" y="40" width="80" height="50" rx="8" stroke="currentColor" strokeWidth="3" fill="none"/>
-        <path d="M40 60 L55 45 L55 52 L85 52 L85 45 L100 60 L85 75 L85 68 L55 68 L55 75 Z" fill="red" opacity="0.7"/>
-        <line x1="30" y1="100" x2="50" y2="110" stroke="red" strokeWidth="4"/>
-        <line x1="50" y1="100" x2="30" y2="110" stroke="red" strokeWidth="4"/>
-        <text x="60" y="25" fontSize="12" textAnchor="middle" fill="currentColor" fontWeight="bold">STOP</text>
-      </svg>
+      <img 
+        src={keyboardNavigationImage} 
+        alt="Человек работает с клавиатурой, используя клавишу Tab для навигации"
+        className="w-full h-full object-cover"
+      />
     ),
-    title: "Управление движением",
-    description: "Анимации вызывают дискомфорт? Отключите все переходы и анимации."
-  },
-  {
-    id: 6,
-    illustration: (
-      <svg className="w-full h-full" viewBox="0 0 120 120" fill="none">
-        <rect x="10" y="50" width="100" height="40" rx="8" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2"/>
-        <rect x="18" y="58" width="12" height="12" rx="3" fill="currentColor"/>
-        <rect x="34" y="58" width="12" height="12" rx="3" fill="currentColor"/>
-        <rect x="50" y="58" width="30" height="12" rx="3" fill="currentColor"/>
-        <rect x="84" y="58" width="12" height="12" rx="3" fill="currentColor"/>
-        <rect x="18" y="74" width="12" height="12" rx="3" fill="currentColor"/>
-        <rect x="34" y="74" width="45" height="12" rx="3" fill="currentColor"/>
-        <rect x="84" y="74" width="12" height="12" rx="3" fill="currentColor"/>
-        <path d="M60 25 L50 35 L60 45 L70 35 Z" fill="currentColor"/>
-        <text x="60" y="20" fontSize="10" textAnchor="middle" fill="currentColor" fontWeight="bold">TAB</text>
-        <path d="M20 35 L30 25 L40 35" stroke="currentColor" strokeWidth="2" fill="none"/>
-        <path d="M80 35 L90 25 L100 35" stroke="currentColor" strokeWidth="2" fill="none"/>
-      </svg>
-    ),
-    title: "Навигация с клавиатуры",
-    description: "Не используете мышь? Перемещайтесь по сайту с помощью клавиши Tab."
+    title: "Клавиатурная навигация",
+    description: "Удобнее работать с клавиатурой? Используйте Tab для навигации по сайту."
   }
 ];
 
