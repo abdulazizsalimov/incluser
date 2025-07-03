@@ -12,7 +12,7 @@ const slides = [
       <img 
         src={slyde1Image} 
         alt="Человек настраивает доступность на компьютере с иконками глаза, текста и уха"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     ),
     title: "Настройка доступности",
@@ -24,7 +24,7 @@ const slides = [
       <img 
         src={slyde2Image} 
         alt="Человек с наушниками слушает озвучивание текста с компьютера"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     ),
     title: "Озвучивание текста",
@@ -36,7 +36,7 @@ const slides = [
       <img 
         src={slyde3Image} 
         alt="Человек настраивает визуальные параметры интерфейса с лупой и переключателями"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     ),
     title: "Визуальные улучшения",
@@ -48,7 +48,7 @@ const slides = [
       <img 
         src={slyde4Image} 
         alt="Человек настраивает темы оформления в браузере с переключателями"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     ),
     title: "Темы оформления",
@@ -60,7 +60,7 @@ const slides = [
       <img 
         src={slyde5Image} 
         alt="Человек работает с клавиатурой, используя клавишу Tab для навигации"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     ),
     title: "Клавиатурная навигация",
@@ -109,20 +109,20 @@ export default function AccessibilityFeaturesSlider() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h2 id="accessibility-features" className="text-3xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-4">
+          <h2 id="accessibility-features" className="text-2xl md:text-3xl font-bold mb-2">
             Специальные возможности: забота о каждом пользователе
           </h2>
-          <p className="text-lg md:text-xl opacity-90">
+          <p className="text-base md:text-lg opacity-90">
             Настройте сайт под свои потребности
           </p>
         </div>
 
         {/* Main Slider Container - Center of Attention */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 md:p-8 mb-6">
-          <div className="relative h-[400px] overflow-hidden">
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4 md:p-6 mb-4">
+          <div className="relative h-[300px] overflow-hidden">
             <div 
               className="flex transition-transform duration-500 ease-in-out h-full"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
