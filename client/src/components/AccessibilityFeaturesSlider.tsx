@@ -70,14 +70,43 @@ const slides = [
 
 export default function AccessibilityFeaturesSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(5000);
 
   useEffect(() => {
+    if (!isAutoPlaying) return;
+
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setTimeLeft(5000);
     }, 5000);
 
-    return () => clearInterval(interval);
-  }, []);
+    const timeInterval = setInterval(() => {
+      setTimeLeft((prev) => Math.max(0, prev - 100));
+    }, 100);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(timeInterval);
+    };
+  }, [isAutoPlaying]);
+
+  const toggleAutoPlay = () => {
+    setIsAutoPlaying(!isAutoPlaying);
+    if (isAutoPlaying) {
+      setTimeLeft(5000);
+    }
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setTimeLeft(5000);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setTimeLeft(5000);
+  };
 
   const handleSlideChange = (index: number) => {
     setCurrentSlide(index);
@@ -123,6 +152,27 @@ export default function AccessibilityFeaturesSlider() {
         {/* Continuous Ribbon Slider */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4 md:p-6 mb-4">
           <div className="relative h-[400px] overflow-hidden rounded-xl">
+            {/* Previous Button */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-50 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/50"
+              aria-label="Предыдущий слайд"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={nextSlide}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-50 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/50"
+              aria-label="Следующий слайд"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
             {/* Render all slides with transitions */}
             {slides.map((slide, index) => {
               const position = index === currentSlide ? 'center' : 
@@ -182,6 +232,38 @@ export default function AccessibilityFeaturesSlider() {
           <p id="try-accessibility-desc" className="sr-only">
             Откроет панель специальных возможностей для настройки сайта
           </p>
+
+          {/* Timer Clock */}
+          <div className="flex justify-center items-center mb-4">
+            <button
+              onClick={toggleAutoPlay}
+              className="relative bg-white/20 hover:bg-white/30 rounded-full p-3 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/50"
+              aria-label={isAutoPlaying ? "Остановить автопереключение" : "Запустить автопереключение"}
+            >
+              {/* Clock face */}
+              <div className="w-8 h-8 rounded-full border-2 border-white relative">
+                {/* Clock hand - rotates based on time left */}
+                <div 
+                  className="absolute top-1 left-1/2 w-0.5 h-3 bg-white origin-bottom -translate-x-1/2 transition-transform duration-100"
+                  style={{ 
+                    transform: `translateX(-50%) rotate(${isAutoPlaying ? (360 - (timeLeft / 5000) * 360) : 0}deg)`,
+                    transformOrigin: 'bottom center'
+                  }}
+                />
+                {/* Center dot */}
+                <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
+              </div>
+              
+              {/* Play/Pause overlay */}
+              {!isAutoPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              )}
+            </button>
+          </div>
 
           {/* Slide Indicators */}
           <div className="flex justify-center gap-2 mb-3">
