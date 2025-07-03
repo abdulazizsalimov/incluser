@@ -109,9 +109,9 @@ export default function AccessibilityFeaturesSlider() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h2 id="accessibility-features" className="text-3xl md:text-4xl font-bold mb-4">
             Специальные возможности: забота о каждом пользователе
           </h2>
@@ -121,8 +121,8 @@ export default function AccessibilityFeaturesSlider() {
         </div>
 
         {/* Main Slider Container - Center of Attention */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8 md:p-12 mb-8">
-          <div className="relative h-[600px] overflow-hidden">
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6 md:p-8 mb-6">
+          <div className="relative h-[400px] overflow-hidden">
             <div 
               className="flex transition-transform duration-500 ease-in-out h-full"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -154,12 +154,12 @@ export default function AccessibilityFeaturesSlider() {
           {/* Try Button */}
           <button 
             onClick={handleTryClick}
-            className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 mb-6"
+            className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-2 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 mb-4"
             aria-describedby="try-accessibility-desc"
           >
             Попробовать
           </button>
-          <p id="try-accessibility-desc" className="text-sm opacity-75 mb-6">
+          <p id="try-accessibility-desc" className="text-sm opacity-75 mb-4">
             Откроет панель специальных возможностей для настройки сайта
           </p>
 
