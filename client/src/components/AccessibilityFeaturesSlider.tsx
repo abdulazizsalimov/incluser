@@ -3,9 +3,14 @@ import { useState, useEffect } from "react";
 const slides = [
   {
     id: 1,
-    icon: (
-      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M5 4v3h5.5v12h3V7H19V4z"/>
+    illustration: (
+      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
+        <rect x="20" y="30" width="60" height="40" rx="4" fill="currentColor" opacity="0.2"/>
+        <text x="50" y="42" fontSize="8" textAnchor="middle" fill="currentColor">Aa</text>
+        <text x="50" y="54" fontSize="12" textAnchor="middle" fill="currentColor">Aa</text>
+        <text x="50" y="68" fontSize="16" textAnchor="middle" fill="currentColor">Aa</text>
+        <path d="M15 45 L25 40 L25 50 Z" fill="currentColor"/>
+        <path d="M85 45 L75 40 L75 50 Z" fill="currentColor"/>
       </svg>
     ),
     title: "Настройка шрифтов",
@@ -13,9 +18,12 @@ const slides = [
   },
   {
     id: 2,
-    icon: (
-      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+    illustration: (
+      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="30" fill="currentColor" opacity="0.2"/>
+        <path d="M35 40 L35 60 L45 55 L55 65 L55 35 L45 45 Z" fill="currentColor"/>
+        <path d="M58 35 C65 40 70 45 70 50 C70 55 65 60 58 65" stroke="currentColor" strokeWidth="2" fill="none"/>
+        <path d="M72 25 C82 35 90 42 90 50 C90 58 82 65 72 75" stroke="currentColor" strokeWidth="2" fill="none"/>
       </svg>
     ),
     title: "Озвучивание текста",
@@ -23,9 +31,16 @@ const slides = [
   },
   {
     id: 3,
-    icon: (
-      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+    illustration: (
+      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="40" r="15" fill="currentColor" opacity="0.2"/>
+        <circle cx="50" cy="40" r="8" fill="currentColor"/>
+        <circle cx="50" cy="40" r="3" fill="white"/>
+        <path d="M30 65 Q50 55 70 65" stroke="currentColor" strokeWidth="3" fill="none"/>
+        <rect x="25" y="75" width="10" height="10" fill="currentColor"/>
+        <rect x="40" y="75" width="10" height="10" fill="currentColor" opacity="0.5"/>
+        <rect x="55" y="75" width="10" height="10" fill="currentColor" opacity="0.3"/>
+        <rect x="70" y="75" width="10" height="10" fill="currentColor" opacity="0.1"/>
       </svg>
     ),
     title: "Визуальные улучшения",
@@ -33,9 +48,15 @@ const slides = [
   },
   {
     id: 4,
-    icon: (
-      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M7.5 2C5.71 3.15 4.5 5.18 4.5 7.5c0 1.77.78 3.34 2 4.44V20h11v-8.06c1.22-1.1 2-2.67 2-4.44 0-2.32-1.21-4.35-3-5.5L12 9 7.5 2z"/>
+    illustration: (
+      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
+        <circle cx="35" cy="50" r="25" fill="#FCD34D"/>
+        <circle cx="65" cy="50" r="25" fill="#1F2937"/>
+        <path d="M50 25 L60 40 L40 40 Z" fill="currentColor"/>
+        <circle cx="30" cy="45" r="3" fill="#1F2937"/>
+        <path d="M20 55 Q35 65 50 55" stroke="#1F2937" strokeWidth="2" fill="none"/>
+        <circle cx="70" cy="45" r="3" fill="white"/>
+        <path d="M80 55 Q65 65 50 55" stroke="white" strokeWidth="2" fill="none"/>
       </svg>
     ),
     title: "Темы оформления",
@@ -43,9 +64,13 @@ const slides = [
   },
   {
     id: 5,
-    icon: (
-      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+    illustration: (
+      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
+        <rect x="20" y="30" width="60" height="40" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
+        <path d="M30 45 L40 35 L40 40 L60 40 L60 35 L70 45 L60 55 L60 50 L40 50 L40 55 Z" fill="currentColor" opacity="0.3"/>
+        <line x1="35" y1="60" x2="45" y2="70" stroke="red" strokeWidth="3"/>
+        <line x1="45" y1="60" x2="35" y2="70" stroke="red" strokeWidth="3"/>
+        <text x="50" y="80" fontSize="8" textAnchor="middle" fill="currentColor">Без анимаций</text>
       </svg>
     ),
     title: "Управление движением",
@@ -53,9 +78,18 @@ const slides = [
   },
   {
     id: 6,
-    icon: (
-      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/>
+    illustration: (
+      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
+        <rect x="15" y="40" width="70" height="30" rx="4" fill="currentColor" opacity="0.2"/>
+        <rect x="20" y="45" width="8" height="8" rx="2" fill="currentColor"/>
+        <rect x="32" y="45" width="8" height="8" rx="2" fill="currentColor"/>
+        <rect x="44" y="45" width="20" height="8" rx="2" fill="currentColor"/>
+        <rect x="68" y="45" width="8" height="8" rx="2" fill="currentColor"/>
+        <rect x="20" y="57" width="8" height="8" rx="2" fill="currentColor"/>
+        <rect x="32" y="57" width="8" height="8" rx="2" fill="currentColor"/>
+        <rect x="44" y="57" width="32" height="8" rx="2" fill="currentColor"/>
+        <path d="M50 25 L45 30 L50 35 L55 30 Z" fill="currentColor"/>
+        <text x="50" y="20" fontSize="6" textAnchor="middle" fill="currentColor">Tab</text>
       </svg>
     ),
     title: "Навигация с клавиатуры",
@@ -65,14 +99,29 @@ const slides = [
 
 export default function AccessibilityFeaturesSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+        setIsTransitioning(false);
+      }, 150);
     }, 5000);
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleSlideChange = (index: number) => {
+    if (index !== currentSlide) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentSlide(index);
+        setIsTransitioning(false);
+      }, 150);
+    }
+  };
 
   const handleTryClick = () => {
     const accessibilityButton = document.querySelector('[aria-label="Специальные возможности"]') as HTMLButtonElement;
@@ -111,35 +160,45 @@ export default function AccessibilityFeaturesSlider() {
           </p>
         </div>
 
-        {/* Slide Content */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-white/20 min-h-[300px] flex flex-col justify-between">
-          <div className="text-center">
-            {/* Slide Icon */}
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              {slides[currentSlide].icon}
+        {/* Slide Content - Fixed Height Container */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-white/20 h-[500px] relative overflow-hidden">
+          <div 
+            className={`absolute inset-0 p-8 md:p-12 transition-all duration-300 ease-in-out ${
+              isTransitioning ? 'transform -translate-x-full opacity-0' : 'transform translate-x-0 opacity-100'
+            }`}
+          >
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              {/* Slide Illustration */}
+              <div className="mb-8">
+                {slides[currentSlide].illustration}
+              </div>
+
+              {/* Slide Title */}
+              <h3 className="text-2xl md:text-3xl font-bold mb-6">
+                {slides[currentSlide].title}
+              </h3>
+
+              {/* Slide Description */}
+              <div className="flex-1 flex items-center">
+                <p className="text-lg md:text-xl opacity-90 leading-relaxed max-w-2xl mx-auto mb-8">
+                  {slides[currentSlide].description}
+                </p>
+              </div>
+
+              {/* Try Button */}
+              <div className="mt-auto">
+                <button 
+                  onClick={handleTryClick}
+                  className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+                  aria-describedby="try-accessibility-desc"
+                >
+                  Попробовать
+                </button>
+                <p id="try-accessibility-desc" className="text-sm opacity-75 mt-3">
+                  Откроет панель специальных возможностей для настройки сайта
+                </p>
+              </div>
             </div>
-
-            {/* Slide Title */}
-            <h3 className="text-2xl md:text-3xl font-bold mb-6">
-              {slides[currentSlide].title}
-            </h3>
-
-            {/* Slide Description */}
-            <p className="text-lg md:text-xl opacity-90 leading-relaxed max-w-2xl mx-auto mb-8">
-              {slides[currentSlide].description}
-            </p>
-
-            {/* Try Button */}
-            <button 
-              onClick={handleTryClick}
-              className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
-              aria-describedby="try-accessibility-desc"
-            >
-              Попробовать
-            </button>
-            <p id="try-accessibility-desc" className="text-sm opacity-75 mt-3">
-              Откроет панель специальных возможностей для настройки сайта
-            </p>
           </div>
         </div>
 
@@ -148,7 +207,7 @@ export default function AccessibilityFeaturesSlider() {
           {slides.map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentSlide(index)}
+              onClick={() => handleSlideChange(index)}
               className={`w-3 h-3 rounded-full transition-all ${
                 index === currentSlide 
                   ? 'bg-white' 
