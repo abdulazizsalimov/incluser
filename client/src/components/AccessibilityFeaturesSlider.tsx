@@ -123,35 +123,39 @@ export default function AccessibilityFeaturesSlider() {
         {/* Continuous Ribbon Slider */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4 md:p-6 mb-4">
           <div className="relative h-[400px] overflow-hidden rounded-xl">
-            {/* Previous slide (left side) */}
-            <div className="absolute left-0 top-0 w-3/5 h-full ribbon-slide ribbon-slide-prev">
-              <div className="w-full h-full flex items-center justify-center">
-                {slides[(currentSlide - 1 + slides.length) % slides.length].illustration}
-              </div>
-            </div>
-            
-            {/* Next slide (right side) */}
-            <div className="absolute right-0 top-0 w-3/5 h-full ribbon-slide ribbon-slide-next">
-              <div className="w-full h-full flex items-center justify-center">
-                {slides[(currentSlide + 1) % slides.length].illustration}
-              </div>
-            </div>
-            
-            {/* Current slide (center) */}
-            <div className="absolute inset-0 ribbon-slide ribbon-slide-center">
-              <div className="w-full h-full flex items-center justify-center">
-                {slides[currentSlide].illustration}
-              </div>
+            {/* Render all slides with transitions */}
+            {slides.map((slide, index) => {
+              const position = index === currentSlide ? 'center' : 
+                             index === (currentSlide - 1 + slides.length) % slides.length ? 'prev' :
+                             index === (currentSlide + 1) % slides.length ? 'next' : 'hidden';
               
-              {/* Content overlay at bottom with button area */}
-              <div className="absolute inset-0 z-30 flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+              return (
+                <div 
+                  key={slide.id} 
+                  className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                    position === 'center' ? 'z-30 opacity-100 scale-100 blur-0' :
+                    position === 'prev' ? 'z-10 opacity-30 scale-75 blur-sm -translate-x-1/4' :
+                    position === 'next' ? 'z-10 opacity-30 scale-75 blur-sm translate-x-1/4' :
+                    'z-0 opacity-0 scale-50'
+                  }`}
+                >
+                  <div className="w-full h-full flex items-center justify-center">
+                    {slide.illustration}
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* Text overlay only for current slide */}
+            <div className="absolute inset-0 z-40 transition-all duration-700 ease-in-out">
+              <div className="h-full flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-transparent to-transparent">
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                   {/* Text content */}
                   <div className="flex-1">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg transition-all duration-700">
                       {slides[currentSlide].title}
                     </h3>
-                    <p className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg">
+                    <p className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg transition-all duration-700">
                       {slides[currentSlide].description}
                     </p>
                   </div>
