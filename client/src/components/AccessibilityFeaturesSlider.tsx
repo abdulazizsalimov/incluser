@@ -4,129 +4,121 @@ const slides = [
   {
     id: 1,
     illustration: (
-      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
-        <rect x="20" y="30" width="60" height="40" rx="4" fill="currentColor" opacity="0.2"/>
-        <text x="50" y="42" fontSize="8" textAnchor="middle" fill="currentColor">Aa</text>
-        <text x="50" y="54" fontSize="12" textAnchor="middle" fill="currentColor">Aa</text>
-        <text x="50" y="68" fontSize="16" textAnchor="middle" fill="currentColor">Aa</text>
-        <path d="M15 45 L25 40 L25 50 Z" fill="currentColor"/>
-        <path d="M85 45 L75 40 L75 50 Z" fill="currentColor"/>
+      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+        <rect x="10" y="20" width="100" height="80" rx="8" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
+        <text x="60" y="45" fontSize="12" textAnchor="middle" fill="currentColor" fontWeight="bold">Aa</text>
+        <text x="60" y="65" fontSize="18" textAnchor="middle" fill="currentColor" fontWeight="bold">Aa</text>
+        <text x="60" y="85" fontSize="24" textAnchor="middle" fill="currentColor" fontWeight="bold">Aa</text>
+        <path d="M20 60 L30 55 L30 65 Z" fill="currentColor"/>
+        <path d="M100 60 L90 55 L90 65 Z" fill="currentColor"/>
+        <circle cx="60" cy="105" r="3" fill="currentColor"/>
+        <path d="M50 105 L70 105" stroke="currentColor" strokeWidth="2"/>
       </svg>
     ),
     title: "Настройка шрифтов",
-    description: "Затрудняетесь читать мелкий текст? Увеличьте размер шрифта до 150% и настройте междустрочные интервалы для максимального комфорта чтения."
+    description: "Затрудняетесь читать мелкий текст? Увеличьте размер шрифта до 150%."
   },
   {
     id: 2,
     illustration: (
-      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
-        <circle cx="50" cy="50" r="30" fill="currentColor" opacity="0.2"/>
-        <path d="M35 40 L35 60 L45 55 L55 65 L55 35 L45 45 Z" fill="currentColor"/>
-        <path d="M58 35 C65 40 70 45 70 50 C70 55 65 60 58 65" stroke="currentColor" strokeWidth="2" fill="none"/>
-        <path d="M72 25 C82 35 90 42 90 50 C90 58 82 65 72 75" stroke="currentColor" strokeWidth="2" fill="none"/>
+      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+        <circle cx="60" cy="60" r="45" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
+        <path d="M40 50 L40 70 L50 65 L70 80 L70 40 L50 55 Z" fill="currentColor"/>
+        <path d="M75 45 C85 50 95 55 95 60 C95 65 85 70 75 75" stroke="currentColor" strokeWidth="3" fill="none"/>
+        <path d="M80 35 C95 45 105 52 105 60 C105 68 95 75 80 85" stroke="currentColor" strokeWidth="3" fill="none"/>
+        <circle cx="35" cy="35" r="4" fill="currentColor"/>
+        <circle cx="25" cy="45" r="3" fill="currentColor"/>
+        <circle cx="30" cy="25" r="2" fill="currentColor"/>
       </svg>
     ),
     title: "Озвучивание текста",
-    description: "Предпочитаете воспринимать информацию на слух? Выделите любой текст на сайте, и система прочитает его вслух с возможностью настройки скорости."
+    description: "Предпочитаете воспринимать информацию на слух? Выделите текст для озвучивания."
   },
   {
     id: 3,
     illustration: (
-      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
-        <circle cx="50" cy="40" r="15" fill="currentColor" opacity="0.2"/>
-        <circle cx="50" cy="40" r="8" fill="currentColor"/>
-        <circle cx="50" cy="40" r="3" fill="white"/>
-        <path d="M30 65 Q50 55 70 65" stroke="currentColor" strokeWidth="3" fill="none"/>
-        <rect x="25" y="75" width="10" height="10" fill="currentColor"/>
-        <rect x="40" y="75" width="10" height="10" fill="currentColor" opacity="0.5"/>
-        <rect x="55" y="75" width="10" height="10" fill="currentColor" opacity="0.3"/>
-        <rect x="70" y="75" width="10" height="10" fill="currentColor" opacity="0.1"/>
+      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+        <circle cx="60" cy="50" r="25" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
+        <circle cx="60" cy="50" r="15" fill="currentColor"/>
+        <circle cx="60" cy="50" r="6" fill="white"/>
+        <path d="M30 85 Q60 70 90 85" stroke="currentColor" strokeWidth="4" fill="none"/>
+        <rect x="20" y="95" width="15" height="15" fill="currentColor"/>
+        <rect x="35" y="95" width="15" height="15" fill="currentColor" opacity="0.7"/>
+        <rect x="50" y="95" width="15" height="15" fill="currentColor" opacity="0.4"/>
+        <rect x="65" y="95" width="15" height="15" fill="currentColor" opacity="0.2"/>
+        <rect x="80" y="95" width="15" height="15" fill="currentColor" opacity="0.1"/>
       </svg>
     ),
     title: "Визуальные улучшения",
-    description: "Испытываете проблемы с восприятием цветов? Включите черно-белый режим или активируйте увеличение текста при наведении с зажатой клавишей Shift."
+    description: "Проблемы с восприятием цветов? Включите черно-белый режим или увеличение текста."
   },
   {
     id: 4,
     illustration: (
-      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
-        <circle cx="35" cy="50" r="25" fill="#FCD34D"/>
-        <circle cx="65" cy="50" r="25" fill="#1F2937"/>
-        <path d="M50 25 L60 40 L40 40 Z" fill="currentColor"/>
-        <circle cx="30" cy="45" r="3" fill="#1F2937"/>
-        <path d="M20 55 Q35 65 50 55" stroke="#1F2937" strokeWidth="2" fill="none"/>
-        <circle cx="70" cy="45" r="3" fill="white"/>
-        <path d="M80 55 Q65 65 50 55" stroke="white" strokeWidth="2" fill="none"/>
+      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+        <circle cx="45" cy="60" r="35" fill="#FCD34D"/>
+        <circle cx="75" cy="60" r="35" fill="#1F2937"/>
+        <path d="M60 20 L75 40 L45 40 Z" fill="currentColor"/>
+        <circle cx="35" cy="55" r="5" fill="#1F2937"/>
+        <path d="M20 70 Q45 85 60 70" stroke="#1F2937" strokeWidth="3" fill="none"/>
+        <circle cx="85" cy="55" r="5" fill="white"/>
+        <path d="M100 70 Q75 85 60 70" stroke="white" strokeWidth="3" fill="none"/>
+        <rect x="55" y="95" width="10" height="15" fill="currentColor"/>
       </svg>
     ),
     title: "Темы оформления",
-    description: "Работаете в темное время суток или чувствительны к яркому свету? Переключитесь на темную тему с космическими градиентами для комфортного чтения."
+    description: "Чувствительны к яркому свету? Переключитесь на темную тему."
   },
   {
     id: 5,
     illustration: (
-      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
-        <rect x="20" y="30" width="60" height="40" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
-        <path d="M30 45 L40 35 L40 40 L60 40 L60 35 L70 45 L60 55 L60 50 L40 50 L40 55 Z" fill="currentColor" opacity="0.3"/>
-        <line x1="35" y1="60" x2="45" y2="70" stroke="red" strokeWidth="3"/>
-        <line x1="45" y1="60" x2="35" y2="70" stroke="red" strokeWidth="3"/>
-        <text x="50" y="80" fontSize="8" textAnchor="middle" fill="currentColor">Без анимаций</text>
+      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+        <rect x="20" y="40" width="80" height="50" rx="8" stroke="currentColor" strokeWidth="3" fill="none"/>
+        <path d="M40 60 L55 45 L55 52 L85 52 L85 45 L100 60 L85 75 L85 68 L55 68 L55 75 Z" fill="red" opacity="0.7"/>
+        <line x1="30" y1="100" x2="50" y2="110" stroke="red" strokeWidth="4"/>
+        <line x1="50" y1="100" x2="30" y2="110" stroke="red" strokeWidth="4"/>
+        <text x="60" y="25" fontSize="12" textAnchor="middle" fill="currentColor" fontWeight="bold">STOP</text>
       </svg>
     ),
     title: "Управление движением",
-    description: "Анимации вызывают дискомфорт или головокружение? Отключите все переходы и анимации для создания статичного и предсказуемого интерфейса."
+    description: "Анимации вызывают дискомфорт? Отключите все переходы и анимации."
   },
   {
     id: 6,
     illustration: (
-      <svg className="w-32 h-32" viewBox="0 0 100 100" fill="none">
-        <rect x="15" y="40" width="70" height="30" rx="4" fill="currentColor" opacity="0.2"/>
-        <rect x="20" y="45" width="8" height="8" rx="2" fill="currentColor"/>
-        <rect x="32" y="45" width="8" height="8" rx="2" fill="currentColor"/>
-        <rect x="44" y="45" width="20" height="8" rx="2" fill="currentColor"/>
-        <rect x="68" y="45" width="8" height="8" rx="2" fill="currentColor"/>
-        <rect x="20" y="57" width="8" height="8" rx="2" fill="currentColor"/>
-        <rect x="32" y="57" width="8" height="8" rx="2" fill="currentColor"/>
-        <rect x="44" y="57" width="32" height="8" rx="2" fill="currentColor"/>
-        <path d="M50 25 L45 30 L50 35 L55 30 Z" fill="currentColor"/>
-        <text x="50" y="20" fontSize="6" textAnchor="middle" fill="currentColor">Tab</text>
+      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+        <rect x="10" y="50" width="100" height="40" rx="8" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2"/>
+        <rect x="18" y="58" width="12" height="12" rx="3" fill="currentColor"/>
+        <rect x="34" y="58" width="12" height="12" rx="3" fill="currentColor"/>
+        <rect x="50" y="58" width="30" height="12" rx="3" fill="currentColor"/>
+        <rect x="84" y="58" width="12" height="12" rx="3" fill="currentColor"/>
+        <rect x="18" y="74" width="12" height="12" rx="3" fill="currentColor"/>
+        <rect x="34" y="74" width="45" height="12" rx="3" fill="currentColor"/>
+        <rect x="84" y="74" width="12" height="12" rx="3" fill="currentColor"/>
+        <path d="M60 25 L50 35 L60 45 L70 35 Z" fill="currentColor"/>
+        <text x="60" y="20" fontSize="10" textAnchor="middle" fill="currentColor" fontWeight="bold">TAB</text>
+        <path d="M20 35 L30 25 L40 35" stroke="currentColor" strokeWidth="2" fill="none"/>
+        <path d="M80 35 L90 25 L100 35" stroke="currentColor" strokeWidth="2" fill="none"/>
       </svg>
     ),
     title: "Навигация с клавиатуры",
-    description: "Не используете мышь? Перемещайтесь по сайту с помощью клавиши Tab, используйте Skip Links для быстрого доступа к контенту."
+    description: "Не используете мышь? Перемещайтесь по сайту с помощью клавиши Tab."
   }
 ];
 
 export default function AccessibilityFeaturesSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [nextSlide, setNextSlide] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const next = (currentSlide + 1) % slides.length;
-      setNextSlide(next);
-      setIsTransitioning(true);
-      
-      setTimeout(() => {
-        setCurrentSlide(next);
-        setIsTransitioning(false);
-      }, 300);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [currentSlide]);
+  }, []);
 
   const handleSlideChange = (index: number) => {
-    if (index !== currentSlide && !isTransitioning) {
-      setNextSlide(index);
-      setIsTransitioning(true);
-      
-      setTimeout(() => {
-        setCurrentSlide(index);
-        setIsTransitioning(false);
-      }, 300);
-    }
+    setCurrentSlide(index);
   };
 
   const handleTryClick = () => {
@@ -137,7 +129,7 @@ export default function AccessibilityFeaturesSlider() {
   };
 
   return (
-    <section className="relative text-white overflow-hidden py-16" aria-labelledby="accessibility-features">
+    <section className="relative text-white overflow-hidden lg:min-h-[600px]" aria-labelledby="accessibility-features">
       {/* Background with same gradient as hero */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900"></div>
       
@@ -155,102 +147,97 @@ export default function AccessibilityFeaturesSlider() {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h2 id="accessibility-features" className="text-4xl font-bold mb-4">
-            Специальные возможности: забота о каждом пользователе
-          </h2>
-          <p className="text-xl opacity-90">
-            Настройте сайт под свои потребности
-          </p>
+      {/* Mobile Layout */}
+      <div className="lg:hidden relative">
+        <div className="px-4 py-12">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 id="accessibility-features" className="text-2xl font-bold mb-3">
+              Специальные возможности: забота о каждом пользователе
+            </h2>
+            <p className="text-lg opacity-90">
+              Настройте сайт под свои потребности
+            </p>
+          </div>
+
+          {/* Slide Container */}
+          <div className="relative h-80 overflow-hidden">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out h-full"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {slides.map((slide, index) => (
+                <div key={slide.id} className="w-full flex-shrink-0 flex flex-col items-center justify-center text-center px-6">
+                  <div className="mb-6">
+                    {slide.illustration}
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">
+                    {slide.title}
+                  </h3>
+                  <p className="text-base opacity-90 leading-relaxed">
+                    {slide.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Slide Content - Fixed Height Container */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 h-[500px] relative overflow-hidden">
-          {/* Current Slide */}
-          <div 
-            className={`absolute inset-0 p-8 md:p-12 transition-transform duration-300 ease-in-out ${
-              isTransitioning ? 'transform -translate-x-full' : 'transform translate-x-0'
-            }`}
-          >
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              {/* Slide Illustration */}
-              <div className="mb-8">
-                {slides[currentSlide].illustration}
-              </div>
+      {/* Desktop Layout */}
+      <div className="hidden lg:block relative z-10 h-full">
+        <div className="w-full h-full flex items-center">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 gap-12 items-center">
+            {/* Left Side - Header */}
+            <div>
+              <h2 id="accessibility-features-desktop" className="text-4xl font-bold mb-4">
+                Специальные возможности: забота о каждом пользователе
+              </h2>
+              <p className="text-xl opacity-90 mb-8">
+                Настройте сайт под свои потребности
+              </p>
+            </div>
 
-              {/* Slide Title */}
-              <h3 className="text-2xl md:text-3xl font-bold mb-6">
-                {slides[currentSlide].title}
-              </h3>
-
-              {/* Slide Description */}
-              <div className="flex-1 flex items-center">
-                <p className="text-lg md:text-xl opacity-90 leading-relaxed max-w-2xl mx-auto mb-8">
-                  {slides[currentSlide].description}
-                </p>
-              </div>
-
-              {/* Try Button */}
-              <div className="mt-auto">
-                <button 
-                  onClick={handleTryClick}
-                  className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
-                  aria-describedby="try-accessibility-desc"
-                >
-                  Попробовать
-                </button>
-                <p id="try-accessibility-desc" className="text-sm opacity-75 mt-3">
-                  Откроет панель специальных возможностей для настройки сайта
-                </p>
+            {/* Right Side - Sliding Content */}
+            <div className="relative h-80 overflow-hidden">
+              <div 
+                className="flex transition-transform duration-500 ease-in-out h-full"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {slides.map((slide, index) => (
+                  <div key={slide.id} className="w-full flex-shrink-0 flex flex-col items-center justify-center text-center">
+                    <div className="mb-6">
+                      {slide.illustration}
+                    </div>
+                    <h3 className="text-2xl font-bold mb-4">
+                      {slide.title}
+                    </h3>
+                    <p className="text-lg opacity-90 leading-relaxed">
+                      {slide.description}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-
-          {/* Next Slide (coming from right) */}
-          {isTransitioning && (
-            <div 
-              className="absolute inset-0 p-8 md:p-12 animate-slide-in-right"
-            >
-              <div className="flex flex-col items-center justify-center h-full text-center">
-                {/* Next Slide Illustration */}
-                <div className="mb-8">
-                  {slides[nextSlide].illustration}
-                </div>
-
-                {/* Next Slide Title */}
-                <h3 className="text-2xl md:text-3xl font-bold mb-6">
-                  {slides[nextSlide].title}
-                </h3>
-
-                {/* Next Slide Description */}
-                <div className="flex-1 flex items-center">
-                  <p className="text-lg md:text-xl opacity-90 leading-relaxed max-w-2xl mx-auto mb-8">
-                    {slides[nextSlide].description}
-                  </p>
-                </div>
-
-                {/* Try Button */}
-                <div className="mt-auto">
-                  <button 
-                    onClick={handleTryClick}
-                    className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
-                    aria-describedby="try-accessibility-desc-next"
-                  >
-                    Попробовать
-                  </button>
-                  <p id="try-accessibility-desc-next" className="text-sm opacity-75 mt-3">
-                    Откроет панель специальных возможностей для настройки сайта
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
+      </div>
+
+      {/* Try Button - Outside slider */}
+      <div className="relative z-10 text-center pb-12">
+        <button 
+          onClick={handleTryClick}
+          className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+          aria-describedby="try-accessibility-desc"
+        >
+          Попробовать
+        </button>
+        <p id="try-accessibility-desc" className="text-sm opacity-75 mt-3">
+          Откроет панель специальных возможностей для настройки сайта
+        </p>
 
         {/* Slide Indicators */}
-        <div className="flex justify-center mt-8 gap-2">
+        <div className="flex justify-center mt-6 gap-2">
           {slides.map((_, index) => (
             <button
               key={index}
@@ -266,7 +253,7 @@ export default function AccessibilityFeaturesSlider() {
         </div>
 
         {/* Slide Counter */}
-        <div className="text-center mt-4">
+        <div className="text-center mt-3">
           <span className="text-sm opacity-75">
             {currentSlide + 1} из {slides.length}
           </span>
