@@ -22,15 +22,24 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [hasBeenOpened, setHasBeenOpened] = useState(false);
 
   // Handle panel visibility and animation
   useEffect(() => {
     if (open) {
       // Opening: show panel first, then animate
       setIsVisible(true);
-      setTimeout(() => {
-        setIsAnimating(true);
-      }, 10); // Small delay to ensure DOM update
+      setHasBeenOpened(true);
+      // Force layout calculation before animation
+      if (panelRef.current) {
+        panelRef.current.offsetHeight; // Trigger layout
+      }
+      // Use requestAnimationFrame for smoother animation timing
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(true);
+        });
+      });
     } else if (isVisible) {
       // Closing: animate out first, then hide
       setIsAnimating(false);
@@ -742,6 +751,10 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         }`}
         style={{
           display: isVisible ? 'flex' : 'none',
+          // Force hardware acceleration and better rendering
+          willChange: 'transform',
+          backfaceVisibility: 'hidden',
+          transform: isAnimating ? 'translateX(0) translateZ(0)' : 'translateX(100%) translateZ(0)',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
           filter: 'none',
