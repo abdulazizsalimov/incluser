@@ -246,7 +246,7 @@ export default function AccessibilityFeaturesSlider() {
                   <div className="flex-shrink-0">
                     <button 
                       onClick={handleTryClick}
-                      className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+                      className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
                       aria-describedby="try-accessibility-desc"
                     >
                       Попробовать
