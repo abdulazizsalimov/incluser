@@ -187,6 +187,166 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Accessibility Features Banner */}
+        <section className="relative text-white overflow-hidden py-16" aria-labelledby="accessibility-features">
+          {/* Background with same gradient as hero */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900"></div>
+          
+          {/* Accessibility symbols pattern overlay */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="grid grid-cols-8 gap-8 transform rotate-12 scale-110">
+              {Array.from({ length: 48 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-center text-6xl text-white/20">
+                  {i % 4 === 0 && "♿"}
+                  {i % 4 === 1 && "👁"}
+                  {i % 4 === 2 && "🔊"}
+                  {i % 4 === 3 && "⌨"}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 id="accessibility-features" className="text-4xl font-bold mb-6">
+                Специальные возможности
+              </h2>
+              <p className="text-xl opacity-90 max-w-3xl mx-auto leading-relaxed">
+                Наш сайт включает множество инструментов доступности, чтобы каждый мог комфортно читать и взаимодействовать с контентом
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {/* Font Adjustments */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M5 4v3h5.5v12h3V7H19V4z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold">Настройка шрифтов</h3>
+                </div>
+                <p className="text-sm opacity-90 mb-3">
+                  Изменение размера шрифта, междустрочного и межбуквенного интервала для лучшей читаемости
+                </p>
+                <div className="text-xs opacity-75">
+                  75-150% размер • Интервалы до 200%
+                </div>
+              </div>
+
+              {/* Text-to-Speech */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold">Озвучивание текста</h3>
+                </div>
+                <p className="text-sm opacity-90 mb-3">
+                  Функция чтения выделенного текста вслух с настройкой скорости и выбором голоса
+                </p>
+                <div className="text-xs opacity-75">
+                  Браузерный синтез • RHVoice поддержка
+                </div>
+              </div>
+
+              {/* Visual Enhancements */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold">Визуальные улучшения</h3>
+                </div>
+                <p className="text-sm opacity-90 mb-3">
+                  Черно-белый режим, увеличение текста при наведении, высокий контраст
+                </p>
+                <div className="text-xs opacity-75">
+                  Shift + наведение • Цветовые схемы
+                </div>
+              </div>
+
+              {/* Theme Control */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M7.5 2C5.71 3.15 4.5 5.18 4.5 7.5c0 1.77.78 3.34 2 4.44V20h11v-8.06c1.22-1.1 2-2.67 2-4.44 0-2.32-1.21-4.35-3-5.5L12 9 7.5 2z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold">Темы оформления</h3>
+                </div>
+                <p className="text-sm opacity-90 mb-3">
+                  Светлая и темная темы с космическими градиентами, автоматическое переключение
+                </p>
+                <div className="text-xs opacity-75">
+                  Светлая • Темная • Системная
+                </div>
+              </div>
+
+              {/* Motion Control */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold">Управление движением</h3>
+                </div>
+                <p className="text-sm opacity-90 mb-3">
+                  Отключение анимаций и переходов для пользователей с вестибулярными нарушениями
+                </p>
+                <div className="text-xs opacity-75">
+                  Уменьшить анимации • Статичный интерфейс
+                </div>
+              </div>
+
+              {/* Keyboard Navigation */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"/>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold">Навигация с клавиатуры</h3>
+                </div>
+                <p className="text-sm opacity-90 mb-3">
+                  Полная поддержка навигации с клавиатуры, Skip Links, правильный порядок фокуса
+                </p>
+                <div className="text-xs opacity-75">
+                  Tab навигация • Skip Links • Escape
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <button 
+                onClick={() => {
+                  // Find accessibility button in header and click it
+                  const accessibilityButton = document.querySelector('[aria-label="Специальные возможности"]') as HTMLButtonElement;
+                  if (accessibilityButton) {
+                    accessibilityButton.click();
+                  }
+                }}
+                className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-4 px-8 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+                aria-describedby="try-accessibility-desc"
+              >
+                Попробовать
+              </button>
+              <p id="try-accessibility-desc" className="text-sm opacity-75 mt-3">
+                Откроет панель специальных возможностей для настройки сайта
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Digital Accessibility Info Section */}
         <section className="bg-muted py-16" aria-labelledby="accessibility-info">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
