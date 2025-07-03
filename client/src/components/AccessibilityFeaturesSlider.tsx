@@ -140,13 +140,45 @@ export default function AccessibilityFeaturesSlider() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Header */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-4 relative">
           <h2 id="accessibility-features" className="text-2xl md:text-3xl font-bold mb-2">
             Специальные возможности: забота о каждом пользователе
           </h2>
           <p className="text-base md:text-lg opacity-90">
             Настройте сайт под свои потребности
           </p>
+          
+          {/* Timer Clock in top right */}
+          <div className="absolute top-0 right-0">
+            <button
+              onClick={toggleAutoPlay}
+              className="relative bg-white/20 hover:bg-white/30 rounded-full p-3 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/50"
+              aria-label={isAutoPlaying ? "Остановить автопереключение" : "Запустить автопереключение"}
+            >
+              {/* Clock face */}
+              <div className="w-8 h-8 rounded-full border-2 border-white relative">
+                {/* Clock hand - rotates based on time left */}
+                <div 
+                  className="absolute top-1 left-1/2 w-0.5 h-3 bg-white origin-bottom -translate-x-1/2 transition-transform duration-100"
+                  style={{ 
+                    transform: `translateX(-50%) rotate(${isAutoPlaying ? (360 - (timeLeft / 5000) * 360) : 0}deg)`,
+                    transformOrigin: 'bottom center'
+                  }}
+                />
+                {/* Center dot */}
+                <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
+              </div>
+              
+              {/* Play/Pause overlay */}
+              {!isAutoPlaying && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Continuous Ribbon Slider */}
@@ -233,37 +265,7 @@ export default function AccessibilityFeaturesSlider() {
             Откроет панель специальных возможностей для настройки сайта
           </p>
 
-          {/* Timer Clock */}
-          <div className="flex justify-center items-center mb-4">
-            <button
-              onClick={toggleAutoPlay}
-              className="relative bg-white/20 hover:bg-white/30 rounded-full p-3 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-white/50"
-              aria-label={isAutoPlaying ? "Остановить автопереключение" : "Запустить автопереключение"}
-            >
-              {/* Clock face */}
-              <div className="w-8 h-8 rounded-full border-2 border-white relative">
-                {/* Clock hand - rotates based on time left */}
-                <div 
-                  className="absolute top-1 left-1/2 w-0.5 h-3 bg-white origin-bottom -translate-x-1/2 transition-transform duration-100"
-                  style={{ 
-                    transform: `translateX(-50%) rotate(${isAutoPlaying ? (360 - (timeLeft / 5000) * 360) : 0}deg)`,
-                    transformOrigin: 'bottom center'
-                  }}
-                />
-                {/* Center dot */}
-                <div className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-              </div>
-              
-              {/* Play/Pause overlay */}
-              {!isAutoPlaying && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </div>
-              )}
-            </button>
-          </div>
+
 
           {/* Slide Indicators */}
           <div className="flex justify-center gap-2 mb-3">
