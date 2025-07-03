@@ -8,7 +8,7 @@ const slides = [
       <img 
         src={accessibilityImage} 
         alt="Человек настраивает доступность на компьютере с иконками глаза, текста и уха"
-        className="w-48 h-32 object-cover rounded-lg"
+        className="w-full max-w-lg h-64 object-contain rounded-lg mx-auto"
       />
     ),
     title: "Настройка доступности",
@@ -17,7 +17,7 @@ const slides = [
   {
     id: 2,
     illustration: (
-      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+      <svg className="w-64 h-64" viewBox="0 0 120 120" fill="none">
         <circle cx="60" cy="60" r="45" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
         <path d="M40 50 L40 70 L50 65 L70 80 L70 40 L50 55 Z" fill="currentColor"/>
         <path d="M75 45 C85 50 95 55 95 60 C95 65 85 70 75 75" stroke="currentColor" strokeWidth="3" fill="none"/>
@@ -33,7 +33,7 @@ const slides = [
   {
     id: 3,
     illustration: (
-      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+      <svg className="w-64 h-64" viewBox="0 0 120 120" fill="none">
         <circle cx="60" cy="50" r="25" fill="currentColor" opacity="0.1" stroke="currentColor" strokeWidth="2"/>
         <circle cx="60" cy="50" r="15" fill="currentColor"/>
         <circle cx="60" cy="50" r="6" fill="white"/>
@@ -51,7 +51,7 @@ const slides = [
   {
     id: 4,
     illustration: (
-      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+      <svg className="w-64 h-64" viewBox="0 0 120 120" fill="none">
         <circle cx="45" cy="60" r="35" fill="#FCD34D"/>
         <circle cx="75" cy="60" r="35" fill="#1F2937"/>
         <path d="M60 20 L75 40 L45 40 Z" fill="currentColor"/>
@@ -68,7 +68,7 @@ const slides = [
   {
     id: 5,
     illustration: (
-      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+      <svg className="w-64 h-64" viewBox="0 0 120 120" fill="none">
         <rect x="20" y="40" width="80" height="50" rx="8" stroke="currentColor" strokeWidth="3" fill="none"/>
         <path d="M40 60 L55 45 L55 52 L85 52 L85 45 L100 60 L85 75 L85 68 L55 68 L55 75 Z" fill="red" opacity="0.7"/>
         <line x1="30" y1="100" x2="50" y2="110" stroke="red" strokeWidth="4"/>
@@ -82,7 +82,7 @@ const slides = [
   {
     id: 6,
     illustration: (
-      <svg className="w-24 h-24" viewBox="0 0 120 120" fill="none">
+      <svg className="w-64 h-64" viewBox="0 0 120 120" fill="none">
         <rect x="10" y="50" width="100" height="40" rx="8" fill="currentColor" opacity="0.2" stroke="currentColor" strokeWidth="2"/>
         <rect x="18" y="58" width="12" height="12" rx="3" fill="currentColor"/>
         <rect x="34" y="58" width="12" height="12" rx="3" fill="currentColor"/>
