@@ -148,7 +148,7 @@ export default function AccessibilityFeaturesSlider() {
             
             {/* Text overlay only for current slide */}
             <div className="absolute inset-0 z-40 transition-all duration-700 ease-in-out">
-              <div className="h-full flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+              <div className="h-full flex flex-col justify-end p-8">
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                   {/* Text content */}
                   <div className="flex-1">
