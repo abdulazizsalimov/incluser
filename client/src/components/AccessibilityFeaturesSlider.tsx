@@ -120,47 +120,54 @@ export default function AccessibilityFeaturesSlider() {
           </p>
         </div>
 
-        {/* Main Slider Container - Center of Attention */}
+        {/* Continuous Ribbon Slider */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4 md:p-6 mb-4">
-          <div className="relative h-[400px] overflow-hidden">
-            <div 
-              className="flex transition-transform duration-500 ease-in-out h-full"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {slides.map((slide, index) => (
-                <div key={slide.id} className="w-full flex-shrink-0 relative">
-                  {/* Background Image/Illustration covering entire slide */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {slide.illustration}
+          <div className="relative h-[400px] overflow-hidden rounded-xl">
+            {/* Previous slide (left side) */}
+            <div className="absolute left-0 top-0 w-3/5 h-full ribbon-slide ribbon-slide-prev">
+              <div className="w-full h-full flex items-center justify-center">
+                {slides[(currentSlide - 1 + slides.length) % slides.length].illustration}
+              </div>
+            </div>
+            
+            {/* Next slide (right side) */}
+            <div className="absolute right-0 top-0 w-3/5 h-full ribbon-slide ribbon-slide-next">
+              <div className="w-full h-full flex items-center justify-center">
+                {slides[(currentSlide + 1) % slides.length].illustration}
+              </div>
+            </div>
+            
+            {/* Current slide (center) */}
+            <div className="absolute inset-0 ribbon-slide ribbon-slide-center">
+              <div className="w-full h-full flex items-center justify-center">
+                {slides[currentSlide].illustration}
+              </div>
+              
+              {/* Content overlay at bottom with button area */}
+              <div className="absolute inset-0 z-30 flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-transparent to-transparent">
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                  {/* Text content */}
+                  <div className="flex-1">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg">
+                      {slides[currentSlide].title}
+                    </h3>
+                    <p className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg">
+                      {slides[currentSlide].description}
+                    </p>
                   </div>
                   
-                  {/* Content overlay at bottom with button area */}
-                  <div className="relative z-10 h-full flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-transparent to-transparent">
-                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                      {/* Text content */}
-                      <div className="flex-1">
-                        <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg">
-                          {slide.title}
-                        </h3>
-                        <p className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg">
-                          {slide.description}
-                        </p>
-                      </div>
-                      
-                      {/* Static Button Area */}
-                      <div className="flex-shrink-0">
-                        <button 
-                          onClick={handleTryClick}
-                          className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
-                          aria-describedby="try-accessibility-desc"
-                        >
-                          Попробовать
-                        </button>
-                      </div>
-                    </div>
+                  {/* Static Button Area */}
+                  <div className="flex-shrink-0">
+                    <button 
+                      onClick={handleTryClick}
+                      className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+                      aria-describedby="try-accessibility-desc"
+                    >
+                      Попробовать
+                    </button>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
