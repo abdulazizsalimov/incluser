@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import accessibilitySettingsImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_08_58_1751517384820.png";
-import speechSynthesisImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_23_28_1751517391589.png";
-import visualEnhancementsImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_26_51_1751517398839.png";
-import themeOptionsImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_29_32_1751517404453.png";
-import keyboardNavigationImage from "@assets/ChatGPT Image 3 июл. 2025 г., 09_35_07_1751517409719.png";
+import slyde1Image from "@assets/Slyde1_1751518088264.png";
+import slyde2Image from "@assets/Slyde2_1751518092093.png";
+import slyde3Image from "@assets/Slyde3_1751518094773.png";
+import slyde4Image from "@assets/Slyde4_1751518100860.png";
+import slyde5Image from "@assets/Slyde5_1751518104614.png";
 
 const slides = [
   {
     id: 1,
     illustration: (
       <img 
-        src={accessibilitySettingsImage} 
+        src={slyde1Image} 
         alt="Человек настраивает доступность на компьютере с иконками глаза, текста и уха"
         className="w-full h-full object-cover"
       />
@@ -22,7 +22,7 @@ const slides = [
     id: 2,
     illustration: (
       <img 
-        src={speechSynthesisImage} 
+        src={slyde2Image} 
         alt="Человек с наушниками слушает озвучивание текста с компьютера"
         className="w-full h-full object-cover"
       />
@@ -34,7 +34,7 @@ const slides = [
     id: 3,
     illustration: (
       <img 
-        src={visualEnhancementsImage} 
+        src={slyde3Image} 
         alt="Человек настраивает визуальные параметры интерфейса с лупой и переключателями"
         className="w-full h-full object-cover"
       />
@@ -46,7 +46,7 @@ const slides = [
     id: 4,
     illustration: (
       <img 
-        src={themeOptionsImage} 
+        src={slyde4Image} 
         alt="Человек настраивает темы оформления в браузере с переключателями"
         className="w-full h-full object-cover"
       />
@@ -58,7 +58,7 @@ const slides = [
     id: 5,
     illustration: (
       <img 
-        src={keyboardNavigationImage} 
+        src={slyde5Image} 
         alt="Человек работает с клавиатурой, используя клавишу Tab для навигации"
         className="w-full h-full object-cover"
       />
