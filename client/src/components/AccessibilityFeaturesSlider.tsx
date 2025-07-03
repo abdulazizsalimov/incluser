@@ -122,7 +122,7 @@ export default function AccessibilityFeaturesSlider() {
 
         {/* Main Slider Container - Center of Attention */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-4 md:p-6 mb-4">
-          <div className="relative h-[300px] overflow-hidden">
+          <div className="relative h-[400px] overflow-hidden">
             <div 
               className="flex transition-transform duration-500 ease-in-out h-full"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -134,14 +134,30 @@ export default function AccessibilityFeaturesSlider() {
                     {slide.illustration}
                   </div>
                   
-                  {/* Content overlay at bottom */}
+                  {/* Content overlay at bottom with button area */}
                   <div className="relative z-10 h-full flex flex-col justify-end p-8 bg-gradient-to-t from-black/60 via-transparent to-transparent">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg">
-                      {slide.title}
-                    </h3>
-                    <p className="text-lg md:text-xl text-white/90 leading-relaxed max-w-2xl drop-shadow-lg">
-                      {slide.description}
-                    </p>
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                      {/* Text content */}
+                      <div className="flex-1">
+                        <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg">
+                          {slide.title}
+                        </h3>
+                        <p className="text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-lg">
+                          {slide.description}
+                        </p>
+                      </div>
+                      
+                      {/* Static Button Area */}
+                      <div className="flex-shrink-0">
+                        <button 
+                          onClick={handleTryClick}
+                          className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-3 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50"
+                          aria-describedby="try-accessibility-desc"
+                        >
+                          Попробовать
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -151,15 +167,8 @@ export default function AccessibilityFeaturesSlider() {
 
         {/* Controls */}
         <div className="text-center">
-          {/* Try Button */}
-          <button 
-            onClick={handleTryClick}
-            className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold py-2 px-6 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 mb-4"
-            aria-describedby="try-accessibility-desc"
-          >
-            Попробовать
-          </button>
-          <p id="try-accessibility-desc" className="text-sm opacity-75 mb-4">
+          {/* Hidden description for accessibility */}
+          <p id="try-accessibility-desc" className="sr-only">
             Откроет панель специальных возможностей для настройки сайта
           </p>
 
