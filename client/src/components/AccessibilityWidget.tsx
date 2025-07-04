@@ -30,11 +30,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       // Opening: show panel first, then animate
       setIsVisible(true);
       setHasBeenOpened(true);
-      // Block background scroll when panel opens, but preserve current scroll position
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
+      // Add class to body to block background scroll
+      document.body.classList.add('panel-open');
       
       // Force layout calculation before animation
       if (panelRef.current) {
@@ -49,14 +46,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     } else if (isVisible) {
       // Closing: animate out first, then hide
       setIsAnimating(false);
-      // Restore background scroll when panel closes
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      // Remove class from body to restore background scroll
+      document.body.classList.remove('panel-open');
       
       setTimeout(() => {
         setIsVisible(false);
@@ -67,14 +58,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   // Cleanup on component unmount
   useEffect(() => {
     return () => {
-      // Restore scroll if component unmounts with panel open
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
+      // Remove class if component unmounts with panel open
+      document.body.classList.remove('panel-open');
     };
   }, []);
 
