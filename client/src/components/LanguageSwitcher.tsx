@@ -23,9 +23,6 @@ export default function LanguageSwitcher() {
 
   return (
     <>
-      {/* Hidden Google Translate Element */}
-      <div id="google_translate_element" style={{ display: 'none' }}></div>
-      
       {/* Language Switcher */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

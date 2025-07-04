@@ -10,43 +10,14 @@ declare global {
 type Language = 'ru' | 'en';
 
 export function useGoogleTranslate() {
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('ru');
+  // Detect current language based on URL
+  const isOnTranslatePage = window.location.href.includes('translate.google.com');
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(isOnTranslatePage ? 'en' : 'ru');
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load Google Translate script
+  // Simple loading effect
   useEffect(() => {
-    if (window.google?.translate) {
-      setIsLoaded(true);
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    script.async = true;
-
-    window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement({
-        pageLanguage: 'ru',
-        includedLanguages: 'ru,en',
-        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
-      
-      // Wait for element to be created
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 500);
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-      delete window.googleTranslateElementInit;
-    };
+    setIsLoaded(true);
   }, []);
 
   const changeLanguage = useCallback((targetLang: Language) => {
@@ -58,37 +29,29 @@ export function useGoogleTranslate() {
     console.log(`Changing language to: ${targetLang}`);
     setCurrentLanguage(targetLang);
 
-    // Wait for Google Translate to be ready
-    setTimeout(() => {
-      // Try to find the existing select
-      let select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      console.log('Found select element:', !!select);
+    if (targetLang === 'en') {
+      // Trigger translation to English using Google Translate URL approach
+      const currentUrl = window.location.href;
+      const translatedUrl = `https://translate.google.com/translate?sl=ru&tl=en&u=${encodeURIComponent(currentUrl)}`;
       
-      if (select) {
-        console.log('Select options:', Array.from(select.options).map(o => ({ value: o.value, text: o.text })));
-        
-        // Set language and trigger change
-        select.value = targetLang;
-        console.log('Set select value to:', targetLang);
-        
-        // Trigger change event with multiple methods
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        select.dispatchEvent(new Event('input', { bubbles: true }));
-        
-        // Also try click event
-        if (select.onchange) {
-          select.onchange(new Event('change') as any);
-        }
-      } else {
-        console.log('Select not found, checking Google Translate element');
-        const gtElement = document.getElementById('google_translate_element');
-        console.log('Google Translate element found:', !!gtElement);
-        
-        if (gtElement) {
-          console.log('Element content:', gtElement.innerHTML);
+      console.log('Redirecting to Google Translate URL:', translatedUrl);
+      window.location.href = translatedUrl;
+    } else {
+      // Reset to original Russian version by checking if we're on a translate.google.com URL
+      const currentUrl = window.location.href;
+      if (currentUrl.includes('translate.google.com')) {
+        // Extract original URL from Google Translate URL
+        const urlMatch = currentUrl.match(/u=([^&]+)/);
+        if (urlMatch) {
+          const originalUrl = decodeURIComponent(urlMatch[1]);
+          console.log('Returning to original URL:', originalUrl);
+          window.location.href = originalUrl;
+        } else {
+          // Fallback: go to home page
+          window.location.href = window.location.origin;
         }
       }
-    }, 500); // Increased timeout
+    }
   }, [isLoaded]);
 
   const resetToRussian = useCallback(() => {
