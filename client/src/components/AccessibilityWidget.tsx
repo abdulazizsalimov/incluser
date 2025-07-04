@@ -764,7 +764,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           style={{
             zIndex: 99998,
             filter: 'none',
-            isolation: 'isolate'
+            isolation: 'isolate',
+            pointerEvents: 'auto'
           }}
           onClick={() => onOpenChange(false)}
         />
@@ -789,7 +790,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           backgroundColor: actualTheme === 'dark' ? 'hsl(222.2, 84%, 4.9%)' : 'hsl(0, 0%, 100%)',
           borderColor: actualTheme === 'dark' ? 'hsl(217.2, 32.6%, 17.5%)' : 'hsl(214.3, 31.8%, 91.4%)',
           color: actualTheme === 'dark' ? 'hsl(210, 40%, 98%)' : 'hsl(222.2, 84%, 4.9%)',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          pointerEvents: 'auto'
         }}
         role="dialog"
         aria-modal="true"
@@ -1411,6 +1413,34 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     </TooltipProvider>
   );
 
-  // Render panel in a portal to escape grayscale filter
-  return createPortal(panelContent, document.body);
+  // Create isolated container for panel outside of all CSS contexts
+  useEffect(() => {
+    let panelContainer = document.getElementById('accessibility-panel-container');
+    if (!panelContainer) {
+      panelContainer = document.createElement('div');
+      panelContainer.id = 'accessibility-panel-container';
+      panelContainer.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        pointer-events: none !important;
+        z-index: 999999 !important;
+        filter: none !important;
+        isolation: isolate !important;
+      `;
+      document.documentElement.appendChild(panelContainer);
+    }
+    return () => {
+      const container = document.getElementById('accessibility-panel-container');
+      if (container && !document.querySelector('.accessibility-panel')) {
+        container.remove();
+      }
+    };
+  }, []);
+
+  // Render panel in isolated container
+  const panelContainer = document.getElementById('accessibility-panel-container');
+  return panelContainer ? createPortal(panelContent, panelContainer) : null;
 }
