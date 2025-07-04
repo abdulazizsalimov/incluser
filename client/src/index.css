@@ -439,12 +439,7 @@ span, a, button, label {
   right: 0 !important;
 }
 
-/* Fix body scroll behavior in grayscale mode when accessibility panel is open */
-.grayscale body.accessibility-panel-open {
-  position: fixed !important;
-  overflow: hidden !important;
-  width: 100% !important;
-}
+/* Note: Panel scrolling works independently from body in grayscale mode */
 
 /* Force accessibility panel and backdrop to remain in color */
 .accessibility-panel,

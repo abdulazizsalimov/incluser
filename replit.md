@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 4, 2025. Fixed grayscale mode issues in dark theme - resolved black accessibility panel in dark theme by adding CSS protection rules, fixed header positioning in grayscale mode with filter protection, ensured panel scrolling works independently from background page scrolling
 - July 3, 2025. Made all banner buttons transparent - converted "Попробовать" button on accessibility slider and "Прослушать"/"Поделиться" buttons on article pages to use consistent transparent design with white borders and backdrop blur, matching the "Об авторе" button style across both mobile and desktop layouts
 - July 2, 2025. Converted accessibility widget to slide-out side panel - changed from modal dialog to right-sliding panel with backdrop, escape key handling that returns focus to header button, fixed grayscale mode compatibility with CSS filters protection
 - July 2, 2025. Replaced theme selector with visual thumbnails - replaced dropdown with three clickable preview cards showing miniature site interface in light theme (blue accents), dark theme (purple-blue cosmic gradient), and system theme (split light/dark), each with hover animations and proper accessibility labels
