@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Menu, Accessibility, ChevronDown, LogIn, UserPlus, LogOut, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logoImage from "@assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_1751254062366.png";
 import type { Category } from "@shared/schema";
@@ -16,11 +17,29 @@ export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [location] = useLocation();
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
+  const [isGrayscaleMode, setIsGrayscaleMode] = useState(false);
 
   // Fetch categories for dropdown
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
+
+  // Detect grayscale mode
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsGrayscaleMode(document.body.classList.contains('grayscale-mode'));
+    });
+    
+    observer.observe(document.body, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+    
+    // Initial check
+    setIsGrayscaleMode(document.body.classList.contains('grayscale-mode'));
+    
+    return () => observer.disconnect();
+  }, []);
 
   const navItems = [
     { href: "/", label: "Главная" },
@@ -35,7 +54,8 @@ export default function Header() {
     return false;
   };
 
-  return (
+  // Create header component
+  const HeaderComponent = () => (
     <header className="bg-background shadow-sm border-b border-border fixed top-0 left-0 right-0 z-50" role="banner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -289,4 +309,51 @@ export default function Header() {
       <AccessibilityWidget open={accessibilityOpen} onOpenChange={setAccessibilityOpen} />
     </header>
   );
+
+  // In grayscale mode, render header in portal to escape filter effects
+  if (isGrayscaleMode) {
+    useEffect(() => {
+      let container = document.getElementById('grayscale-header-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'grayscale-header-container';
+        container.style.cssText = `
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100% !important;
+          height: 80px !important;
+          z-index: 99999 !important;
+          filter: none !important;
+          isolation: isolate !important;
+          pointer-events: none !important;
+        `;
+        document.documentElement.appendChild(container);
+      }
+      return () => {
+        const cont = document.getElementById('grayscale-header-container');
+        if (cont) cont.remove();
+      };
+    }, []);
+
+    const container = document.getElementById('grayscale-header-container');
+    if (container) {
+      return (
+        <>
+          {/* Invisible spacer header for normal flow */}
+          <div style={{ height: '80px', width: '100%' }} />
+          {/* Portal header that escapes grayscale */}
+          {createPortal(
+            <div style={{ pointerEvents: 'auto' }}>
+              <HeaderComponent />
+            </div>,
+            container
+          )}
+        </>
+      );
+    }
+  }
+
+  // Normal mode - render header normally
+  return <HeaderComponent />;
 }
