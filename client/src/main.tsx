@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { initGrayscaleHeaderFix } from "./utils/grayscaleHeaderFix";
 
 // Global error handler to catch unhandled JavaScript errors
 window.addEventListener('error', (event) => {
@@ -12,5 +13,8 @@ window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason);
   event.preventDefault(); // Prevent the default error handling
 });
+
+// Initialize grayscale header fix
+initGrayscaleHeaderFix();
 
 createRoot(document.getElementById("root")!).render(<App />);

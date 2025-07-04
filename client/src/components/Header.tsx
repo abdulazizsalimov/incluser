@@ -17,29 +17,13 @@ export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [location] = useLocation();
   const [accessibilityOpen, setAccessibilityOpen] = useState(false);
-  const [isGrayscaleMode, setIsGrayscaleMode] = useState(false);
 
   // Fetch categories for dropdown
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
 
-  // Detect grayscale mode
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsGrayscaleMode(document.body.classList.contains('grayscale-mode'));
-    });
-    
-    observer.observe(document.body, { 
-      attributes: true, 
-      attributeFilter: ['class'] 
-    });
-    
-    // Initial check
-    setIsGrayscaleMode(document.body.classList.contains('grayscale-mode'));
-    
-    return () => observer.disconnect();
-  }, []);
+
 
   const navItems = [
     { href: "/", label: "Главная" },
@@ -309,50 +293,6 @@ export default function Header() {
       <AccessibilityWidget open={accessibilityOpen} onOpenChange={setAccessibilityOpen} />
     </header>
   );
-
-  // In grayscale mode, render header in portal to escape filter effects
-  if (isGrayscaleMode) {
-    useEffect(() => {
-      let container = document.getElementById('grayscale-header-container');
-      if (!container) {
-        container = document.createElement('div');
-        container.id = 'grayscale-header-container';
-        container.style.cssText = `
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          width: 100% !important;
-          height: 80px !important;
-          z-index: 99999 !important;
-          filter: none !important;
-          isolation: isolate !important;
-          pointer-events: none !important;
-        `;
-        document.documentElement.appendChild(container);
-      }
-      return () => {
-        const cont = document.getElementById('grayscale-header-container');
-        if (cont) cont.remove();
-      };
-    }, []);
-
-    const container = document.getElementById('grayscale-header-container');
-    if (container) {
-      return (
-        <>
-          {/* Invisible spacer header for normal flow */}
-          <div style={{ height: '80px', width: '100%' }} />
-          {/* Portal header that escapes grayscale */}
-          {createPortal(
-            <div style={{ pointerEvents: 'auto' }}>
-              <HeaderComponent />
-            </div>,
-            container
-          )}
-        </>
-      );
-    }
-  }
 
   // Normal mode - render header normally
   return <HeaderComponent />;
