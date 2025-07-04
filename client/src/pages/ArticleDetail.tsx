@@ -223,7 +223,7 @@ export default function ArticleDetail() {
                           {/* Listen Button */}
                           <Button
                             onClick={handleSpeakArticle}
-                            className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
+                            className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
                             title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
                           >
                             {isPlaying ? (
@@ -240,7 +240,7 @@ export default function ArticleDetail() {
                           </Button>
 
                           {/* Share Button */}
-                          <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white/20 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
+                          <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white [&_button:hover]:text-blue-600 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
                             <ShareButton
                               title={article.title}
                               url={`${window.location.origin}/articles/${article.slug}`}
@@ -309,7 +309,7 @@ export default function ArticleDetail() {
                       {/* Listen Button */}
                       <Button
                         onClick={handleSpeakArticle}
-                        className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
+                        className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
                         title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
                       >
                         {isPlaying ? (
@@ -326,7 +326,7 @@ export default function ArticleDetail() {
                       </Button>
 
                       {/* Share Button */}
-                      <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white/20 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
+                      <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white [&_button:hover]:text-blue-600 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
                         <ShareButton
                           title={article.title}
                           url={`${window.location.origin}/articles/${article.slug}`}
