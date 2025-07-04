@@ -416,9 +416,34 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Grayscale mode - apply to body but exclude accessibility elements */
+/* Grayscale mode - apply to body but exclude accessibility elements and fixed headers */
 .grayscale body {
   filter: grayscale(100%);
+}
+
+/* Protect fixed positioned elements from filter effects */
+.grayscale header[role="banner"],
+.grayscale header[role="banner"] *,
+.grayscale .accessibility-panel,
+.grayscale .accessibility-backdrop {
+  filter: none !important;
+  isolation: isolate;
+}
+
+/* Ensure header maintains proper z-index and positioning in grayscale mode */
+.grayscale header[role="banner"] {
+  position: fixed !important;
+  z-index: 50 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* Fix body scroll behavior in grayscale mode when accessibility panel is open */
+.grayscale body.accessibility-panel-open {
+  position: fixed !important;
+  overflow: hidden !important;
+  width: 100% !important;
 }
 
 /* Force accessibility panel and backdrop to remain in color */
