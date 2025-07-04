@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 import NotFound from "@/pages/not-found";
 import { Page } from "@shared/schema";
 
@@ -16,7 +15,6 @@ export default function Resources() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
-        <SkipLinks />
         <Header />
         <main id="main-content" className="flex-1 flex items-center justify-center">
           <div className="flex items-center gap-2">
@@ -35,7 +33,6 @@ export default function Resources() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SkipLinks />
       <Header />
       
       <main id="main-content" className="flex-1">

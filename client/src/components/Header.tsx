@@ -10,6 +10,7 @@ import logoImage from "@assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_17512
 import type { Category } from "@shared/schema";
 
 import AccessibilityWidget from "./AccessibilityWidget";
+import SkipLinks from "./SkipLinks";
 
 export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -48,6 +49,9 @@ export default function Header() {
               />
             </Link>
           </div>
+
+          {/* Skip Links after logo */}
+          <SkipLinks />
 
           {/* Desktop Navigation */}
           <nav id="navigation" role="navigation" aria-label="Основная навигация" className="hidden md:block">

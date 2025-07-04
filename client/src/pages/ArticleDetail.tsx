@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Clock, User, Calendar, Volume2, Pause } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 import ShareButton from "@/components/ShareButton";
 import MetaTags from "@/components/MetaTags";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
@@ -84,7 +83,6 @@ export default function ArticleDetail() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <SkipLinks />
         <Header />
         
         <main id="main-content" role="main" className="py-16">
@@ -120,7 +118,6 @@ export default function ArticleDetail() {
           type="article"
         />
       )}
-      <SkipLinks />
       <Header />
       
       <main id="main-content" role="main">

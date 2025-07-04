@@ -2,12 +2,10 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-background">
-      <SkipLinks />
       <Header />
       
       <main id="main-content" role="main">

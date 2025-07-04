@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 import type { Page } from "@shared/schema";
 
 export default function About() {
@@ -69,7 +68,6 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SkipLinks />
       <Header />
       
       <main id="main-content" role="main">

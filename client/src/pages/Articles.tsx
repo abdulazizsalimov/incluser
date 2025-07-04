@@ -9,7 +9,6 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 import MetaTags from "@/components/MetaTags";
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
@@ -96,7 +95,6 @@ export default function Articles() {
         }
         url={window.location.href}
       />
-      <SkipLinks />
       <Header />
       
       <main id="main-content" role="main">

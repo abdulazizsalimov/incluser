@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 import MetaTags from "@/components/MetaTags";
 import AccessibilityFeaturesSlider from "@/components/AccessibilityFeaturesSlider";
 import heroPhoto from "@/assets/hero-photo.png";
@@ -32,7 +31,6 @@ export default function Home() {
         image={`${window.location.origin}${heroPhoto}`}
         url={window.location.href}
       />
-      <SkipLinks />
       <Header />
       
       <main id="main-content" role="main">

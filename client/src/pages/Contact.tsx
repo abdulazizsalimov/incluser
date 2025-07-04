@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SkipLinks from "@/components/SkipLinks";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Имя должно содержать минимум 2 символа"),
@@ -62,7 +61,6 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SkipLinks />
       <Header />
       
       <main id="main-content" role="main">
