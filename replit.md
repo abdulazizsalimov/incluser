@@ -27,8 +27,13 @@ The application follows a full-stack monorepo architecture with clear separation
   - Skip links for keyboard navigation
   - Semantic HTML structure
   - ARIA labels and roles
-  - Google Translate integration
+  - Advanced text-to-speech with RHVoice support
   - Accessibility widget for font size, contrast, and motion preferences
+  - Screen reader optimizations with dynamic content announcements
+- **Internationalization**:
+  - Language switching between Russian and English
+  - Google Translate integration for automatic page translation
+  - Language state management with URL detection
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
@@ -83,6 +88,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 4, 2025. Added language switching functionality - integrated Google Translate support with dropdown language switcher in header featuring Russian and English options, automatic page translation via Google Translate URLs, proper language detection and state management for seamless user experience across both desktop and mobile interfaces
 - July 3, 2025. Made all banner buttons transparent - converted "Попробовать" button on accessibility slider and "Прослушать"/"Поделиться" buttons on article pages to use consistent transparent design with white borders and backdrop blur, matching the "Об авторе" button style across both mobile and desktop layouts
 - July 2, 2025. Converted accessibility widget to slide-out side panel - changed from modal dialog to right-sliding panel with backdrop, escape key handling that returns focus to header button, fixed grayscale mode compatibility with CSS filters protection
 - July 2, 2025. Replaced theme selector with visual thumbnails - replaced dropdown with three clickable preview cards showing miniature site interface in light theme (blue accents), dark theme (purple-blue cosmic gradient), and system theme (split light/dark), each with hover animations and proper accessibility labels
