@@ -29,11 +29,13 @@ export function useGoogleTranslate() {
         pageLanguage: 'ru',
         includedLanguages: 'ru,en',
         layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false,
-        multilanguagePage: true
+        autoDisplay: false
       }, 'google_translate_element');
       
-      setIsLoaded(true);
+      // Wait for element to be created
+      setTimeout(() => {
+        setIsLoaded(true);
+      }, 500);
     };
 
     document.head.appendChild(script);
@@ -48,53 +50,45 @@ export function useGoogleTranslate() {
   }, []);
 
   const changeLanguage = useCallback((targetLang: Language) => {
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      console.log('Google Translate not loaded yet');
+      return;
+    }
 
+    console.log(`Changing language to: ${targetLang}`);
     setCurrentLanguage(targetLang);
 
-    // Wait a bit for Google Translate to be fully loaded
+    // Wait for Google Translate to be ready
     setTimeout(() => {
-      // Try to find the Google Translate select element
-      const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      // Try to find the existing select
+      let select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      console.log('Found select element:', !!select);
+      
       if (select) {
-        // Set the value to target language
+        console.log('Select options:', Array.from(select.options).map(o => ({ value: o.value, text: o.text })));
+        
+        // Set language and trigger change
         select.value = targetLang;
-        // Trigger change event
-        const event = new Event('change', { bubbles: true });
-        select.dispatchEvent(event);
+        console.log('Set select value to:', targetLang);
+        
+        // Trigger change event with multiple methods
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        select.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        // Also try click event
+        if (select.onchange) {
+          select.onchange(new Event('change') as any);
+        }
       } else {
-        // Fallback: trigger translation programmatically
-        if (window.google?.translate?.TranslateElement) {
-          // Create a temporary visible select to trigger translation
-          const tempElement = document.createElement('div');
-          tempElement.id = 'temp_translate_element';
-          tempElement.style.position = 'absolute';
-          tempElement.style.left = '-9999px';
-          document.body.appendChild(tempElement);
-          
-          new window.google.translate.TranslateElement({
-            pageLanguage: 'ru',
-            includedLanguages: 'ru,en',
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-          }, 'temp_translate_element');
-          
-          // Find the select in temp element and trigger it
-          setTimeout(() => {
-            const tempSelect = tempElement.querySelector('select') as HTMLSelectElement;
-            if (tempSelect) {
-              tempSelect.value = targetLang;
-              tempSelect.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-            // Clean up temp element
-            setTimeout(() => {
-              if (document.body.contains(tempElement)) {
-                document.body.removeChild(tempElement);
-              }
-            }, 1000);
-          }, 100);
+        console.log('Select not found, checking Google Translate element');
+        const gtElement = document.getElementById('google_translate_element');
+        console.log('Google Translate element found:', !!gtElement);
+        
+        if (gtElement) {
+          console.log('Element content:', gtElement.innerHTML);
         }
       }
-    }, 100);
+    }, 500); // Increased timeout
   }, [isLoaded]);
 
   const resetToRussian = useCallback(() => {

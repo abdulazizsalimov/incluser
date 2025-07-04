@@ -304,15 +304,28 @@
   display: none !important;
 }
 
+/* Allow goog-te-combo to exist but hide it */
 .goog-te-combo {
-  display: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
 }
 
-/* Hide all Google Translate UI elements */
-#google_translate_element,
+/* Hide Google Translate UI elements but allow initialization */
 .goog-te-gadget-simple,
 .goog-te-menu-value {
   display: none !important;
+}
+
+/* Google Translate element - hidden but functional */
+#google_translate_element {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
 }
 
 /* Prevent Google Translate from adding margins */
