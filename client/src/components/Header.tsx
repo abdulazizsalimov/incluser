@@ -56,7 +56,10 @@ export default function Header() {
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-20" style={{
+          filter: 'none',
+          isolation: 'isolate'
+        }}>
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-accent focus:ring-offset-2 rounded">
@@ -84,6 +87,10 @@ export default function Header() {
                         : "text-muted-foreground hover:text-primary"
                     }`}
                     aria-current={isActive(item.href) ? "page" : undefined}
+                    style={{
+                      color: isActive(item.href) ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+                      filter: 'none'
+                    }}
                   >
                     {item.label}
                   </Link>
