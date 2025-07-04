@@ -7,7 +7,12 @@ export function initGrayscaleHeaderFix() {
     if (grayscaleHeader) return;
     
     originalHeader = document.querySelector('header[role="banner"]');
-    if (!originalHeader) return;
+    if (!originalHeader) {
+      console.log('Grayscale header fix: No header found');
+      return;
+    }
+    
+    console.log('Grayscale header fix: Creating cloned header');
 
     // Clone the header
     grayscaleHeader = originalHeader.cloneNode(true) as HTMLElement;
@@ -55,36 +60,36 @@ export function initGrayscaleHeaderFix() {
 
   function attachEventListeners(header: HTMLElement) {
     // Re-attach click handlers for buttons
-    const accessibilityBtn = header.querySelector('[aria-label="Специальные возможности"]');
-    if (accessibilityBtn) {
-      accessibilityBtn.addEventListener('click', () => {
-        // Trigger accessibility panel open
-        const event = new CustomEvent('accessibility-toggle');
-        window.dispatchEvent(event);
-      });
-    }
-
-    const adminBtn = header.querySelector('button:has-text("Админ-панель")') || 
-                    header.querySelector('button[onclick*="admin"]') ||
-                    Array.from(header.querySelectorAll('button')).find(btn => btn.textContent?.includes('Админ'));
-    if (adminBtn) {
-      adminBtn.addEventListener('click', () => {
-        window.location.href = '/admin';
-      });
-    }
-
-    const logoutBtn = header.querySelector('button:has-text("Выход")') || 
-                     Array.from(header.querySelectorAll('button')).find(btn => btn.textContent?.includes('Выход'));
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        try {
-          await fetch("/api/logout", { method: "POST" });
-          window.location.href = "/";
-        } catch (error) {
-          window.location.href = "/";
-        }
-      });
-    }
+    const buttons = header.querySelectorAll('button');
+    buttons.forEach(btn => {
+      const text = btn.textContent?.trim();
+      
+      if (btn.hasAttribute('aria-label') && btn.getAttribute('aria-label')?.includes('возможности')) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          // Find original accessibility button and click it
+          const originalBtn = document.querySelector('[aria-label="Специальные возможности"]');
+          if (originalBtn) {
+            (originalBtn as HTMLElement).click();
+          }
+        });
+      } else if (text?.includes('Админ')) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.location.href = '/admin';
+        });
+      } else if (text?.includes('Выход')) {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          try {
+            await fetch("/api/logout", { method: "POST" });
+            window.location.href = "/";
+          } catch (error) {
+            window.location.href = "/";
+          }
+        });
+      }
+    });
 
     // Re-attach navigation links
     const navLinks = header.querySelectorAll('a[href]');
@@ -104,6 +109,7 @@ export function initGrayscaleHeaderFix() {
     mutations.forEach((mutation) => {
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
         const hasGrayscale = document.body.classList.contains('grayscale-mode');
+        console.log('Grayscale header fix: Body class changed, grayscale mode:', hasGrayscale);
         
         if (hasGrayscale && !grayscaleHeader) {
           createGrayscaleHeader();
