@@ -48,7 +48,10 @@ export default function Header() {
         zIndex: 50,
         filter: 'none',
         isolation: 'isolate',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
+        backgroundColor: 'hsl(var(--background))',
+        borderBottom: '1px solid hsl(var(--border))',
+        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
