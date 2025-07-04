@@ -221,30 +221,26 @@ export default function ArticleDetail() {
                         
                         <div className="flex items-center gap-2">
                           {/* Listen Button */}
-                          <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
-                            <Button
-                              onClick={handleSpeakArticle}
-                              variant="ghost"
-                              size="default"
-                              className="!text-gray-900 hover:!text-gray-700 flex items-center gap-2"
-                              title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
-                            >
-                              {isPlaying ? (
-                                <>
-                                  <Pause className="h-4 w-4" />
-                                  Пауза
-                                </>
-                              ) : (
-                                <>
-                                  <Volume2 className="h-4 w-4" />
-                                  {isPaused ? "Продолжить" : "Прослушать"}
-                                </>
-                              )}
-                            </Button>
-                          </div>
+                          <Button
+                            onClick={handleSpeakArticle}
+                            className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
+                            title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
+                          >
+                            {isPlaying ? (
+                              <>
+                                <Pause className="h-4 w-4" />
+                                Пауза
+                              </>
+                            ) : (
+                              <>
+                                <Volume2 className="h-4 w-4" />
+                                {isPaused ? "Продолжить" : "Прослушать"}
+                              </>
+                            )}
+                          </Button>
 
                           {/* Share Button */}
-                          <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg [&_button]:!text-gray-900 [&_button:hover]:!text-gray-700">
+                          <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white/20 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
                             <ShareButton
                               title={article.title}
                               url={`${window.location.origin}/articles/${article.slug}`}
@@ -311,30 +307,26 @@ export default function ArticleDetail() {
                     {/* Listen and Share buttons in bottom right */}
                     <div className="ml-4 flex items-center gap-3">
                       {/* Listen Button */}
-                      <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg">
-                        <Button
-                          onClick={handleSpeakArticle}
-                          variant="ghost"
-                          size="default"
-                          className="!text-gray-900 hover:!text-gray-700 flex items-center gap-2"
-                          title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
-                        >
-                          {isPlaying ? (
-                            <>
-                              <Pause className="h-5 w-5" />
-                              Пауза
-                            </>
-                          ) : (
-                            <>
-                              <Volume2 className="h-5 w-5" />
-                              {isPaused ? "Продолжить" : "Прослушать"}
-                            </>
-                          )}
-                        </Button>
-                      </div>
+                      <Button
+                        onClick={handleSpeakArticle}
+                        className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
+                        title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
+                      >
+                        {isPlaying ? (
+                          <>
+                            <Pause className="h-5 w-5" />
+                            Пауза
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="h-5 w-5" />
+                            {isPaused ? "Продолжить" : "Прослушать"}
+                          </>
+                        )}
+                      </Button>
 
                       {/* Share Button */}
-                      <div className="bg-white backdrop-blur-sm rounded-lg border border-gray-200 shadow-lg [&_button]:!text-gray-900 [&_button:hover]:!text-gray-700">
+                      <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white/20 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
                         <ShareButton
                           title={article.title}
                           url={`${window.location.origin}/articles/${article.slug}`}
