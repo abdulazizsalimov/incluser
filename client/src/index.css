@@ -301,41 +301,10 @@
 .goog-te-gadget {
   font-family: inherit !important;
   font-size: inherit !important;
-  display: none !important;
 }
 
-/* Allow goog-te-combo to exist but hide it */
 .goog-te-combo {
-  position: absolute !important;
-  left: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  opacity: 0 !important;
-}
-
-/* Hide Google Translate UI elements but allow initialization */
-.goog-te-gadget-simple,
-.goog-te-menu-value {
-  display: none !important;
-}
-
-/* Google Translate element - hidden but functional */
-#google_translate_element {
-  position: absolute !important;
-  left: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-}
-
-/* Prevent Google Translate from adding margins */
-body {
-  top: 0 !important;
-  margin-top: 0 !important;
-}
-
-.skiptranslate {
-  margin-top: 0 !important;
+  display: none;
 }
 
 /* Footer styling - distinct from main content */

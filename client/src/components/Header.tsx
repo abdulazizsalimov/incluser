@@ -11,7 +11,6 @@ import type { Category } from "@shared/schema";
 
 import AccessibilityWidget from "./AccessibilityWidget";
 import SkipLinks from "./SkipLinks";
-import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -110,9 +109,6 @@ export default function Header() {
 
           {/* Right Section */}
           <div className="flex items-center space-x-4">
-            {/* Language Switcher */}
-            <LanguageSwitcher />
-            
             {/* Accessibility Widget */}
             <Button
               variant="outline"
@@ -225,11 +221,6 @@ export default function Header() {
                 
                 {/* Fixed bottom section */}
                 <div className="border-t bg-background p-4 space-y-2">
-                  {/* Language Switcher for Mobile */}
-                  <div className="flex justify-center">
-                    <LanguageSwitcher />
-                  </div>
-                  
                   <Button
                     variant="outline"
                     size="sm"
