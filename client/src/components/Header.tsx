@@ -51,7 +51,8 @@ export default function Header() {
         pointerEvents: 'auto',
         backgroundColor: 'hsl(var(--background))',
         borderBottom: '1px solid hsl(var(--border))',
-        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)'
+        boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        color: 'hsl(var(--foreground))'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,6 +134,12 @@ export default function Header() {
               onClick={() => setAccessibilityOpen(true)}
               aria-label="Специальные возможности"
               className="hidden sm:flex"
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: 'hsl(var(--border))',
+                color: 'hsl(var(--foreground))',
+                filter: 'none'
+              }}
             >
               <Accessibility className="h-4 w-4" />
               <span className="ml-2">Доступность</span>
@@ -148,6 +155,12 @@ export default function Header() {
                         variant="outline" 
                         size="sm"
                         onClick={() => window.location.href = "/admin"}
+                        style={{
+                          backgroundColor: 'hsl(var(--primary))',
+                          borderColor: 'hsl(var(--primary))',
+                          color: 'hsl(var(--primary-foreground))',
+                          filter: 'none'
+                        }}
                       >
                         Админ-панель
                       </Button>
@@ -162,6 +175,12 @@ export default function Header() {
                         } catch (error) {
                           window.location.href = "/";
                         }
+                      }}
+                      style={{
+                        backgroundColor: 'transparent',
+                        borderColor: 'hsl(var(--border))',
+                        color: 'hsl(var(--foreground))',
+                        filter: 'none'
                       }}
                     >
                       Выход
