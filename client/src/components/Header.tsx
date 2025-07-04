@@ -127,11 +127,13 @@ export default function Header() {
                 {isAuthenticated ? (
                   <div className="flex items-center space-x-2">
                     {user?.isAdmin && (
-                      <Link href="/admin">
-                        <Button variant="outline" size="sm">
-                          Админ-панель
-                        </Button>
-                      </Link>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.location.href = "/admin"}
+                      >
+                        Админ-панель
+                      </Button>
                     )}
                     <Button
                       variant="outline"

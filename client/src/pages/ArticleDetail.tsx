@@ -93,12 +93,10 @@ export default function ArticleDetail() {
             <p className="text-lg text-muted-foreground mb-8">
               Запрошенная статья не существует или была удалена.
             </p>
-            <Link href="/articles">
-              <Button>
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Вернуться к статьям
-              </Button>
-            </Link>
+            <Button onClick={() => window.location.href = "/articles"}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Вернуться к статьям
+            </Button>
           </div>
         </main>
         
@@ -124,12 +122,14 @@ export default function ArticleDetail() {
         {/* Back button */}
         <div className="border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <Link href="/articles">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Назад к статьям
-              </Button>
-            </Link>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => window.location.href = "/articles"}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Назад к статьям
+            </Button>
           </div>
         </div>
 

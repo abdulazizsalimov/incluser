@@ -23,16 +23,22 @@ export default function Landing() {
               которыми могут пользоваться все люди, независимо от их способностей.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/articles">
-                <Button size="lg" variant="secondary" className="bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground border-2 border-card">
-                  Читать статьи
-                </Button>
-              </Link>
-              <Link href="/about">
-                <Button size="lg" variant="outline" className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-                  Об авторе
-                </Button>
-              </Link>
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground border-2 border-card"
+                onClick={() => window.location.href = "/articles"}
+              >
+                Читать статьи
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
+                onClick={() => window.location.href = "/about"}
+              >
+                Об авторе
+              </Button>
             </div>
           </div>
         </section>

@@ -87,16 +87,21 @@ export default function Home() {
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
                   <div className="flex gap-2 justify-center">
-                    <Link href="/articles">
-                      <Button size="sm" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg text-xs px-3">
-                        Читать статьи
-                      </Button>
-                    </Link>
-                    <Link href="/about">
-                      <Button size="sm" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10 text-xs px-3">
-                        Об авторе
-                      </Button>
-                    </Link>
+                    <Button 
+                      size="sm" 
+                      className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg text-xs px-3"
+                      onClick={() => window.location.href = "/articles"}
+                    >
+                      Читать статьи
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10 text-xs px-3"
+                      onClick={() => window.location.href = "/about"}
+                    >
+                      Об авторе
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -120,16 +125,21 @@ export default function Home() {
                     которыми могут пользоваться все люди, независимо от их способностей.
                   </p>
                   <div className="flex gap-4">
-                    <Link href="/articles">
-                      <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg">
-                        Читать статьи
-                      </Button>
-                    </Link>
-                    <Link href="/about">
-                      <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10">
-                        Об авторе
-                      </Button>
-                    </Link>
+                    <Button 
+                      size="lg" 
+                      className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-semibold shadow-lg"
+                      onClick={() => window.location.href = "/articles"}
+                    >
+                      Читать статьи
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold shadow-lg backdrop-blur-sm bg-white/10"
+                      onClick={() => window.location.href = "/about"}
+                    >
+                      Об авторе
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -169,11 +179,12 @@ export default function Home() {
                 </div>
                 
                 <div className="text-center mt-12">
-                  <Link href="/articles">
-                    <Button size="lg">
-                      Все статьи
-                    </Button>
-                  </Link>
+                  <Button 
+                    size="lg"
+                    onClick={() => window.location.href = "/articles"}
+                  >
+                    Все статьи
+                  </Button>
                 </div>
               </>
             ) : (

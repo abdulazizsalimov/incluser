@@ -136,12 +136,14 @@ export default function AdminDashboard() {
               Создавайте, редактируйте и публикуйте статьи о цифровой доступности
             </p>
             <div className="flex gap-2">
-              <Link href="/admin/articles">
-                <Button size="sm" className="flex-1">
-                  <Edit className="h-4 w-4 mr-2" />
-                  Управлять
-                </Button>
-              </Link>
+              <Button 
+                size="sm" 
+                className="flex-1"
+                onClick={() => window.location.href = "/admin/articles"}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Управлять
+              </Button>
               <Button size="sm" variant="outline" onClick={handleCreateArticle}>
                 <Plus className="h-4 w-4 mr-2" />
                 Создать
@@ -162,12 +164,15 @@ export default function AdminDashboard() {
               Организуйте статьи по тематическим категориям
             </p>
             <div className="flex gap-2">
-              <Link href="/admin/categories">
-                <Button size="sm" variant="secondary" className="flex-1">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Настроить
-                </Button>
-              </Link>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                className="flex-1"
+                onClick={() => window.location.href = "/admin/categories"}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Настроить
+              </Button>
               <Button size="sm" variant="outline" onClick={handleCreateCategory}>
                 <Plus className="h-4 w-4 mr-2" />
                 Добавить
@@ -188,12 +193,15 @@ export default function AdminDashboard() {
               Редактируйте статические страницы: "О блоге", "Контакты" и другие
             </p>
             <div className="flex gap-2">
-              <Link href="/admin/pages">
-                <Button size="sm" variant="secondary" className="flex-1">
-                  <Edit className="h-4 w-4 mr-2" />
-                  Редактировать
-                </Button>
-              </Link>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                className="flex-1"
+                onClick={() => window.location.href = "/admin/pages"}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Редактировать
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -242,11 +250,13 @@ export default function AdminDashboard() {
               ))}
               
               <div className="pt-4 border-t border-border">
-                <Link href="/admin/articles">
-                  <Button variant="outline" className="w-full">
-                    Посмотреть все статьи
-                  </Button>
-                </Link>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => window.location.href = "/admin/articles"}
+                >
+                  Посмотреть все статьи
+                </Button>
               </div>
             </div>
           ) : (

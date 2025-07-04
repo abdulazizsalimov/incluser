@@ -75,12 +75,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <div className="p-6">
             <h2 className="text-xl font-semibold mb-6">Панель администратора</h2>
             <nav className="space-y-2">
-              <Link href="/">
-                <Button variant="ghost" className="w-full justify-start">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Вернуться на сайт
-                </Button>
-              </Link>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start"
+                onClick={() => window.location.href = "/"}
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Вернуться на сайт
+              </Button>
               <Separator className="my-4" />
               {sidebarItems.map((item) => {
                 const Icon = item.icon;
@@ -88,15 +90,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   (item.href !== "/admin" && location.startsWith(item.href));
                 
                 return (
-                  <Link key={item.href} href={item.href}>
-                    <Button
-                      variant={isActive ? "secondary" : "ghost"}
-                      className="w-full justify-start"
-                    >
-                      <Icon className="mr-2 h-4 w-4" />
-                      {item.label}
-                    </Button>
-                  </Link>
+                  <Button
+                    key={item.href}
+                    variant={isActive ? "secondary" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => window.location.href = item.href}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    {item.label}
+                  </Button>
                 );
               })}
             </nav>
