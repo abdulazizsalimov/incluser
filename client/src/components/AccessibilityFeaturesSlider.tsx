@@ -74,6 +74,7 @@ export default function AccessibilityFeaturesSlider() {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [timeLeft, setTimeLeft] = useState(5000);
   const [isScreenReaderFocused, setIsScreenReaderFocused] = useState(false);
+  const [hasInitializedScreenReader, setHasInitializedScreenReader] = useState(false);
   const screenReaderAnnouncerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -96,12 +97,19 @@ export default function AccessibilityFeaturesSlider() {
 
   // Announce slide content to screen reader when slide changes and button is focused
   useEffect(() => {
-    if (isScreenReaderFocused && screenReaderAnnouncerRef.current) {
+    if (isScreenReaderFocused && hasInitializedScreenReader && screenReaderAnnouncerRef.current) {
       const currentSlideData = slides[currentSlide];
       const announcement = `${currentSlideData.title}. ${currentSlideData.description}`;
-      screenReaderAnnouncerRef.current.textContent = announcement;
+      // Clear previous content first to prevent double announcements
+      screenReaderAnnouncerRef.current.textContent = '';
+      // Set new content after a small delay
+      setTimeout(() => {
+        if (screenReaderAnnouncerRef.current && isScreenReaderFocused) {
+          screenReaderAnnouncerRef.current.textContent = announcement;
+        }
+      }, 100);
     }
-  }, [currentSlide, isScreenReaderFocused]);
+  }, [currentSlide, isScreenReaderFocused, hasInitializedScreenReader]);
 
   const toggleAutoPlay = () => {
     setIsAutoPlaying(!isAutoPlaying);
@@ -156,8 +164,19 @@ export default function AccessibilityFeaturesSlider() {
           {/* Screen Reader Button - appears only on focus */}
           <button
             className="absolute top-0 left-0 opacity-0 focus:opacity-100 bg-white/20 hover:bg-white/30 rounded-lg p-2 transition-all focus:outline-none focus:ring-4 focus:ring-white/50"
-            onFocus={() => setIsScreenReaderFocused(true)}
-            onBlur={() => setIsScreenReaderFocused(false)}
+            onFocus={() => {
+              setIsScreenReaderFocused(true);
+              // Set initialization flag after a delay to prevent initial content announcement
+              setTimeout(() => setHasInitializedScreenReader(true), 500);
+            }}
+            onBlur={() => {
+              setIsScreenReaderFocused(false);
+              setHasInitializedScreenReader(false);
+              // Clear announcer content when focus is lost
+              if (screenReaderAnnouncerRef.current) {
+                screenReaderAnnouncerRef.current.textContent = '';
+              }
+            }}
             aria-label="Баннер содержит динамически изменяющийся контент. Оставайтесь на этом элементе, чтобы прослушать его содержимое"
             aria-describedby="slide-announcer"
           >
