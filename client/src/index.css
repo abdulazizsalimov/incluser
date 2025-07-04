@@ -301,10 +301,28 @@
 .goog-te-gadget {
   font-family: inherit !important;
   font-size: inherit !important;
+  display: none !important;
 }
 
 .goog-te-combo {
-  display: none;
+  display: none !important;
+}
+
+/* Hide all Google Translate UI elements */
+#google_translate_element,
+.goog-te-gadget-simple,
+.goog-te-menu-value {
+  display: none !important;
+}
+
+/* Prevent Google Translate from adding margins */
+body {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.skiptranslate {
+  margin-top: 0 !important;
 }
 
 /* Footer styling - distinct from main content */
