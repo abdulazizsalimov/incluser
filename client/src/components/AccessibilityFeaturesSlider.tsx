@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Headphones } from "lucide-react";
 import slyde1Image from "@assets/Slyde1_1751518088264.png";
 import slyde2Image from "@assets/Slyde2_1751518092093.png";
 import slyde3Image from "@assets/Slyde3_1751518094773.png";
@@ -72,6 +73,8 @@ export default function AccessibilityFeaturesSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [timeLeft, setTimeLeft] = useState(5000);
+  const [isScreenReaderFocused, setIsScreenReaderFocused] = useState(false);
+  const screenReaderAnnouncerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -90,6 +93,15 @@ export default function AccessibilityFeaturesSlider() {
       clearInterval(timeInterval);
     };
   }, [isAutoPlaying]);
+
+  // Announce slide content to screen reader when slide changes and button is focused
+  useEffect(() => {
+    if (isScreenReaderFocused && screenReaderAnnouncerRef.current) {
+      const currentSlideData = slides[currentSlide];
+      const announcement = `${currentSlideData.title}. ${currentSlideData.description}`;
+      screenReaderAnnouncerRef.current.textContent = announcement;
+    }
+  }, [currentSlide, isScreenReaderFocused]);
 
   const toggleAutoPlay = () => {
     setIsAutoPlaying(!isAutoPlaying);
@@ -141,6 +153,17 @@ export default function AccessibilityFeaturesSlider() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Header */}
         <div className="text-center mb-4 relative">
+          {/* Screen Reader Button - appears only on focus */}
+          <button
+            className="absolute top-0 left-0 opacity-0 focus:opacity-100 bg-white/20 hover:bg-white/30 rounded-lg p-2 transition-all focus:outline-none focus:ring-4 focus:ring-white/50"
+            onFocus={() => setIsScreenReaderFocused(true)}
+            onBlur={() => setIsScreenReaderFocused(false)}
+            aria-label="Баннер содержит динамически изменяющийся контент. Оставайтесь на этом элементе, чтобы прослушать его содержимое"
+            aria-describedby="slide-announcer"
+          >
+            <Headphones className="h-4 w-4 text-white" />
+          </button>
+          
           <h2 id="accessibility-features" className="text-2xl md:text-3xl font-bold mb-2">
             Специальные возможности: забота о каждом пользователе
           </h2>
@@ -290,6 +313,17 @@ export default function AccessibilityFeaturesSlider() {
             </span>
           </div>
         </div>
+      </div>
+      
+      {/* Hidden announcer for screen readers */}
+      <div 
+        id="slide-announcer" 
+        ref={screenReaderAnnouncerRef}
+        className="sr-only" 
+        aria-live="polite" 
+        aria-atomic="true"
+      >
+        {/* Content will be dynamically updated for screen readers */}
       </div>
     </section>
   );
