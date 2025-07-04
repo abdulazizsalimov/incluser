@@ -76,6 +76,7 @@ export default function AccessibilityFeaturesSlider() {
   const [isScreenReaderFocused, setIsScreenReaderFocused] = useState(false);
   const [hasInitializedScreenReader, setHasInitializedScreenReader] = useState(false);
   const screenReaderAnnouncerRef = useRef<HTMLDivElement>(null);
+  const lastAnnouncedSlideRef = useRef<number>(-1);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -98,16 +99,14 @@ export default function AccessibilityFeaturesSlider() {
   // Announce slide content to screen reader when slide changes and button is focused
   useEffect(() => {
     if (isScreenReaderFocused && hasInitializedScreenReader && screenReaderAnnouncerRef.current) {
-      const currentSlideData = slides[currentSlide];
-      const announcement = `${currentSlideData.title}. ${currentSlideData.description}`;
-      // Clear previous content first to prevent double announcements
-      screenReaderAnnouncerRef.current.textContent = '';
-      // Set new content after a small delay
-      setTimeout(() => {
-        if (screenReaderAnnouncerRef.current && isScreenReaderFocused) {
-          screenReaderAnnouncerRef.current.textContent = announcement;
-        }
-      }, 100);
+      // Only announce if the slide has actually changed
+      if (lastAnnouncedSlideRef.current !== currentSlide) {
+        const currentSlideData = slides[currentSlide];
+        const announcement = `${currentSlideData.title}. ${currentSlideData.description}`;
+        
+        screenReaderAnnouncerRef.current.textContent = announcement;
+        lastAnnouncedSlideRef.current = currentSlide;
+      }
     }
   }, [currentSlide, isScreenReaderFocused, hasInitializedScreenReader]);
 
@@ -172,6 +171,7 @@ export default function AccessibilityFeaturesSlider() {
             onBlur={() => {
               setIsScreenReaderFocused(false);
               setHasInitializedScreenReader(false);
+              lastAnnouncedSlideRef.current = -1; // Reset announced slide tracking
               // Clear announcer content when focus is lost
               if (screenReaderAnnouncerRef.current) {
                 screenReaderAnnouncerRef.current.textContent = '';
