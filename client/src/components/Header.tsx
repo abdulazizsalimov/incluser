@@ -128,7 +128,7 @@ export default function Header() {
                   <div className="flex items-center space-x-2">
                     {user?.isAdmin && (
                       <Button 
-                        variant="default" 
+                        variant="outline" 
                         size="sm"
                         onClick={() => window.location.href = "/admin"}
                       >
