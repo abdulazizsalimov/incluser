@@ -104,7 +104,7 @@ export function initGrayscaleHeaderFix() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-        const hasGrayscale = document.body.classList.contains('grayscale-mode');
+        const hasGrayscale = document.documentElement.classList.contains('grayscale');
         console.log('Grayscale mode changed:', hasGrayscale);
         
         if (hasGrayscale && !grayscaleHeader) {
@@ -116,13 +116,13 @@ export function initGrayscaleHeaderFix() {
     });
   });
 
-  observer.observe(document.body, {
+  observer.observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['class']
   });
 
   // Initial check
-  if (document.body.classList.contains('grayscale-mode')) {
+  if (document.documentElement.classList.contains('grayscale')) {
     createGrayscaleHeader();
   }
 
