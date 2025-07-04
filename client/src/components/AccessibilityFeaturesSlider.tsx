@@ -76,6 +76,8 @@ export default function AccessibilityFeaturesSlider() {
   const [isScreenReaderFocused, setIsScreenReaderFocused] = useState(false);
   const [hasInitializedScreenReader, setHasInitializedScreenReader] = useState(false);
   const lastAnnouncedSlideRef = useRef<number>(-1);
+  const screenReaderAnnouncerRef = useRef<HTMLDivElement>(null);
+  const announceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -97,28 +99,26 @@ export default function AccessibilityFeaturesSlider() {
 
   // Announce slide content to screen reader when slide changes and button is focused
   useEffect(() => {
-    if (isScreenReaderFocused && hasInitializedScreenReader) {
+    if (isScreenReaderFocused && hasInitializedScreenReader && screenReaderAnnouncerRef.current) {
       // Only announce if the slide has actually changed
       if (lastAnnouncedSlideRef.current !== currentSlide) {
         const currentSlideData = slides[currentSlide];
         const announcement = `${currentSlideData.title}. ${currentSlideData.description}`;
         
-        // Create a new element each time to force screen reader announcement
-        const announceElement = document.createElement('div');
-        announceElement.setAttribute('aria-live', 'polite');
-        announceElement.setAttribute('aria-atomic', 'true');
-        announceElement.className = 'sr-only';
-        announceElement.textContent = announcement;
+        // Clear any pending announcement
+        if (announceTimeoutRef.current) {
+          clearTimeout(announceTimeoutRef.current);
+        }
         
-        // Add to body temporarily
-        document.body.appendChild(announceElement);
+        // Clear content first
+        screenReaderAnnouncerRef.current.textContent = '';
         
-        // Remove after announcement
-        setTimeout(() => {
-          if (document.body.contains(announceElement)) {
-            document.body.removeChild(announceElement);
+        // Set new content after a brief delay to ensure clean announcement
+        announceTimeoutRef.current = setTimeout(() => {
+          if (screenReaderAnnouncerRef.current && isScreenReaderFocused) {
+            screenReaderAnnouncerRef.current.textContent = announcement;
           }
-        }, 1000);
+        }, 50);
         
         lastAnnouncedSlideRef.current = currentSlide;
       }
@@ -187,6 +187,14 @@ export default function AccessibilityFeaturesSlider() {
               setIsScreenReaderFocused(false);
               setHasInitializedScreenReader(false);
               lastAnnouncedSlideRef.current = -1; // Reset announced slide tracking
+              
+              // Clear any pending announcements and content
+              if (announceTimeoutRef.current) {
+                clearTimeout(announceTimeoutRef.current);
+              }
+              if (screenReaderAnnouncerRef.current) {
+                screenReaderAnnouncerRef.current.textContent = '';
+              }
             }}
             aria-label="Баннер содержит динамически изменяющийся контент. Оставайтесь на этом элементе, чтобы прослушать его содержимое"
           >
@@ -342,6 +350,16 @@ export default function AccessibilityFeaturesSlider() {
             </span>
           </div>
         </div>
+      </div>
+      
+      {/* Hidden announcer for screen readers */}
+      <div 
+        ref={screenReaderAnnouncerRef}
+        className="sr-only" 
+        aria-live="polite" 
+        aria-atomic="true"
+      >
+        {/* Content will be dynamically updated for screen readers */}
       </div>
     </section>
   );
