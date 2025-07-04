@@ -7,12 +7,7 @@ export function initGrayscaleHeaderFix() {
     if (grayscaleHeader) return;
     
     originalHeader = document.querySelector('header[role="banner"]');
-    if (!originalHeader) {
-      console.log('Grayscale header fix: No header found');
-      return;
-    }
-    
-    console.log('Grayscale header fix: Creating cloned header');
+    if (!originalHeader) return;
 
     // Clone the header
     grayscaleHeader = originalHeader.cloneNode(true) as HTMLElement;
@@ -109,7 +104,6 @@ export function initGrayscaleHeaderFix() {
     mutations.forEach((mutation) => {
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
         const hasGrayscale = document.body.classList.contains('grayscale-mode');
-        console.log('Grayscale header fix: Body class changed, grayscale mode:', hasGrayscale);
         
         if (hasGrayscale && !grayscaleHeader) {
           createGrayscaleHeader();
