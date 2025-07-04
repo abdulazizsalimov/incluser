@@ -10,25 +10,53 @@ export function initGrayscaleHeaderFix() {
     originalHeader = document.querySelector('header[role="banner"]');
     if (!originalHeader) return;
 
-    // Clone the header
+    console.log('Creating grayscale header clone');
+    
+    // Clone the header with all children and event handlers
     grayscaleHeader = originalHeader.cloneNode(true) as HTMLElement;
     
-    // Style the cloned header to be completely isolated
+    // Copy all computed styles from original header to maintain exact appearance
+    const originalStyles = window.getComputedStyle(originalHeader);
+    
+    // Style the cloned header to be completely isolated and match original
     grayscaleHeader.style.cssText = `
       position: fixed !important;
       top: 0 !important;
       left: 0 !important;
       right: 0 !important;
       width: 100% !important;
-      height: 80px !important;
+      height: ${originalStyles.height} !important;
       z-index: 99999 !important;
       filter: none !important;
       isolation: isolate !important;
-      background: white !important;
-      border-bottom: 1px solid #e2e8f0 !important;
-      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+      background: ${originalStyles.background} !important;
+      background-color: ${originalStyles.backgroundColor} !important;
+      border: ${originalStyles.border} !important;
+      border-bottom: ${originalStyles.borderBottom} !important;
+      box-shadow: ${originalStyles.boxShadow} !important;
+      padding: ${originalStyles.padding} !important;
+      margin: 0 !important;
       pointer-events: auto !important;
+      font-family: ${originalStyles.fontFamily} !important;
+      font-size: ${originalStyles.fontSize} !important;
+      color: ${originalStyles.color} !important;
     `;
+    
+    // Ensure all child elements maintain their styles
+    const allElements = grayscaleHeader.querySelectorAll('*');
+    allElements.forEach((element, index) => {
+      const originalElement = originalHeader.querySelectorAll('*')[index];
+      if (originalElement) {
+        const elementStyles = window.getComputedStyle(originalElement);
+        (element as HTMLElement).style.cssText += `
+          color: ${elementStyles.color} !important;
+          background-color: ${elementStyles.backgroundColor} !important;
+          border: ${elementStyles.border} !important;
+          font-size: ${elementStyles.fontSize} !important;
+          font-weight: ${elementStyles.fontWeight} !important;
+        `;
+      }
+    });
     
     // Add to document root to escape all filters
     document.documentElement.appendChild(grayscaleHeader);
