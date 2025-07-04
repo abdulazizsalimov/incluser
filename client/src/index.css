@@ -447,9 +447,10 @@ span, a, button, label {
   right: 0 !important;
 }
 
-/* Block background scroll when accessibility panel is open */
+/* Block background scroll when accessibility panel is open - use position fixed instead */
 body.panel-open {
-  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
 }
 
 /* Force accessibility panel and backdrop to remain in color */
