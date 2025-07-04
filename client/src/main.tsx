@@ -14,7 +14,13 @@ window.addEventListener('unhandledrejection', (event) => {
   event.preventDefault(); // Prevent the default error handling
 });
 
-// Initialize grayscale header fix
-initGrayscaleHeaderFix();
-
 createRoot(document.getElementById("root")!).render(<App />);
+
+// Initialize grayscale header fix after DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initGrayscaleHeaderFix();
+  });
+} else {
+  initGrayscaleHeaderFix();
+}

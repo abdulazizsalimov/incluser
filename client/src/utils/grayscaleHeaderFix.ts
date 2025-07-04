@@ -1,5 +1,6 @@
 // Fix for header disappearing in grayscale mode
 export function initGrayscaleHeaderFix() {
+  console.log('Initializing grayscale header fix');
   let grayscaleHeader: HTMLElement | null = null;
   let originalHeader: HTMLElement | null = null;
 
@@ -104,6 +105,7 @@ export function initGrayscaleHeaderFix() {
     mutations.forEach((mutation) => {
       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
         const hasGrayscale = document.body.classList.contains('grayscale-mode');
+        console.log('Grayscale mode changed:', hasGrayscale);
         
         if (hasGrayscale && !grayscaleHeader) {
           createGrayscaleHeader();
