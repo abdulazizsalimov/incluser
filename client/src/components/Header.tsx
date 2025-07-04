@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Menu, Accessibility, ChevronDown, LogIn, UserPlus, LogOut, Settings } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import logoImage from "@assets/ChatGPT Image 30 июн. 2025 г., 08_27_22_1751254062366.png";
 import type { Category } from "@shared/schema";
@@ -35,8 +36,21 @@ export default function Header() {
     return false;
   };
 
-  return (
-    <header className="bg-background shadow-sm border-b border-border fixed top-0 left-0 right-0 z-50" role="banner">
+  const headerContent = (
+    <header 
+      className="bg-background shadow-sm border-b border-border fixed top-0 left-0 right-0 z-50" 
+      role="banner"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        filter: 'none',
+        isolation: 'isolate',
+        pointerEvents: 'auto'
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
@@ -289,4 +303,35 @@ export default function Header() {
       <AccessibilityWidget open={accessibilityOpen} onOpenChange={setAccessibilityOpen} />
     </header>
   );
+
+  // Create isolated container for header outside of all CSS contexts
+  useEffect(() => {
+    let headerContainer = document.getElementById('header-container');
+    if (!headerContainer) {
+      headerContainer = document.createElement('div');
+      headerContainer.id = 'header-container';
+      headerContainer.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 80px !important;
+        pointer-events: none !important;
+        z-index: 50 !important;
+        filter: none !important;
+        isolation: isolate !important;
+      `;
+      document.documentElement.appendChild(headerContainer);
+    }
+    return () => {
+      const container = document.getElementById('header-container');
+      if (container && !document.querySelector('header')) {
+        container.remove();
+      }
+    };
+  }, []);
+
+  // Render header in isolated container
+  const headerContainer = document.getElementById('header-container');
+  return headerContainer ? createPortal(headerContent, headerContainer) : null;
 }
