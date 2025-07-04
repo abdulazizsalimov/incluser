@@ -416,8 +416,12 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Grayscale mode - apply to body but exclude accessibility elements and fixed headers */
-.grayscale body {
+/* Grayscale mode - apply to main content but exclude accessibility elements and fixed headers */
+.grayscale > *:not(.accessibility-panel):not(.accessibility-backdrop) {
+  filter: grayscale(100%);
+}
+
+.grayscale body > *:not(.accessibility-panel):not(.accessibility-backdrop) {
   filter: grayscale(100%);
 }
 
