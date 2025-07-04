@@ -447,6 +447,42 @@ span, a, button, label {
   filter: none !important;
 }
 
+/* Special protection for dark theme accessibility panel in grayscale mode */
+.dark.grayscale .accessibility-panel {
+  /* Override dark theme colors with non-filtered values */
+  background-color: hsl(240, 25%, 10%) !important;
+  color: hsl(240, 15%, 92%) !important;
+  border-color: hsl(240, 15%, 18%) !important;
+  filter: none !important;
+  isolation: isolate;
+}
+
+.dark.grayscale .accessibility-panel * {
+  filter: none !important;
+}
+
+.dark.grayscale .accessibility-panel button {
+  background-color: hsl(263, 70%, 65%) !important;
+  color: hsl(240, 25%, 8%) !important;
+}
+
+.dark.grayscale .accessibility-panel button[data-state="unchecked"] {
+  background-color: hsl(240, 15%, 15%) !important;
+  color: hsl(240, 15%, 92%) !important;
+}
+
+.dark.grayscale .accessibility-panel input,
+.dark.grayscale .accessibility-panel select {
+  background-color: hsl(240, 15%, 15%) !important;
+  color: hsl(240, 15%, 92%) !important;
+  border-color: hsl(240, 15%, 18%) !important;
+}
+
+.dark.grayscale .accessibility-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  filter: none !important;
+}
+
 /* Panel is now fully controlled by display: none in JavaScript */
 
 /* Slide animations for accessibility features slider */
