@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -754,7 +755,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.removeItem('accessibility-speech-speed');
   };
 
-  return (
+  const panelContent = (
     <TooltipProvider>
       {/* Backdrop */}
       {open && (
@@ -1409,4 +1410,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       />
     </TooltipProvider>
   );
+
+  // Render panel in a portal to escape grayscale filter
+  return createPortal(panelContent, document.body);
 }
