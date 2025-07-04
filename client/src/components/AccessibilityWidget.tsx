@@ -30,8 +30,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       // Opening: show panel first, then animate
       setIsVisible(true);
       setHasBeenOpened(true);
-      // Block background scroll when panel opens
-      document.body.style.overflow = 'hidden';
+      // Block background scroll when panel opens, but preserve current scroll position
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
       
       // Force layout calculation before animation
       if (panelRef.current) {
@@ -47,7 +50,13 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       // Closing: animate out first, then hide
       setIsAnimating(false);
       // Restore background scroll when panel closes
-      document.body.style.overflow = '';
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
       
       setTimeout(() => {
         setIsVisible(false);
@@ -59,7 +68,13 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   useEffect(() => {
     return () => {
       // Restore scroll if component unmounts with panel open
-      document.body.style.overflow = '';
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     };
   }, []);
 
