@@ -165,8 +165,8 @@ export default function AccessibilityFeaturesSlider() {
             className="absolute top-0 left-0 opacity-0 focus:opacity-100 bg-white/20 hover:bg-white/30 rounded-lg p-2 transition-all focus:outline-none focus:ring-4 focus:ring-white/50"
             onFocus={() => {
               setIsScreenReaderFocused(true);
-              // Set initialization flag after 3 seconds to allow instruction to be read first
-              setTimeout(() => setHasInitializedScreenReader(true), 3000);
+              // Set initialization flag after 5 seconds to allow instruction to be read first
+              setTimeout(() => setHasInitializedScreenReader(true), 5000);
             }}
             onBlur={() => {
               setIsScreenReaderFocused(false);
