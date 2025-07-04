@@ -291,6 +291,25 @@
     background: hsl(var(--secondary) / 0.9);
     border-color: hsl(var(--secondary) / 0.9);
   }
+
+  /* Protect header from grayscale filter effects */
+  body.grayscale-mode header[role="banner"] {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    filter: none !important;
+    isolation: isolate !important;
+    background-color: hsl(var(--background)) !important;
+    border-bottom: 1px solid hsl(var(--border)) !important;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  }
+
+  /* Ensure all header content remains visible */
+  body.grayscale-mode header[role="banner"] * {
+    filter: none !important;
+  }
 }
 
 /* Google Translate widget customization */
