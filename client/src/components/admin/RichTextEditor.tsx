@@ -360,7 +360,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('bold') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <Bold className="h-4 w-4" />
@@ -379,7 +379,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('italic') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <Italic className="h-4 w-4" />
@@ -398,7 +398,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('underline') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <Underline className="h-4 w-4" />
@@ -417,7 +417,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('strike') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <Strikethrough className="h-4 w-4" />
@@ -436,7 +436,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('code') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <Code className="h-4 w-4" />
@@ -510,7 +510,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('bulletList') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <List className="h-4 w-4" />
@@ -526,7 +526,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('orderedList') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <ListOrdered className="h-4 w-4" />
@@ -546,7 +546,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('blockquote') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <Quote className="h-4 w-4" />
@@ -561,7 +561,7 @@ export default function RichTextEditor({
           onMouseEnter={() => announceButton('Горизонтальная линия')}
           title="Горизонтальная линия"
           aria-label="Вставить горизонтальную линию"
-          className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400"
+          className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600"
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -580,7 +580,7 @@ export default function RichTextEditor({
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('link') 
               ? 'bg-blue-600 text-white shadow-md' 
-              : 'bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400'
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
           }`}
         >
           <LinkIcon className="h-4 w-4" />
@@ -596,7 +596,7 @@ export default function RichTextEditor({
               onMouseEnter={() => announceButton('Добавить изображение')}
               title="Добавить изображение"
               aria-label="Вставить изображение"
-              className="h-8 w-9 p-0 transition-all hover:scale-105 bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400"
+              className="h-8 w-9 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600"
               disabled={uploadingImage}
             >
               {uploadingImage ? (
@@ -631,7 +631,7 @@ export default function RichTextEditor({
             onMouseEnter={() => announceButton('Добавить таблицу')}
             title="Добавить таблицу"
             aria-label="Вставить таблицу"
-            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400"
+            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600"
           >
             <TableIcon className="h-4 w-4" />
           </Button>
@@ -655,7 +655,7 @@ export default function RichTextEditor({
             onMouseEnter={() => announceButton('Цвет текста')}
             title="Цвет текста"
             aria-label="Выбрать цвет текста"
-            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400"
+            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600"
           >
             <div className="w-4 h-4 border border-gray-400 bg-black rounded-sm" />
           </Button>
@@ -677,7 +677,7 @@ export default function RichTextEditor({
             onMouseEnter={() => announceButton('Выделение цветом')}
             title="Выделение цветом"
             aria-label="Выбрать цвет выделения"
-            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-gray-50 border-gray-300 hover:border-blue-400"
+            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600"
           >
             <div className="w-4 h-4 border border-gray-400 bg-yellow-400 rounded-sm" />
           </Button>
