@@ -38,27 +38,32 @@ function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, col
   };
   
   return (
-    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-3 mt-1">
-      <div className="text-sm text-gray-600 mb-2 text-center">
+    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-1">
+      <div className="text-sm text-gray-600 mb-3 text-center font-medium">
         {hoveredCell ? `${hoveredCell.row + 1} x ${hoveredCell.col + 1}` : 'Выберите размер таблицы'}
       </div>
-      <div className="grid grid-cols-8 gap-1">
-        {Array.from({ length: 64 }, (_, index) => {
-          const row = Math.floor(index / 8);
-          const col = index % 8;
+      <div className="grid grid-cols-10 gap-1">
+        {Array.from({ length: 100 }, (_, index) => {
+          const row = Math.floor(index / 10);
+          const col = index % 10;
           const isHighlighted = hoveredCell && row <= hoveredCell.row && col <= hoveredCell.col;
           
           return (
             <div
               key={index}
-              className={`w-4 h-4 border border-gray-300 cursor-pointer transition-colors ${
-                isHighlighted ? 'bg-blue-500 border-blue-600' : 'bg-gray-100 hover:bg-gray-200'
+              className={`w-6 h-6 border border-gray-300 cursor-pointer transition-all duration-150 ${
+                isHighlighted 
+                  ? 'bg-blue-500 border-blue-600 shadow-sm' 
+                  : 'bg-gray-100 hover:bg-blue-100 hover:border-blue-300'
               }`}
               onMouseEnter={() => handleCellHover(row, col)}
               onClick={() => handleCellClick(row, col)}
             />
           );
         })}
+      </div>
+      <div className="text-xs text-gray-500 mt-2 text-center">
+        Нажмите на ячейку для создания таблицы
       </div>
     </div>
   );
