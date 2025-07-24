@@ -10,6 +10,7 @@ import { Color } from '@tiptap/extension-color';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Link } from '@tiptap/extension-link';
 import { Image } from '@tiptap/extension-image';
+import { TextAlign } from '@tiptap/extension-text-align';
 import { Extension } from '@tiptap/core';
 import { Button } from '@/components/ui/button';
 import { 
@@ -40,43 +41,7 @@ interface RichTextEditorProps {
   height?: number;
 }
 
-// Расширение для межстрочного интервала
-const LineHeight = Extension.create({
-  name: 'lineHeight',
 
-  addGlobalAttributes() {
-    return [
-      {
-        types: ['paragraph', 'heading'],
-        attributes: {
-          lineHeight: {
-            default: null,
-            parseHTML: element => element.style.lineHeight || null,
-            renderHTML: attributes => {
-              if (!attributes.lineHeight) {
-                return {}
-              }
-              return {
-                style: `line-height: ${attributes.lineHeight}`,
-              }
-            },
-          },
-        },
-      },
-    ]
-  },
-
-  addCommands() {
-    return {
-      setLineHeight: (lineHeight: string | null) => ({ commands, chain }) => {
-        return chain()
-          .updateAttributes('paragraph', { lineHeight })
-          .updateAttributes('heading', { lineHeight })
-          .run()
-      },
-    }
-  },
-})
 
 // Компонент для выбора размера таблицы
 function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, cols: number) => void; onClose: () => void }) {
@@ -181,7 +146,6 @@ export default function RichTextEditor({
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
   const [isToolbarSticky, setIsToolbarSticky] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [currentLineHeight, setCurrentLineHeight] = useState('1.4');
   const toolbarRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -208,7 +172,9 @@ export default function RichTextEditor({
       TextStyle,
       Color,
       Highlight,
-      LineHeight,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -609,45 +575,57 @@ export default function RichTextEditor({
 
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
-        {/* Межстрочный интервал */}
-        <Select 
-          value={currentLineHeight}
-          onValueChange={(value) => {
-            if (value === 'reset') {
-              setCurrentLineHeight('1.4');
-              const proseMirror = document.querySelector('.tiptap-editor .ProseMirror') as HTMLElement;
-              if (proseMirror) {
-                proseMirror.style.lineHeight = '1.4';
-              }
-            } else {
-              setCurrentLineHeight(value);
-              const proseMirror = document.querySelector('.tiptap-editor .ProseMirror') as HTMLElement;
-              if (proseMirror) {
-                proseMirror.style.lineHeight = value;
-              }
-            }
-          }}
+        {/* Выравнивание текста */}
+        <Button
+          type="button"
+          variant={editor.isActive({ textAlign: 'left' }) ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          onMouseEnter={() => announceButton('Выровнять по левому краю')}
+          title="Выровнять по левому краю"
+          aria-label="Выровнять текст по левому краю"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive({ textAlign: 'left' }) 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
+          }`}
         >
-          <SelectTrigger 
-            className="h-8 w-16 p-1 text-xs bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600 transition-all"
-            onMouseEnter={() => announceButton('Межстрочный интервал')}
-            title="Межстрочный интервал"
-            aria-label="Выбрать межстрочный интервал"
-          >
-            <SelectValue>
-              <span className="text-xs">{currentLineHeight}</span>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="1">1.0</SelectItem>
-            <SelectItem value="1.15">1.15</SelectItem>
-            <SelectItem value="1.5">1.5</SelectItem>
-            <SelectItem value="2">2.0</SelectItem>
-            <SelectItem value="2.5">2.5</SelectItem>
-            <SelectItem value="3">3.0</SelectItem>
-            <SelectItem value="reset">Сбросить</SelectItem>
-          </SelectContent>
-        </Select>
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+
+        <Button
+          type="button"
+          variant={editor.isActive({ textAlign: 'center' }) ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          onMouseEnter={() => announceButton('Выровнять по центру')}
+          title="Выровнять по центру"
+          aria-label="Выровнять текст по центру"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive({ textAlign: 'center' }) 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
+          }`}
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Button>
+
+        <Button
+          type="button"
+          variant={editor.isActive({ textAlign: 'right' }) ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          onMouseEnter={() => announceButton('Выровнять по правому краю')}
+          title="Выровнять по правому краю"
+          aria-label="Выровнять текст по правому краю"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive({ textAlign: 'right' }) 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600'
+          }`}
+        >
+          <AlignRight className="h-4 w-4" />
+        </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
