@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Table } from '@tiptap/extension-table';
@@ -23,12 +24,56 @@ interface RichTextEditorProps {
   height?: number;
 }
 
+// Компонент для выбора размера таблицы
+function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, cols: number) => void; onClose: () => void }) {
+  const [hoveredCell, setHoveredCell] = useState<{row: number, col: number} | null>(null);
+  
+  const handleCellHover = (row: number, col: number) => {
+    setHoveredCell({row, col});
+  };
+  
+  const handleCellClick = (row: number, col: number) => {
+    onSelect(row + 1, col + 1);
+    onClose();
+  };
+  
+  return (
+    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-3 mt-1">
+      <div className="text-sm text-gray-600 mb-2 text-center">
+        {hoveredCell ? `${hoveredCell.row + 1} x ${hoveredCell.col + 1}` : 'Выберите размер таблицы'}
+      </div>
+      <div className="grid grid-cols-8 gap-1">
+        {Array.from({ length: 64 }, (_, index) => {
+          const row = Math.floor(index / 8);
+          const col = index % 8;
+          const isHighlighted = hoveredCell && row <= hoveredCell.row && col <= hoveredCell.col;
+          
+          return (
+            <div
+              key={index}
+              className={`w-4 h-4 border border-gray-300 cursor-pointer transition-colors ${
+                isHighlighted ? 'bg-blue-500 border-blue-600' : 'bg-gray-100 hover:bg-gray-200'
+              }`}
+              onMouseEnter={() => handleCellHover(row, col)}
+              onClick={() => handleCellClick(row, col)}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function RichTextEditor({ 
   value, 
   onChange, 
   placeholder = "Начните вводить содержание статьи...",
   height = 500 
 }: RichTextEditorProps) {
+  const [showTableSelector, setShowTableSelector] = useState(false);
+  const [isToolbarSticky, setIsToolbarSticky] = useState(false);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -71,6 +116,32 @@ export default function RichTextEditor({
     },
   });
 
+  // Обработка прокрутки для закрепления панели инструментов
+  useEffect(() => {
+    const handleScroll = () => {
+      if (editorRef.current && toolbarRef.current) {
+        const editorRect = editorRef.current.getBoundingClientRect();
+        const shouldStick = editorRect.top < 0 && editorRect.bottom > 80;
+        setIsToolbarSticky(shouldStick);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Закрытие селектора таблиц при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showTableSelector && toolbarRef.current && !toolbarRef.current.contains(event.target as Node)) {
+        setShowTableSelector(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showTableSelector]);
+
   if (!editor) {
     return null;
   }
@@ -89,8 +160,8 @@ export default function RichTextEditor({
     }
   };
 
-  const addTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  const addTable = (rows: number, cols: number) => {
+    editor.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run();
   };
 
   const setColor = (color: string) => {
@@ -102,17 +173,28 @@ export default function RichTextEditor({
   };
 
   return (
-    <div className="w-full border rounded-lg overflow-hidden bg-white">
+    <div ref={editorRef} className="w-full border rounded-lg overflow-hidden bg-white">
       {/* Панель инструментов */}
-      <div className="border-b p-3 bg-gray-50 flex flex-wrap gap-1">
+      <div 
+        ref={toolbarRef}
+        className={`border-b p-3 bg-gradient-to-r from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 flex flex-wrap gap-1 transition-all duration-200 ${
+          isToolbarSticky ? 'fixed top-0 left-0 right-0 z-40 shadow-lg border-t-0 rounded-none' : ''
+        }`}
+        style={isToolbarSticky ? { width: '100%' } : {}}
+      >
         {/* Форматирование текста */}
         <Button
           type="button"
           variant={editor.isActive('bold') ? 'default' : 'outline'}
           size="sm"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          title="Жирный"
-          className="h-8 w-8 p-0"
+          title="Жирный текст"
+          aria-label="Сделать текст жирным"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('bold') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Bold className="h-4 w-4" />
         </Button>
@@ -122,7 +204,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           title="Курсив"
-          className="h-8 w-8 p-0"
+          aria-label="Сделать текст курсивным"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('italic') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Italic className="h-4 w-4" />
         </Button>
@@ -132,7 +219,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           title="Подчёркнутый"
-          className="h-8 w-8 p-0"
+          aria-label="Подчеркнуть текст"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('underline') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Underline className="h-4 w-4" />
         </Button>
@@ -142,7 +234,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           title="Зачёркнутый"
-          className="h-8 w-8 p-0"
+          aria-label="Зачеркнуть текст"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('strike') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Strikethrough className="h-4 w-4" />
         </Button>
@@ -152,7 +249,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleCode().run()}
           title="Код"
-          className="h-8 w-8 p-0"
+          aria-label="Форматировать как код"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('code') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Code className="h-4 w-4" />
         </Button>
@@ -266,16 +368,25 @@ export default function RichTextEditor({
         </Button>
 
         {/* Таблица */}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={addTable}
-          title="Добавить таблицу"
-          className="h-8 w-8 p-0"
-        >
-          <TableIcon className="h-4 w-4" />
-        </Button>
+        <div className="relative">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setShowTableSelector(!showTableSelector)}
+            title="Добавить таблицу"
+            aria-label="Вставить таблицу"
+            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-50 border-blue-200"
+          >
+            <TableIcon className="h-4 w-4" />
+          </Button>
+          {showTableSelector && (
+            <TableSizeSelector 
+              onSelect={addTable} 
+              onClose={() => setShowTableSelector(false)} 
+            />
+          )}
+        </div>
 
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
@@ -284,16 +395,18 @@ export default function RichTextEditor({
           type="color"
           onChange={(e) => setColor(e.target.value)}
           title="Цвет текста"
-          className="w-8 h-8 border rounded cursor-pointer"
+          aria-label="Выбрать цвет текста"
+          className="w-8 h-8 border-2 border-blue-200 rounded cursor-pointer hover:border-blue-400 transition-colors"
         />
         <input
           type="color"
           onChange={(e) => setHighlight(e.target.value)}
           title="Выделение цветом"
-          className="w-8 h-8 border rounded cursor-pointer"
+          aria-label="Выбрать цвет выделения"
+          className="w-8 h-8 border-2 border-blue-200 rounded cursor-pointer hover:border-blue-400 transition-colors"
         />
 
-        <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
+        <div className="w-px h-6 bg-gradient-to-b from-blue-200 to-blue-400 mx-2 self-center" />
 
         {/* История */}
         <Button
@@ -302,8 +415,13 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
-          title="Отменить"
-          className="h-8 w-8 p-0"
+          title="Отменить последнее действие"
+          aria-label="Отменить"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            !editor.can().undo() 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Undo className="h-4 w-4" />
         </Button>
@@ -313,18 +431,29 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
-          title="Повторить"
-          className="h-8 w-8 p-0"
+          title="Повторить последнее действие"
+          aria-label="Повторить"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            !editor.can().redo() 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Redo className="h-4 w-4" />
         </Button>
       </div>
 
+      {/* Компенсация высоты для sticky toolbar */}
+      {isToolbarSticky && <div style={{ height: '56px' }} />}
+
       {/* Редактор */}
       <EditorContent 
         editor={editor} 
         className="tiptap-editor"
-        style={{ minHeight: height }}
+        style={{ 
+          minHeight: height,
+          marginTop: isToolbarSticky ? '0px' : '0px'
+        }}
       />
       
       <style>{`
