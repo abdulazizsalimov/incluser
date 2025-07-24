@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import QuillBetterTable from 'quill-better-table';
-import 'quill-better-table/dist/quill-better-table.css';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -31,16 +29,9 @@ export default function RichTextEditor({
   const [imageAlt, setImageAlt] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Регистрация модуля таблиц
+  // Инициализация редактора
   useEffect(() => {
-    if (Quill && Quill.register) {
-      try {
-        Quill.register('modules/better-table', QuillBetterTable, true);
-        console.log('better-table module registered successfully');
-      } catch (error) {
-        console.error('Failed to register better-table module:', error);
-      }
-    }
+    console.log('RichTextEditor initialized');
   }, []);
 
   // Конфигурация модулей Quill
@@ -62,15 +53,7 @@ export default function RichTextEditor({
         ['clean']
       ]
     },
-    'better-table': {
-      operationMenu: {
-        items: {
-          unmergeCells: {
-            text: 'Разделить ячейки'
-          }
-        }
-      }
-    },
+
     history: {
       delay: 1000,
       maxStack: 50,
@@ -273,7 +256,7 @@ export default function RichTextEditor({
     return () => clearTimeout(timer);
   }, []);
 
-  // Функция вставки таблицы с использованием better-table
+  // Функция вставки таблицы как HTML элемент
   const insertTable = () => {
     console.log('insertTable called with rows:', tableRows, 'cols:', tableCols);
     
@@ -290,29 +273,39 @@ export default function RichTextEditor({
       quill.focus();
       range = quill.getSelection();
       if (!range) {
-        console.log('Could not get selection');
-        return;
+        range = { index: quill.getLength(), length: 0 };
       }
     }
 
     console.log('Current selection:', range);
 
-    try {
-      // Используем API better-table для вставки таблицы
-      const tableModule = quill.getModule('better-table');
-      if (tableModule) {
-        console.log('Using better-table module');
-        tableModule.insertTable(tableRows, tableCols);
-      } else {
-        console.log('better-table module not found, using fallback');
-        // Фоллбэк - вставляем текст
-        quill.insertText(range.index, `\n[Таблица ${tableRows}×${tableCols}]\n`, 'user');
+    // Создаем HTML таблицу в виде строки
+    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0; border: 1px solid #ddd;">';
+    
+    for (let i = 0; i < tableRows; i++) {
+      tableHTML += '<tr>';
+      for (let j = 0; j < tableCols; j++) {
+        const cellTag = i === 0 ? 'th' : 'td';
+        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
+        const cellStyle = `border: 1px solid #ddd; padding: 12px; text-align: left; ${i === 0 ? 'background-color: #f8f9fa; font-weight: 600;' : 'background-color: white;'}`;
+        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
       }
+      tableHTML += '</tr>';
+    }
+    tableHTML += '</table>';
+
+    console.log('Inserting table HTML');
+
+    try {
+      // Вставляем таблицу через clipboard API
+      const delta = quill.clipboard.convert(tableHTML);
+      quill.updateContents(delta.compose(quill.getContents().delete(range.index, range.length)), 'user');
+      quill.setSelection(range.index + delta.length());
       
     } catch (error) {
       console.error('Error inserting table:', error);
-      // Альтернативный способ - вставка как обычный текст
-      quill.insertText(range.index, `\n[Таблица ${tableRows}×${tableCols}]\n`, 'user');
+      // Фоллбэк - вставляем как текстовое описание
+      quill.insertText(range.index, `\n\n[Таблица ${tableRows}×${tableCols} строк]\n\n`, 'user');
     }
     
     setTableDialogOpen(false);
