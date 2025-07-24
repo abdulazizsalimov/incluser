@@ -93,6 +93,44 @@ function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, col
   );
 }
 
+// Компонент палитры цветов
+function ColorPalette({ 
+  colors, 
+  onSelect, 
+  onClose,
+  title = "Выберите цвет"
+}: { 
+  colors: string[]; 
+  onSelect: (color: string) => void; 
+  onClose: () => void;
+  title?: string;
+}) {
+  return (
+    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-3 mt-1" style={{ width: '240px' }}>
+      <div className="text-sm text-gray-700 mb-2 text-center font-medium">
+        {title}
+      </div>
+      <div className="grid grid-cols-10 gap-1">
+        {colors.map((color, index) => (
+          <button
+            key={index}
+            className="w-5 h-5 border border-gray-300 rounded cursor-pointer hover:scale-110 transition-transform"
+            style={{ backgroundColor: color }}
+            onClick={() => {
+              onSelect(color);
+              onClose();
+            }}
+            title={color}
+          />
+        ))}
+      </div>
+      <div className="text-xs text-gray-500 mt-2 text-center">
+        Нажмите на цвет для применения
+      </div>
+    </div>
+  );
+}
+
 export default function RichTextEditor({ 
   value, 
   onChange, 
@@ -100,12 +138,24 @@ export default function RichTextEditor({
   height = 500 
 }: RichTextEditorProps) {
   const [showTableSelector, setShowTableSelector] = useState(false);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showHighlightPicker, setShowHighlightPicker] = useState(false);
   const [isToolbarSticky, setIsToolbarSticky] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  // Стандартные цвета
+  const standardColors = [
+    '#000000', '#434343', '#666666', '#999999', '#b7b7b7', '#cccccc', '#d9d9d9', '#efefef', '#f3f3f3', '#ffffff',
+    '#980000', '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#4a86e8', '#0000ff', '#9900ff', '#ff00ff',
+    '#e6b8af', '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc',
+    '#dd7e6b', '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#a4c2f4', '#9fc5e8', '#b4a7d6', '#d5a6bd',
+    '#cc4125', '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#76a5af', '#6d9eeb', '#6fa8dc', '#8e7cc3', '#c27ba0',
+    '#a61e4d', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', '#3c78d8', '#3d85c6', '#674ea7', '#a64d79'
+  ];
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -162,17 +212,19 @@ export default function RichTextEditor({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Закрытие селектора таблиц при клике вне его
+  // Закрытие селекторов при клике вне их
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (showTableSelector && toolbarRef.current && !toolbarRef.current.contains(event.target as Node)) {
+      if (toolbarRef.current && !toolbarRef.current.contains(event.target as Node)) {
         setShowTableSelector(false);
+        setShowColorPicker(false);
+        setShowHighlightPicker(false);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showTableSelector]);
+  }, []);
 
   if (!editor) {
     return null;
@@ -515,20 +567,48 @@ export default function RichTextEditor({
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
         {/* Цвета */}
-        <input
-          type="color"
-          onChange={(e) => setColor(e.target.value)}
-          title="Цвет текста"
-          aria-label="Выбрать цвет текста"
-          className="w-8 h-8 border-2 border-blue-200 rounded cursor-pointer hover:border-blue-400 transition-colors"
-        />
-        <input
-          type="color"
-          onChange={(e) => setHighlight(e.target.value)}
-          title="Выделение цветом"
-          aria-label="Выбрать цвет выделения"
-          className="w-8 h-8 border-2 border-blue-200 rounded cursor-pointer hover:border-blue-400 transition-colors"
-        />
+        <div className="relative">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setShowColorPicker(!showColorPicker)}
+            title="Цвет текста"
+            aria-label="Выбрать цвет текста"
+            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-50 border-blue-200"
+          >
+            <div className="w-4 h-4 border border-gray-400 bg-black rounded-sm" />
+          </Button>
+          {showColorPicker && (
+            <ColorPalette
+              colors={standardColors}
+              onSelect={setColor}
+              onClose={() => setShowColorPicker(false)}
+              title="Цвет текста"
+            />
+          )}
+        </div>
+        <div className="relative">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setShowHighlightPicker(!showHighlightPicker)}
+            title="Выделение цветом"
+            aria-label="Выбрать цвет выделения"
+            className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-50 border-blue-200"
+          >
+            <div className="w-4 h-4 border border-gray-400 bg-yellow-400 rounded-sm" />
+          </Button>
+          {showHighlightPicker && (
+            <ColorPalette
+              colors={standardColors}
+              onSelect={setHighlight}
+              onClose={() => setShowHighlightPicker(false)}
+              title="Цвет выделения"
+            />
+          )}
+        </div>
 
         <div className="w-px h-6 bg-gradient-to-b from-blue-200 to-blue-400 mx-2 self-center" />
 
