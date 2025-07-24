@@ -252,15 +252,25 @@ export default function RichTextEditor({
 
   // Функция вставки таблицы как текста с разделителями
   const insertTable = () => {
+    console.log('insertTable called with rows:', tableRows, 'cols:', tableCols);
+    
     const quill = quillRef.current?.getEditor();
-    if (!quill) return;
+    if (!quill) {
+      console.log('No quill editor found');
+      return;
+    }
 
     let range = quill.getSelection();
+    console.log('Current selection:', range);
+    
     if (!range) {
       const length = quill.getLength();
       quill.setSelection(length - 1);
       range = quill.getSelection();
-      if (!range) return;
+      if (!range) {
+        console.log('Could not get selection');
+        return;
+      }
     }
 
     // Создаем таблицу как текст с ASCII разделителями
@@ -290,11 +300,14 @@ export default function RichTextEditor({
     
     tableText += '\n';
 
+    console.log('Inserting table text:', tableText);
+
     // Вставляем таблицу как обычный текст
     quill.insertText(range.index, tableText, 'user');
     quill.setSelection(range.index + tableText.length);
     
     setTableDialogOpen(false);
+    console.log('Table insertion completed');
   };
 
   // Функция вставки изображения
@@ -419,7 +432,15 @@ export default function RichTextEditor({
                   />
                 </div>
               </div>
-              <Button onClick={insertTable}>Вставить таблицу</Button>
+              <Button 
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  insertTable();
+                }}
+              >
+                Вставить таблицу
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
