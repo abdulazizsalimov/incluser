@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { TableModule } from 'quill-better-table';
+import 'quill-better-table/dist/quill-better-table.css';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -29,6 +31,14 @@ export default function RichTextEditor({
   const [imageAlt, setImageAlt] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // Регистрация модуля таблиц
+  useEffect(() => {
+    const Quill = ReactQuill.Quill;
+    Quill.register({
+      'modules/better-table': TableModule,
+    }, true);
+  }, []);
+
   // Конфигурация модулей Quill
   const modules = {
     toolbar: {
@@ -47,6 +57,28 @@ export default function RichTextEditor({
         ['blockquote', 'code-block'],
         ['clean']
       ]
+    },
+    'better-table': {
+      operationMenu: {
+        items: {
+          unmergeCells: {
+            text: 'Разделить ячейки'
+          }
+        }
+      }
+    },
+    keyboard: {
+      bindings: {
+        'better-table': {
+          key: 'Tab',
+          handler: function(range: any, context: any) {
+            const [table] = this.scroll.descendants(TableModule.TableBody);
+            if (table) {
+              return false;
+            }
+          }
+        }
+      }
     },
     history: {
       delay: 1000,
@@ -250,7 +282,7 @@ export default function RichTextEditor({
     return () => clearTimeout(timer);
   }, []);
 
-  // Функция вставки таблицы - используем embeds Quill
+  // Функция вставки таблицы с использованием better-table
   const insertTable = () => {
     console.log('insertTable called with rows:', tableRows, 'cols:', tableCols);
     
@@ -274,37 +306,22 @@ export default function RichTextEditor({
 
     console.log('Current selection:', range);
 
-    // Создаем HTML строку для таблицы
-    let tableHTML = `<div style="margin: 1em 0;"><table style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">`;
-    
-    for (let i = 0; i < tableRows; i++) {
-      tableHTML += '<tr>';
-      for (let j = 0; j < tableCols; j++) {
-        const cellTag = i === 0 ? 'th' : 'td';
-        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
-        const cellStyle = `border: 1px solid #ddd; padding: 12px; text-align: left; ${i === 0 ? 'background-color: #f8f9fa; font-weight: 600;' : 'background-color: white;'}`;
-        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
-      }
-      tableHTML += '</tr>';
-    }
-    tableHTML += '</table></div>';
-
-    console.log('Inserting table HTML:', tableHTML);
-
     try {
-      // Вставляем HTML напрямую через dangerouslyPasteHTML
-      quill.clipboard.dangerouslyPasteHTML(range.index, tableHTML);
-      
-      // Устанавливаем курсор после таблицы
-      setTimeout(() => {
-        const newLength = quill.getLength();
-        quill.setSelection(newLength - 1);
-      }, 100);
+      // Используем API better-table для вставки таблицы
+      const tableModule = quill.getModule('better-table');
+      if (tableModule) {
+        console.log('Using better-table module');
+        tableModule.insertTable(tableRows, tableCols);
+      } else {
+        console.log('better-table module not found, using fallback');
+        // Фоллбэк - вставляем текст
+        quill.insertText(range.index, `\n[Таблица ${tableRows}×${tableCols}]\n`, 'user');
+      }
       
     } catch (error) {
       console.error('Error inserting table:', error);
       // Альтернативный способ - вставка как обычный текст
-      quill.insertText(range.index, '\n[ТАБЛИЦА ' + tableRows + 'x' + tableCols + ']\n', 'user');
+      quill.insertText(range.index, `\n[Таблица ${tableRows}×${tableCols}]\n`, 'user');
     }
     
     setTableDialogOpen(false);
