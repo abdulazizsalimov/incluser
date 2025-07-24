@@ -10,12 +10,13 @@ import { Color } from '@tiptap/extension-color';
 import { Highlight } from '@tiptap/extension-highlight';
 import { Link } from '@tiptap/extension-link';
 import { Image } from '@tiptap/extension-image';
+import { Extension } from '@tiptap/core';
 import { Button } from '@/components/ui/button';
 import { 
   Bold, Italic, Underline, Strikethrough, Code, List, ListOrdered,
   Undo, Redo, Quote, Minus, Table as TableIcon, Link as LinkIcon,
   Image as ImageIcon, Palette, Highlighter, AlignLeft, AlignCenter, AlignRight,
-  Upload, ChevronDown
+  Upload, ChevronDown, AlignJustify
 } from 'lucide-react';
 import { 
   DropdownMenu,
@@ -38,6 +39,41 @@ interface RichTextEditorProps {
   placeholder?: string;
   height?: number;
 }
+
+// Расширение для межстрочного интервала
+const LineHeight = Extension.create({
+  name: 'lineHeight',
+
+  addGlobalAttributes() {
+    return [
+      {
+        types: ['paragraph', 'heading'],
+        attributes: {
+          lineHeight: {
+            default: null,
+            parseHTML: element => element.style.lineHeight || null,
+            renderHTML: attributes => {
+              if (!attributes.lineHeight) {
+                return {}
+              }
+              return {
+                style: `line-height: ${attributes.lineHeight}`,
+              }
+            },
+          },
+        },
+      },
+    ]
+  },
+
+  addCommands() {
+    return {
+      setLineHeight: (lineHeight: string | null) => ({ commands }) => {
+        return commands.updateAttributes('paragraph', { lineHeight })
+      },
+    }
+  },
+})
 
 // Компонент для выбора размера таблицы
 function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, cols: number) => void; onClose: () => void }) {
@@ -168,6 +204,7 @@ export default function RichTextEditor({
       TextStyle,
       Color,
       Highlight,
+      LineHeight,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
@@ -568,6 +605,40 @@ export default function RichTextEditor({
 
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
+        {/* Межстрочный интервал */}
+        <Select 
+          value={editor?.getAttributes('paragraph').lineHeight || '1.5'} 
+          onValueChange={(value) => {
+            if (value === 'reset') {
+              editor?.chain().focus().setLineHeight('').run();
+            } else {
+              editor?.chain().focus().setLineHeight(value).run();
+            }
+          }}
+        >
+          <SelectTrigger 
+            className="h-8 w-20 p-1 text-xs bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600 transition-all"
+            onMouseEnter={() => announceButton('Межстрочный интервал')}
+            title="Межстрочный интервал"
+            aria-label="Выбрать межстрочный интервал"
+          >
+            <SelectValue>
+              <AlignJustify className="h-4 w-4" />
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="1">1.0</SelectItem>
+            <SelectItem value="1.15">1.15</SelectItem>
+            <SelectItem value="1.5">1.5</SelectItem>
+            <SelectItem value="2">2.0</SelectItem>
+            <SelectItem value="2.5">2.5</SelectItem>
+            <SelectItem value="3">3.0</SelectItem>
+            <SelectItem value="reset">Сбросить</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
+
         {/* Ссылка */}
         <Button
           type="button"
@@ -755,8 +826,13 @@ export default function RichTextEditor({
           padding: 16px !important;
           min-height: ${height}px !important;
           font-size: 14px !important;
-          line-height: 1.6 !important;
+          line-height: 1.4 !important;
           outline: none !important;
+        }
+        
+        .tiptap-editor p {
+          line-height: 1.4 !important;
+          margin: 0.5rem 0 !important;
         }
         
         .tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
