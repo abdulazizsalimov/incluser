@@ -1,24 +1,9 @@
-import { useRef, useState, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
-  Bold,
-  Italic,
-  Underline,
-  List,
-  ListOrdered,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Table,
-  Image,
-  Link,
-  Quote,
-  Type,
-  Palette
-} from 'lucide-react';
+import { useState } from 'react';
+import { Editor } from 'react-draft-wysiwyg';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 interface RichTextEditorProps {
   value: string;
@@ -33,321 +18,247 @@ export default function RichTextEditor({
   placeholder = "Начните вводить содержание статьи...",
   height = 500 
 }: RichTextEditorProps) {
-  const editorRef = useRef<HTMLDivElement>(null);
-  const [tableDialogOpen, setTableDialogOpen] = useState(false);
-  const [linkDialogOpen, setLinkDialogOpen] = useState(false);
-  const [imageDialogOpen, setImageDialogOpen] = useState(false);
-  const [tableRows, setTableRows] = useState(3);
-  const [tableCols, setTableCols] = useState(3);
-  const [linkText, setLinkText] = useState('');
-  const [linkUrl, setLinkUrl] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [imageAlt, setImageAlt] = useState('');
-
-  const execCommand = useCallback((command: string, value?: string) => {
-    document.execCommand(command, false, value);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
-  }, [onChange]);
-
-  const insertTable = () => {
-    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0; border: 1px solid #ddd;">';
-    
-    for (let i = 0; i < tableRows; i++) {
-      tableHTML += '<tr>';
-      for (let j = 0; j < tableCols; j++) {
-        const cellTag = i === 0 ? 'th' : 'td';
-        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
-        const cellStyle = `border: 1px solid #ddd; padding: 12px; text-align: left; ${i === 0 ? 'background-color: #f8f9fa; font-weight: 600;' : 'background-color: white;'}`;
-        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
+  const [editorState, setEditorState] = useState(() => {
+    if (value) {
+      const contentBlock = htmlToDraft(value);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(contentBlock.contentBlocks);
+        return EditorState.createWithContent(contentState);
       }
-      tableHTML += '</tr>';
     }
-    tableHTML += '</table><p><br></p>';
+    return EditorState.createEmpty();
+  });
 
-    document.execCommand('insertHTML', false, tableHTML);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
-    setTableDialogOpen(false);
+  const onEditorStateChange = (state: EditorState) => {
+    setEditorState(state);
+    const htmlContent = draftToHtml(convertToRaw(state.getCurrentContent()));
+    onChange(htmlContent);
   };
 
-  const insertLink = () => {
-    const linkHTML = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
-    document.execCommand('insertHTML', false, linkHTML);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
-    setLinkDialogOpen(false);
-    setLinkText('');
-    setLinkUrl('');
-  };
-
-  const insertImage = () => {
-    const imageHTML = `<img src="${imageUrl}" alt="${imageAlt}" style="max-width: 100%; height: auto; margin: 1em 0;" />`;
-    document.execCommand('insertHTML', false, imageHTML);
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
-    setImageDialogOpen(false);
-    setImageUrl('');
-    setImageAlt('');
-  };
-
-  const handleInput = () => {
-    if (editorRef.current) {
-      onChange(editorRef.current.innerHTML);
-    }
-  };
-
-  const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData('text/plain');
-    document.execCommand('insertText', false, text);
+  // Конфигурация панели инструментов
+  const toolbarConfig = {
+    options: [
+      'inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 
+      'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'
+    ],
+    inline: {
+      inDropdown: false,
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+      options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace', 'superscript', 'subscript'],
+    },
+    blockType: {
+      inDropdown: true,
+      options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Blockquote', 'Code'],
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+    },
+    fontSize: {
+      icon: undefined,
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+      options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 96],
+    },
+    fontFamily: {
+      options: ['Arial', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+    },
+    list: {
+      inDropdown: false,
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+      options: ['unordered', 'ordered', 'indent', 'outdent'],
+    },
+    textAlign: {
+      inDropdown: false,
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+      options: ['left', 'center', 'right', 'justify'],
+    },
+    colorPicker: {
+      icon: undefined,
+      className: undefined,
+      component: undefined,
+      popupClassName: undefined,
+      colors: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(84,172,210)', 'rgb(44,130,201)',
+        'rgb(147,101,184)', 'rgb(71,85,119)', 'rgb(204,204,204)', 'rgb(65,168,95)', 'rgb(0,168,133)',
+        'rgb(61,142,185)', 'rgb(41,105,176)', 'rgb(85,57,130)', 'rgb(40,50,78)', 'rgb(0,0,0)',
+        'rgb(247,218,100)', 'rgb(251,160,38)', 'rgb(235,107,86)', 'rgb(226,80,65)', 'rgb(163,143,132)',
+        'rgb(239,239,239)', 'rgb(255,255,255)', 'rgb(250,197,28)', 'rgb(243,121,52)', 'rgb(209,72,65)',
+        'rgb(184,49,47)', 'rgb(124,112,107)', 'rgb(209,213,216)'],
+    },
+    link: {
+      inDropdown: false,
+      className: undefined,
+      component: undefined,
+      popupClassName: undefined,
+      dropdownClassName: undefined,
+      showOpenOptionOnHover: true,
+      defaultTargetOption: '_self',
+      options: ['link', 'unlink'],
+      linkCallback: undefined,
+      unlinkCallback: undefined,
+    },
+    emoji: {
+      icon: undefined,
+      className: undefined,
+      component: undefined,
+      popupClassName: undefined,
+      emojis: [
+        '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '🥰', '😗', '😙', '😚', '☺️', '🙂', '🤗', '🤩', '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮', '🤐', '😯', '😪', '😫', '🥱', '😴', '😌', '😛', '😜', '😝', '🤤', '😒', '😓', '😔', '😕', '🙃', '🤑', '😲', '☹️', '🙁', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😩', '🤯', '😬', '😰', '😱', '🥵', '🥶', '😳', '🤪', '😵', '🥴', '😠', '😡', '🤬', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '😇', '🥳', '🥺', '🤠', '🤡', '🤥', '🤫', '🤭', '🧐', '🤓', '😈', '👿', '👹', '👺', '💀', '☠️', '👻', '👽', '👾', '🤖', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾',
+      ],
+    },
+    image: {
+      icon: undefined,
+      className: undefined,
+      component: undefined,
+      popupClassName: undefined,
+      urlEnabled: true,
+      uploadEnabled: true,
+      alignmentEnabled: true,
+      uploadCallback: undefined,
+      previewImage: false,
+      inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
+      alt: { present: false, mandatory: false },
+      defaultSize: {
+        height: 'auto',
+        width: 'auto',
+      },
+    },
+    remove: { icon: undefined, className: undefined, component: undefined },
+    history: {
+      inDropdown: false,
+      className: undefined,
+      component: undefined,
+      dropdownClassName: undefined,
+      options: ['undo', 'redo'],
+    },
   };
 
   return (
-    <div className="w-full border rounded-lg">
-      {/* Панель инструментов */}
-      <div className="flex flex-wrap gap-1 p-2 border-b bg-gray-50 dark:bg-gray-800">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('bold')}
-          title="Жирный (Ctrl+B)"
-        >
-          <Bold className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('italic')}
-          title="Курсив (Ctrl+I)"
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('underline')}
-          title="Подчёркивание (Ctrl+U)"
-        >
-          <Underline className="h-4 w-4" />
-        </Button>
-
-        <div className="w-px h-6 bg-gray-300 mx-1" />
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('insertUnorderedList')}
-          title="Маркированный список"
-        >
-          <List className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('insertOrderedList')}
-          title="Нумерованный список"
-        >
-          <ListOrdered className="h-4 w-4" />
-        </Button>
-
-        <div className="w-px h-6 bg-gray-300 mx-1" />
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('justifyLeft')}
-          title="По левому краю"
-        >
-          <AlignLeft className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('justifyCenter')}
-          title="По центру"
-        >
-          <AlignCenter className="h-4 w-4" />
-        </Button>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('justifyRight')}
-          title="По правому краю"
-        >
-          <AlignRight className="h-4 w-4" />
-        </Button>
-
-        <div className="w-px h-6 bg-gray-300 mx-1" />
-
-        <select 
-          className="px-2 py-1 text-sm border rounded"
-          onChange={(e) => execCommand('formatBlock', e.target.value)}
-          defaultValue=""
-        >
-          <option value="">Обычный текст</option>
-          <option value="h1">Заголовок 1</option>
-          <option value="h2">Заголовок 2</option>
-          <option value="h3">Заголовок 3</option>
-          <option value="h4">Заголовок 4</option>
-          <option value="p">Абзац</option>
-        </select>
-
-        <div className="w-px h-6 bg-gray-300 mx-1" />
-
-        <Dialog open={tableDialogOpen} onOpenChange={setTableDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" title="Вставить таблицу">
-              <Table className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Вставить таблицу</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="rows">Строки:</Label>
-                <Input
-                  id="rows"
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={tableRows}
-                  onChange={(e) => setTableRows(Number(e.target.value))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="cols">Столбцы:</Label>
-                <Input
-                  id="cols"
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={tableCols}
-                  onChange={(e) => setTableCols(Number(e.target.value))}
-                />
-              </div>
-            </div>
-            <Button onClick={insertTable} className="mt-4">
-              Вставить таблицу
-            </Button>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={linkDialogOpen} onOpenChange={setLinkDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" title="Вставить ссылку">
-              <Link className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Вставить ссылку</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="linkText">Текст ссылки:</Label>
-                <Input
-                  id="linkText"
-                  value={linkText}
-                  onChange={(e) => setLinkText(e.target.value)}
-                  placeholder="Текст ссылки"
-                />
-              </div>
-              <div>
-                <Label htmlFor="linkUrl">URL:</Label>
-                <Input
-                  id="linkUrl"
-                  value={linkUrl}
-                  onChange={(e) => setLinkUrl(e.target.value)}
-                  placeholder="https://example.com"
-                />
-              </div>
-            </div>
-            <Button onClick={insertLink} className="mt-4">
-              Вставить ссылку
-            </Button>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={imageDialogOpen} onOpenChange={setImageDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" title="Вставить изображение">
-              <Image className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Вставить изображение</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="imageUrl">URL изображения:</Label>
-                <Input
-                  id="imageUrl"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-              <div>
-                <Label htmlFor="imageAlt">Альтернативный текст:</Label>
-                <Input
-                  id="imageAlt"
-                  value={imageAlt}
-                  onChange={(e) => setImageAlt(e.target.value)}
-                  placeholder="Описание изображения"
-                />
-              </div>
-            </div>
-            <Button onClick={insertImage} className="mt-4">
-              Вставить изображение
-            </Button>
-          </DialogContent>
-        </Dialog>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => execCommand('formatBlock', 'blockquote')}
-          title="Цитата"
-        >
-          <Quote className="h-4 w-4" />
-        </Button>
-
-        <input
-          type="color"
-          className="w-8 h-8 border rounded cursor-pointer"
-          onChange={(e) => execCommand('foreColor', e.target.value)}
-          title="Цвет текста"
-        />
-      </div>
-
-      {/* Редактор */}
-      <div
-        ref={editorRef}
-        contentEditable
-        onInput={handleInput}
-        onPaste={handlePaste}
-        style={{ 
+    <div className="w-full border rounded-lg overflow-hidden">
+      <Editor
+        editorState={editorState}
+        wrapperClassName="wrapper-class"
+        editorClassName="editor-class p-4 min-h-96 prose max-w-none"
+        toolbarClassName="toolbar-class border-b"
+        onEditorStateChange={onEditorStateChange}
+        placeholder={placeholder}
+        toolbar={toolbarConfig}
+        editorStyle={{
           minHeight: height,
-          maxHeight: height * 2,
-          overflowY: 'auto'
+          padding: '16px',
+          fontSize: '14px',
+          lineHeight: '1.6'
         }}
-        className="p-4 focus:outline-none prose prose-sm max-w-none dark:prose-invert"
-        dangerouslySetInnerHTML={{ __html: value || `<p>${placeholder}</p>` }}
-        suppressContentEditableWarning={true}
+        toolbarStyle={{
+          borderBottom: '1px solid #ddd',
+          marginBottom: 0
+        }}
+        localization={{
+          locale: 'ru',
+        }}
+        mention={{
+          separator: ' ',
+          trigger: '@',
+          suggestions: [
+            { text: 'APPLE', value: 'apple', url: 'apple' },
+            { text: 'BANANA', value: 'banana', url: 'banana' },
+            { text: 'CHERRY', value: 'cherry', url: 'cherry' },
+            { text: 'DURIAN', value: 'durian', url: 'durian' },
+            { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
+            { text: 'FIG', value: 'fig', url: 'fig' },
+            { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
+            { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
+          ],
+        }}
+        hashtag={{
+          separator: ' ',
+          trigger: '#',
+        }}
       />
+      
+      <style>{`
+        .wrapper-class {
+          border: none !important;
+        }
+        .toolbar-class {
+          border: none !important;
+          border-bottom: 1px solid #e5e7eb !important;
+          margin-bottom: 0 !important;
+          padding: 12px !important;
+          background: #f9fafb !important;
+        }
+        .editor-class {
+          background: white !important;
+          color: #374151 !important;
+        }
+        .editor-class:focus {
+          outline: none !important;
+        }
+        .rdw-option-wrapper {
+          border: 1px solid #d1d5db !important;
+          margin-right: 4px !important;
+          margin-bottom: 4px !important;
+          border-radius: 4px !important;
+        }
+        .rdw-option-wrapper:hover {
+          background: #f3f4f6 !important;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        }
+        .rdw-option-active {
+          background: #dbeafe !important;
+          border-color: #3b82f6 !important;
+        }
+        .rdw-dropdown-wrapper {
+          border: 1px solid #d1d5db !important;
+          border-radius: 4px !important;
+        }
+        .rdw-dropdown-selectedtext {
+          color: #374151 !important;
+        }
+        .rdw-dropdownoption-default {
+          color: #374151 !important;
+        }
+        .rdw-dropdownoption-highlighted {
+          background: #f3f4f6 !important;
+        }
+        .public-DraftEditorPlaceholder-root {
+          color: #9ca3af !important;
+          font-style: italic !important;
+        }
+        .public-DraftEditor-content {
+          min-height: ${height}px !important;
+        }
+        .DraftEditor-root table {
+          border-collapse: collapse !important;
+          border: 1px solid #d1d5db !important;
+          width: 100% !important;
+          margin: 1em 0 !important;
+        }
+        .DraftEditor-root table td,
+        .DraftEditor-root table th {
+          border: 1px solid #d1d5db !important;
+          padding: 8px 12px !important;
+          text-align: left !important;
+        }
+        .DraftEditor-root table th {
+          background-color: #f9fafb !important;
+          font-weight: 600 !important;
+        }
+        .DraftEditor-root img {
+          max-width: 100% !important;
+          height: auto !important;
+          margin: 1em 0 !important;
+        }
+      `}</style>
     </div>
   );
 }
