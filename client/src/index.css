@@ -605,3 +605,58 @@ body.panel-open {
   opacity: 1;
   z-index: 10;
 }
+
+/* Стили для кнопок изменения размера изображений в Quill */
+.image-resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: nw-resize;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.image-resize-handle:hover {
+  background-color: #2563eb;
+  transform: scale(1.1);
+}
+
+/* Стили для таблиц в Quill редакторе */
+.ql-editor table {
+  border-collapse: collapse !important;
+  margin: 1em 0 !important;
+  width: 100% !important;
+}
+
+.ql-editor table td,
+.ql-editor table th {
+  border: 1px solid #d1d5db !important;
+  padding: 8px 12px !important;
+  vertical-align: top !important;
+}
+
+.ql-editor table th {
+  background-color: #f3f4f6 !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+.ql-editor table td {
+  background-color: white !important;
+}
+
+/* Темная тема для таблиц */
+.dark .ql-editor table td {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.dark .ql-editor table th {
+  background-color: hsl(var(--muted)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}

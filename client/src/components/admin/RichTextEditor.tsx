@@ -256,31 +256,44 @@ export default function RichTextEditor({
     let range = quill.getSelection();
     if (!range) {
       // Если нет выделения, устанавливаем курсор в конец
-      quill.setSelection(quill.getLength());
+      const length = quill.getLength();
+      quill.setSelection(length - 1);
       range = quill.getSelection();
       if (!range) return;
     }
 
-    // Создаем HTML для таблицы с правильными стилями
-    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0; table-layout: fixed;">';
+    // Добавим пустую строку перед таблицей
+    quill.insertText(range.index, '\n', 'user');
+    
+    // Создаем HTML для таблицы с встроенными стилями
+    let tableHTML = '<table class="ql-table" style="border-collapse: collapse; width: 100%; margin: 1em 0; border: 1px solid #d1d5db;">';
     
     for (let i = 0; i < tableRows; i++) {
       tableHTML += '<tr>';
       for (let j = 0; j < tableCols; j++) {
         const cellTag = i === 0 ? 'th' : 'td';
         const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
-        tableHTML += `<${cellTag} style="border: 1px solid #d1d5db; padding: 8px 12px; min-width: 120px; ${i === 0 ? 'background-color: #f3f4f6; font-weight: 600;' : ''}">${cellContent}</${cellTag}>`;
+        const cellStyle = i === 0 
+          ? 'border: 1px solid #d1d5db; padding: 8px 12px; background-color: #f3f4f6; font-weight: 600; text-align: left;'
+          : 'border: 1px solid #d1d5db; padding: 8px 12px; background-color: white;';
+        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
       }
       tableHTML += '</tr>';
     }
-    tableHTML += '</table><p><br></p>'; // Добавляем пустой параграф после таблицы
+    tableHTML += '</table>';
 
-    // Вставляем таблицу в текущую позицию курсора
-    const delta = quill.clipboard.convert(tableHTML);
-    quill.updateContents(delta, 'user');
-    
-    // Устанавливаем курсор после таблицы
-    quill.setSelection(range.index + delta.length());
+    // Вставляем через clipboard API
+    const selection = quill.getSelection();
+    if (selection) {
+      quill.clipboard.dangerouslyPasteHTML(selection.index + 1, tableHTML);
+      
+      // Добавляем пустую строку после таблицы для продолжения набора
+      setTimeout(() => {
+        const newLength = quill.getLength();
+        quill.insertText(newLength - 1, '\n\n', 'user');
+        quill.setSelection(newLength + 1);
+      }, 100);
+    }
     
     setTableDialogOpen(false);
   };
