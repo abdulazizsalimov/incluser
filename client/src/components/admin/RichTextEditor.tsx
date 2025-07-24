@@ -38,11 +38,19 @@ function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, col
   };
   
   return (
-    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 mt-1">
-      <div className="text-sm text-gray-600 mb-3 text-center font-medium">
-        {hoveredCell ? `${hoveredCell.row + 1} x ${hoveredCell.col + 1}` : 'Выберите размер таблицы'}
+    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-4 mt-1" style={{ width: '280px' }}>
+      <div className="text-sm text-gray-700 mb-3 text-center font-medium">
+        {hoveredCell ? `${hoveredCell.row + 1} x ${hoveredCell.col + 1}` : 'Вставка таблицы'}
       </div>
-      <div className="grid grid-cols-10 gap-1">
+      <div 
+        className="grid gap-0.5 border border-gray-300 p-2 bg-gray-50 rounded"
+        style={{ 
+          gridTemplateColumns: 'repeat(10, 20px)',
+          gridTemplateRows: 'repeat(10, 20px)',
+          width: '220px',
+          height: '220px'
+        }}
+      >
         {Array.from({ length: 100 }, (_, index) => {
           const row = Math.floor(index / 10);
           const col = index % 10;
@@ -51,19 +59,20 @@ function TableSizeSelector({ onSelect, onClose }: { onSelect: (rows: number, col
           return (
             <div
               key={index}
-              className={`w-6 h-6 border border-gray-300 cursor-pointer transition-all duration-150 ${
+              className={`border border-gray-400 cursor-pointer transition-all duration-100 ${
                 isHighlighted 
-                  ? 'bg-blue-500 border-blue-600 shadow-sm' 
-                  : 'bg-gray-100 hover:bg-blue-100 hover:border-blue-300'
+                  ? 'bg-blue-500 border-blue-600' 
+                  : 'bg-white hover:bg-blue-100'
               }`}
+              style={{ width: '20px', height: '20px' }}
               onMouseEnter={() => handleCellHover(row, col)}
               onClick={() => handleCellClick(row, col)}
             />
           );
         })}
       </div>
-      <div className="text-xs text-gray-500 mt-2 text-center">
-        Нажмите на ячейку для создания таблицы
+      <div className="text-xs text-gray-500 mt-3 text-center">
+        Наведите для выбора размера, нажмите для вставки
       </div>
     </div>
   );
