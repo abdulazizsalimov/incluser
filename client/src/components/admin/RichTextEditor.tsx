@@ -31,21 +31,23 @@ export default function RichTextEditor({
 
   // Конфигурация модулей Quill
   const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      [{ 'font': [] }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'color': [] }, { 'background': [] }],
-      [{ 'script': 'sub'}, { 'script': 'super' }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
-      [{ 'direction': 'rtl' }],
-      [{ 'align': [] }],
-      ['link', 'image', 'video'],
-      ['blockquote', 'code-block'],
-      ['clean']
-    ],
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        [{ 'align': [] }],
+        ['link', 'image', 'video'],
+        ['blockquote', 'code-block'],
+        ['clean']
+      ]
+    },
     history: {
       delay: 1000,
       maxStack: 50,
@@ -248,52 +250,49 @@ export default function RichTextEditor({
     return () => clearTimeout(timer);
   }, []);
 
-  // Функция вставки таблицы
+  // Функция вставки таблицы как текста с разделителями
   const insertTable = () => {
     const quill = quillRef.current?.getEditor();
     if (!quill) return;
 
     let range = quill.getSelection();
     if (!range) {
-      // Если нет выделения, устанавливаем курсор в конец
       const length = quill.getLength();
       quill.setSelection(length - 1);
       range = quill.getSelection();
       if (!range) return;
     }
 
-    // Добавим пустую строку перед таблицей
-    quill.insertText(range.index, '\n', 'user');
+    // Создаем таблицу как текст с ASCII разделителями
+    let tableText = '\n\n';
     
-    // Создаем HTML для таблицы с встроенными стилями
-    let tableHTML = '<table class="ql-table" style="border-collapse: collapse; width: 100%; margin: 1em 0; border: 1px solid #d1d5db;">';
+    // Заголовки
+    const headerSeparator = '|';
+    let headerRow = headerSeparator;
+    let separatorRow = headerSeparator;
     
-    for (let i = 0; i < tableRows; i++) {
-      tableHTML += '<tr>';
+    for (let j = 0; j < tableCols; j++) {
+      const headerText = ` Заголовок ${j + 1} `;
+      headerRow += headerText + headerSeparator;
+      separatorRow += '-'.repeat(headerText.length) + headerSeparator;
+    }
+    
+    tableText += headerRow + '\n' + separatorRow + '\n';
+    
+    // Строки данных
+    for (let i = 1; i < tableRows; i++) {
+      let dataRow = headerSeparator;
       for (let j = 0; j < tableCols; j++) {
-        const cellTag = i === 0 ? 'th' : 'td';
-        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
-        const cellStyle = i === 0 
-          ? 'border: 1px solid #d1d5db; padding: 8px 12px; background-color: #f3f4f6; font-weight: 600; text-align: left;'
-          : 'border: 1px solid #d1d5db; padding: 8px 12px; background-color: white;';
-        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
+        dataRow += ` Ячейка ${i + 1},${j + 1} ` + headerSeparator;
       }
-      tableHTML += '</tr>';
+      tableText += dataRow + '\n';
     }
-    tableHTML += '</table>';
+    
+    tableText += '\n';
 
-    // Вставляем через clipboard API
-    const selection = quill.getSelection();
-    if (selection) {
-      quill.clipboard.dangerouslyPasteHTML(selection.index + 1, tableHTML);
-      
-      // Добавляем пустую строку после таблицы для продолжения набора
-      setTimeout(() => {
-        const newLength = quill.getLength();
-        quill.insertText(newLength - 1, '\n\n', 'user');
-        quill.setSelection(newLength + 1);
-      }, 100);
-    }
+    // Вставляем таблицу как обычный текст
+    quill.insertText(range.index, tableText, 'user');
+    quill.setSelection(range.index + tableText.length);
     
     setTableDialogOpen(false);
   };

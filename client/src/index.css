@@ -660,3 +660,52 @@ body.panel-open {
   color: hsl(var(--foreground)) !important;
   border-color: hsl(var(--border)) !important;
 }
+
+/* Исправление отображения иконок в Quill панели инструментов */
+.ql-toolbar .ql-stroke {
+  fill: none;
+  stroke: currentColor !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.ql-toolbar .ql-fill {
+  fill: currentColor !important;
+  stroke: none;
+}
+
+.ql-toolbar .ql-even {
+  fill-rule: evenodd;
+}
+
+.ql-toolbar .ql-thin {
+  stroke-width: 1;
+}
+
+.ql-toolbar .ql-thick {
+  stroke-width: 3;
+}
+
+.ql-toolbar button {
+  color: hsl(var(--foreground)) !important;
+}
+
+.ql-toolbar button:hover {
+  color: hsl(var(--primary)) !important;
+}
+
+.ql-toolbar button.ql-active {
+  color: hsl(var(--primary)) !important;
+}
+
+/* Фиксированная панель инструментов */
+.ql-toolbar.ql-snow {
+  border: 1px solid hsl(var(--border)) !important;
+  border-bottom: none !important;
+  background: hsl(var(--background)) !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
