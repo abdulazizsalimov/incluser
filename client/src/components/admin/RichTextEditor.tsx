@@ -68,8 +68,11 @@ const LineHeight = Extension.create({
 
   addCommands() {
     return {
-      setLineHeight: (lineHeight: string | null) => ({ commands }) => {
-        return commands.updateAttributes('paragraph', { lineHeight })
+      setLineHeight: (lineHeight: string | null) => ({ commands, chain }) => {
+        return chain()
+          .updateAttributes('paragraph', { lineHeight })
+          .updateAttributes('heading', { lineHeight })
+          .run()
       },
     }
   },
@@ -178,6 +181,7 @@ export default function RichTextEditor({
   const [showHighlightPicker, setShowHighlightPicker] = useState(false);
   const [isToolbarSticky, setIsToolbarSticky] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [currentLineHeight, setCurrentLineHeight] = useState('1.4');
   const toolbarRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -607,23 +611,31 @@ export default function RichTextEditor({
 
         {/* Межстрочный интервал */}
         <Select 
-          value={editor?.getAttributes('paragraph').lineHeight || '1.5'} 
+          value={currentLineHeight}
           onValueChange={(value) => {
             if (value === 'reset') {
-              editor?.chain().focus().setLineHeight('').run();
+              setCurrentLineHeight('1.4');
+              const proseMirror = document.querySelector('.tiptap-editor .ProseMirror') as HTMLElement;
+              if (proseMirror) {
+                proseMirror.style.lineHeight = '1.4';
+              }
             } else {
-              editor?.chain().focus().setLineHeight(value).run();
+              setCurrentLineHeight(value);
+              const proseMirror = document.querySelector('.tiptap-editor .ProseMirror') as HTMLElement;
+              if (proseMirror) {
+                proseMirror.style.lineHeight = value;
+              }
             }
           }}
         >
           <SelectTrigger 
-            className="h-8 w-20 p-1 text-xs bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600 transition-all"
+            className="h-8 w-16 p-1 text-xs bg-white hover:bg-blue-600 hover:text-white border-gray-300 hover:border-blue-600 transition-all"
             onMouseEnter={() => announceButton('Межстрочный интервал')}
             title="Межстрочный интервал"
             aria-label="Выбрать межстрочный интервал"
           >
             <SelectValue>
-              <AlignJustify className="h-4 w-4" />
+              <span className="text-xs">{currentLineHeight}</span>
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
