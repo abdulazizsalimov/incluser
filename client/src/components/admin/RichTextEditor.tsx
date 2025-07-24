@@ -323,6 +323,8 @@ export default function RichTextEditor({
           isToolbarSticky ? 'fixed top-0 left-0 right-0 z-40 shadow-lg border-t-0 rounded-none' : ''
         }`}
         style={isToolbarSticky ? { width: '100%' } : {}}
+        role="toolbar"
+        aria-label="Панель инструментов редактора"
       >
         {/* Форматирование текста */}
         <Button
@@ -332,6 +334,9 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleBold().run()}
           title="Жирный текст"
           aria-label="Сделать текст жирным"
+          aria-pressed={editor.isActive('bold')}
+          role="button"
+          tabIndex={0}
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('bold') 
               ? 'bg-blue-600 text-white shadow-md' 
@@ -347,6 +352,9 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleItalic().run()}
           title="Курсив"
           aria-label="Сделать текст курсивным"
+          aria-pressed={editor.isActive('italic')}
+          role="button"
+          tabIndex={0}
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('italic') 
               ? 'bg-blue-600 text-white shadow-md' 
@@ -362,6 +370,9 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           title="Подчёркнутый"
           aria-label="Подчеркнуть текст"
+          aria-pressed={editor.isActive('underline')}
+          role="button"
+          tabIndex={0}
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('underline') 
               ? 'bg-blue-600 text-white shadow-md' 
@@ -377,6 +388,9 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleStrike().run()}
           title="Зачёркнутый"
           aria-label="Зачеркнуть текст"
+          aria-pressed={editor.isActive('strike')}
+          role="button"
+          tabIndex={0}
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('strike') 
               ? 'bg-blue-600 text-white shadow-md' 
@@ -392,6 +406,9 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleCode().run()}
           title="Код"
           aria-label="Форматировать как код"
+          aria-pressed={editor.isActive('code')}
+          role="button"
+          tabIndex={0}
           className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
             editor.isActive('code') 
               ? 'bg-blue-600 text-white shadow-md' 
@@ -423,7 +440,11 @@ export default function RichTextEditor({
             }
           }}
         >
-          <SelectTrigger className="w-32 h-8 bg-white border-blue-200 text-gray-700 hover:bg-blue-50 transition-colors">
+          <SelectTrigger 
+            className="w-32 h-8 bg-white border-blue-200 text-gray-700 hover:bg-blue-50 transition-colors"
+            aria-label="Выбрать стиль заголовка"
+            title="Стиль текста"
+          >
             <SelectValue placeholder="Стиль текста" />
           </SelectTrigger>
           <SelectContent className="bg-white border border-gray-200 shadow-lg">
@@ -460,7 +481,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           title="Маркированный список"
-          className="h-8 w-8 p-0"
+          aria-label="Создать маркированный список"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('bulletList') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <List className="h-4 w-4" />
         </Button>
@@ -470,7 +496,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           title="Нумерованный список"
-          className="h-8 w-8 p-0"
+          aria-label="Создать нумерованный список"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('orderedList') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
@@ -484,7 +515,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           title="Цитата"
-          className="h-8 w-8 p-0"
+          aria-label="Оформить как цитату"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('blockquote') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <Quote className="h-4 w-4" />
         </Button>
@@ -496,7 +532,8 @@ export default function RichTextEditor({
           size="sm"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           title="Горизонтальная линия"
-          className="h-8 w-8 p-0"
+          aria-label="Вставить горизонтальную линию"
+          className="h-8 w-8 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-50 border-blue-200"
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -510,7 +547,12 @@ export default function RichTextEditor({
           size="sm"
           onClick={addLink}
           title="Добавить ссылку"
-          className="h-8 w-8 p-0"
+          aria-label="Добавить или редактировать ссылку"
+          className={`h-8 w-8 p-0 transition-all hover:scale-105 ${
+            editor.isActive('link') 
+              ? 'bg-blue-600 text-white shadow-md' 
+              : 'bg-white hover:bg-blue-50 border-blue-200'
+          }`}
         >
           <LinkIcon className="h-4 w-4" />
         </Button>
