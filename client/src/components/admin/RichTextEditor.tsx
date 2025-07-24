@@ -106,15 +106,15 @@ function ColorPalette({
   title?: string;
 }) {
   return (
-    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-3 mt-1" style={{ width: '240px' }}>
-      <div className="text-sm text-gray-700 mb-2 text-center font-medium">
+    <div className="absolute top-full left-0 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-3 mt-1" style={{ width: '200px' }}>
+      <div className="text-sm text-gray-700 mb-2 font-medium">
         {title}
       </div>
-      <div className="grid grid-cols-10 gap-1">
+      <div className="grid grid-cols-8 gap-1 mb-2">
         {colors.map((color, index) => (
           <button
             key={index}
-            className="w-5 h-5 border border-gray-300 rounded cursor-pointer hover:scale-110 transition-transform"
+            className="w-6 h-6 border border-gray-300 rounded cursor-pointer hover:scale-105 transition-transform hover:border-blue-400"
             style={{ backgroundColor: color }}
             onClick={() => {
               onSelect(color);
@@ -124,7 +124,7 @@ function ColorPalette({
           />
         ))}
       </div>
-      <div className="text-xs text-gray-500 mt-2 text-center">
+      <div className="text-xs text-gray-500 text-center">
         Нажмите на цвет для применения
       </div>
     </div>
@@ -147,14 +147,20 @@ export default function RichTextEditor({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  // Стандартные цвета
+  // Стандартные цвета - как в Google Docs
   const standardColors = [
-    '#000000', '#434343', '#666666', '#999999', '#b7b7b7', '#cccccc', '#d9d9d9', '#efefef', '#f3f3f3', '#ffffff',
-    '#980000', '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#4a86e8', '#0000ff', '#9900ff', '#ff00ff',
-    '#e6b8af', '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc',
-    '#dd7e6b', '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#a4c2f4', '#9fc5e8', '#b4a7d6', '#d5a6bd',
-    '#cc4125', '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#76a5af', '#6d9eeb', '#6fa8dc', '#8e7cc3', '#c27ba0',
-    '#a61e4d', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', '#3c78d8', '#3d85c6', '#674ea7', '#a64d79'
+    // Первый ряд - базовые цвета
+    '#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9900ff', '#ff00ff',
+    // Второй ряд - темные оттенки
+    '#434343', '#990000', '#b45f06', '#bf9000', '#38761d', '#134f5c', '#351c75', '#741b47',
+    // Третий ряд - средние оттенки  
+    '#666666', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', '#674ea7', '#a64d79',
+    // Четвертый ряд - светлые оттенки
+    '#999999', '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#b4a7d6', '#d5a6bd',
+    // Пятый ряд - очень светлые
+    '#cccccc', '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3', '#d9d2e9', '#ead1dc',
+    // Шестой ряд - почти белые
+    '#efefef', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff'
   ];
   const editor = useEditor({
     extensions: [
