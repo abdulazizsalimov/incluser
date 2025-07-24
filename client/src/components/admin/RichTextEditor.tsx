@@ -250,7 +250,7 @@ export default function RichTextEditor({
     return () => clearTimeout(timer);
   }, []);
 
-  // Функция вставки настоящей HTML таблицы
+  // Функция вставки таблицы - встраиваем HTML прямо в DOM
   const insertTable = () => {
     console.log('insertTable called with rows:', tableRows, 'cols:', tableCols);
     
@@ -261,11 +261,10 @@ export default function RichTextEditor({
     }
 
     // Получаем текущую позицию курсора
-    let range = quill.getSelection(true); // true = focus first
+    let range = quill.getSelection(true);
     console.log('Current selection:', range);
     
     if (!range) {
-      // Фокусируемся на редакторе и получаем позицию
       quill.focus();
       const newRange = quill.getSelection();
       if (!newRange) {
@@ -275,43 +274,58 @@ export default function RichTextEditor({
       range = newRange;
     }
 
-    // Создаем HTML для настоящей таблицы
-    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0; border: 1px solid #ccc;">';
+    // Вставляем пустую строку для размещения таблицы
+    quill.insertText(range.index, '\n', 'user');
+    
+    // Создаем HTML элемент таблицы
+    const tableElement = document.createElement('table');
+    tableElement.style.cssText = `
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1em 0;
+      border: 1px solid #ccc;
+      background: white;
+    `;
     
     for (let i = 0; i < tableRows; i++) {
-      tableHTML += '<tr>';
+      const row = tableElement.insertRow();
       for (let j = 0; j < tableCols; j++) {
-        const cellTag = i === 0 ? 'th' : 'td';
-        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
-        const cellStyle = 'border: 1px solid #ccc; padding: 8px; ' + 
-                         (i === 0 ? 'background-color: #f5f5f5; font-weight: bold;' : 'background-color: white;');
-        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
-      }
-      tableHTML += '</tr>';
-    }
-    tableHTML += '</table>';
-
-    console.log('Inserting table HTML at position:', range.index);
-    console.log('Table HTML:', tableHTML);
-
-    // Вставляем перед таблицей пустую строку если курсор не в начале строки
-    if (range.index > 0) {
-      const beforeChar = quill.getText(range.index - 1, 1);
-      if (beforeChar !== '\n') {
-        quill.insertText(range.index, '\n', 'user');
-        range.index += 1;
+        const cell = i === 0 ? document.createElement('th') : row.insertCell();
+        if (i === 0) {
+          row.appendChild(cell);
+        }
+        
+        cell.style.cssText = `
+          border: 1px solid #ccc;
+          padding: 8px;
+          ${i === 0 ? 'background-color: #f5f5f5; font-weight: bold; text-align: left;' : 'background-color: white;'}
+        `;
+        cell.textContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
+        cell.contentEditable = 'true';
       }
     }
 
-    // Вставляем HTML таблицу прямо в позицию курсора
-    quill.clipboard.dangerouslyPasteHTML(range.index, tableHTML);
+    // Находим позицию в DOM и вставляем таблицу
+    const editorElement = quill.root;
+    const lines = editorElement.querySelectorAll('p, div');
+    const targetLine = lines[Math.floor(range.index / 50)] || editorElement; // Примерная позиция
+    
+    // Создаем контейнер для таблицы
+    const tableContainer = document.createElement('div');
+    tableContainer.style.cssText = 'margin: 1em 0; position: relative;';
+    tableContainer.appendChild(tableElement);
+    
+    // Вставляем после текущей позиции
+    if (targetLine.nextSibling) {
+      editorElement.insertBefore(tableContainer, targetLine.nextSibling);
+    } else {
+      editorElement.appendChild(tableContainer);
+    }
 
-    // Перемещаем курсор после таблицы
-    setTimeout(() => {
-      const newLength = quill.getLength();
-      quill.insertText(newLength - 1, '\n', 'user');
-      quill.setSelection(newLength);
-    }, 100);
+    // Добавляем пустую строку после таблицы
+    const newParagraph = document.createElement('p');
+    newParagraph.innerHTML = '<br>';
+    editorElement.insertBefore(newParagraph, tableContainer.nextSibling);
     
     setTableDialogOpen(false);
     console.log('Table insertion completed');
