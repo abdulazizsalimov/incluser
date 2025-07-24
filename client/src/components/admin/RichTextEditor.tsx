@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { TableModule } from 'quill-better-table';
+import QuillBetterTable from 'quill-better-table';
 import 'quill-better-table/dist/quill-better-table.css';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -33,10 +33,14 @@ export default function RichTextEditor({
 
   // Регистрация модуля таблиц
   useEffect(() => {
-    const Quill = ReactQuill.Quill;
-    Quill.register({
-      'modules/better-table': TableModule,
-    }, true);
+    if (Quill && Quill.register) {
+      try {
+        Quill.register('modules/better-table', QuillBetterTable, true);
+        console.log('better-table module registered successfully');
+      } catch (error) {
+        console.error('Failed to register better-table module:', error);
+      }
+    }
   }, []);
 
   // Конфигурация модулей Quill
@@ -63,19 +67,6 @@ export default function RichTextEditor({
         items: {
           unmergeCells: {
             text: 'Разделить ячейки'
-          }
-        }
-      }
-    },
-    keyboard: {
-      bindings: {
-        'better-table': {
-          key: 'Tab',
-          handler: function(range: any, context: any) {
-            const [table] = this.scroll.descendants(TableModule.TableBody);
-            if (table) {
-              return false;
-            }
           }
         }
       }
