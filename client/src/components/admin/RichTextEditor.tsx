@@ -253,26 +253,35 @@ export default function RichTextEditor({
     const quill = quillRef.current?.getEditor();
     if (!quill) return;
 
-    const range = quill.getSelection();
-    if (!range) return;
+    let range = quill.getSelection();
+    if (!range) {
+      // Если нет выделения, устанавливаем курсор в конец
+      quill.setSelection(quill.getLength());
+      range = quill.getSelection();
+      if (!range) return;
+    }
 
-    // Создаем HTML для таблицы
-    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0;">';
+    // Создаем HTML для таблицы с правильными стилями
+    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0; table-layout: fixed;">';
     
     for (let i = 0; i < tableRows; i++) {
       tableHTML += '<tr>';
       for (let j = 0; j < tableCols; j++) {
         const cellTag = i === 0 ? 'th' : 'td';
-        const cellStyle = 'border: 1px solid hsl(var(--border)); padding: 8px 12px; background-color: hsl(var(--background)); color: hsl(var(--foreground));';
-        const headerStyle = i === 0 ? ' background-color: hsl(var(--muted)); font-weight: 600;' : '';
-        tableHTML += `<${cellTag} style="${cellStyle}${headerStyle}">${i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i},${j + 1}`}</${cellTag}>`;
+        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
+        tableHTML += `<${cellTag} style="border: 1px solid #d1d5db; padding: 8px 12px; min-width: 120px; ${i === 0 ? 'background-color: #f3f4f6; font-weight: 600;' : ''}">${cellContent}</${cellTag}>`;
       }
       tableHTML += '</tr>';
     }
-    tableHTML += '</table>';
+    tableHTML += '</table><p><br></p>'; // Добавляем пустой параграф после таблицы
 
-    // Вставляем таблицу
-    quill.clipboard.dangerouslyPasteHTML(range.index, tableHTML);
+    // Вставляем таблицу в текущую позицию курсора
+    const delta = quill.clipboard.convert(tableHTML);
+    quill.updateContents(delta, 'user');
+    
+    // Устанавливаем курсор после таблицы
+    quill.setSelection(range.index + delta.length());
+    
     setTableDialogOpen(false);
   };
 
@@ -281,12 +290,31 @@ export default function RichTextEditor({
     const quill = quillRef.current?.getEditor();
     if (!quill) return;
 
-    const range = quill.getSelection();
-    if (!range) return;
+    let range = quill.getSelection();
+    if (!range) {
+      // Если нет выделения, устанавливаем курсор в конец
+      quill.setSelection(quill.getLength());
+      range = quill.getSelection();
+      if (!range) return;
+    }
 
-    if (imageUrl) {
+    if (imageUrl.trim()) {
+      // Вставляем изображение в текущую позицию курсора
       quill.insertEmbed(range.index, 'image', imageUrl);
-      quill.formatText(range.index, 1, 'alt', imageAlt);
+      
+      // Устанавливаем альтернативный текст если указан
+      if (imageAlt.trim()) {
+        const imgElement = quill.root.querySelector(`img[src="${imageUrl}"]`);
+        if (imgElement) {
+          imgElement.setAttribute('alt', imageAlt);
+        }
+      }
+      
+      // Добавляем перенос строки после изображения
+      quill.setSelection(range.index + 1);
+      quill.insertText(range.index + 1, '\n');
+      
+      // Очищаем поля и закрываем диалог
       setImageUrl('');
       setImageAlt('');
       setImageDialogOpen(false);
@@ -325,6 +353,9 @@ export default function RichTextEditor({
       const result = await response.json();
       setImageUrl(result.path);
       setImageAlt(file.name.replace(/\.[^/.]+$/, ""));
+      
+      // Очищаем input файла для возможности повторной загрузки того же файла
+      (event.target as HTMLInputElement).value = '';
     } catch (error) {
       console.error('Upload error:', error);
       alert('Ошибка загрузки изображения');
@@ -426,7 +457,7 @@ export default function RichTextEditor({
                   placeholder="Описание изображения"
                 />
               </div>
-              <Button onClick={insertImage} disabled={!imageUrl}>
+              <Button onClick={insertImage} disabled={!imageUrl.trim()}>
                 Вставить изображение
               </Button>
             </div>
