@@ -709,3 +709,13 @@ body.panel-open {
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+/* Фиксированная панель вставки */
+.insert-toolbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
+  background: hsl(var(--background)) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}

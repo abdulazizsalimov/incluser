@@ -250,7 +250,7 @@ export default function RichTextEditor({
     return () => clearTimeout(timer);
   }, []);
 
-  // Функция вставки таблицы как текста с разделителями
+  // Функция вставки настоящей HTML таблицы
   const insertTable = () => {
     console.log('insertTable called with rows:', tableRows, 'cols:', tableCols);
     
@@ -260,51 +260,58 @@ export default function RichTextEditor({
       return;
     }
 
-    let range = quill.getSelection();
+    // Получаем текущую позицию курсора
+    let range = quill.getSelection(true); // true = focus first
     console.log('Current selection:', range);
     
     if (!range) {
-      const length = quill.getLength();
-      quill.setSelection(length - 1);
-      range = quill.getSelection();
-      if (!range) {
+      // Фокусируемся на редакторе и получаем позицию
+      quill.focus();
+      const newRange = quill.getSelection();
+      if (!newRange) {
         console.log('Could not get selection');
         return;
       }
+      range = newRange;
     }
 
-    // Создаем таблицу как текст с ASCII разделителями
-    let tableText = '\n\n';
+    // Создаем HTML для настоящей таблицы
+    let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 1em 0; border: 1px solid #ccc;">';
     
-    // Заголовки
-    const headerSeparator = '|';
-    let headerRow = headerSeparator;
-    let separatorRow = headerSeparator;
-    
-    for (let j = 0; j < tableCols; j++) {
-      const headerText = ` Заголовок ${j + 1} `;
-      headerRow += headerText + headerSeparator;
-      separatorRow += '-'.repeat(headerText.length) + headerSeparator;
-    }
-    
-    tableText += headerRow + '\n' + separatorRow + '\n';
-    
-    // Строки данных
-    for (let i = 1; i < tableRows; i++) {
-      let dataRow = headerSeparator;
+    for (let i = 0; i < tableRows; i++) {
+      tableHTML += '<tr>';
       for (let j = 0; j < tableCols; j++) {
-        dataRow += ` Ячейка ${i + 1},${j + 1} ` + headerSeparator;
+        const cellTag = i === 0 ? 'th' : 'td';
+        const cellContent = i === 0 ? `Заголовок ${j + 1}` : `Ячейка ${i + 1},${j + 1}`;
+        const cellStyle = 'border: 1px solid #ccc; padding: 8px; ' + 
+                         (i === 0 ? 'background-color: #f5f5f5; font-weight: bold;' : 'background-color: white;');
+        tableHTML += `<${cellTag} style="${cellStyle}">${cellContent}</${cellTag}>`;
       }
-      tableText += dataRow + '\n';
+      tableHTML += '</tr>';
     }
-    
-    tableText += '\n';
+    tableHTML += '</table>';
 
-    console.log('Inserting table text:', tableText);
+    console.log('Inserting table HTML at position:', range.index);
+    console.log('Table HTML:', tableHTML);
 
-    // Вставляем таблицу как обычный текст
-    quill.insertText(range.index, tableText, 'user');
-    quill.setSelection(range.index + tableText.length);
+    // Вставляем перед таблицей пустую строку если курсор не в начале строки
+    if (range.index > 0) {
+      const beforeChar = quill.getText(range.index - 1, 1);
+      if (beforeChar !== '\n') {
+        quill.insertText(range.index, '\n', 'user');
+        range.index += 1;
+      }
+    }
+
+    // Вставляем HTML таблицу прямо в позицию курсора
+    quill.clipboard.dangerouslyPasteHTML(range.index, tableHTML);
+
+    // Перемещаем курсор после таблицы
+    setTimeout(() => {
+      const newLength = quill.getLength();
+      quill.insertText(newLength - 1, '\n', 'user');
+      quill.setSelection(newLength);
+    }, 100);
     
     setTableDialogOpen(false);
     console.log('Table insertion completed');
