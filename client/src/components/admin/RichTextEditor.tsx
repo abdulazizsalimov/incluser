@@ -14,8 +14,16 @@ import { Button } from '@/components/ui/button';
 import { 
   Bold, Italic, Underline, Strikethrough, Code, List, ListOrdered,
   Undo, Redo, Quote, Minus, Table as TableIcon, Link as LinkIcon,
-  Image as ImageIcon, Palette, Highlighter, AlignLeft, AlignCenter, AlignRight
+  Image as ImageIcon, Palette, Highlighter, AlignLeft, AlignCenter, AlignRight,
+  Upload, ChevronDown
 } from 'lucide-react';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 
 interface RichTextEditorProps {
   value: string;
@@ -86,8 +94,11 @@ export default function RichTextEditor({
 }: RichTextEditorProps) {
   const [showTableSelector, setShowTableSelector] = useState(false);
   const [isToolbarSticky, setIsToolbarSticky] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -167,11 +178,63 @@ export default function RichTextEditor({
     }
   };
 
-  const addImage = () => {
+  const addImageByUrl = () => {
     const url = prompt('Введите URL изображения:');
     if (url) {
       editor.chain().focus().setImage({ src: url }).run();
     }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      const data = await response.json();
+      editor.chain().focus().setImage({ src: data.imageUrl }).run();
+      
+      toast({
+        title: "Изображение добавлено",
+        description: "Изображение успешно загружено и добавлено в редактор",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка загрузки",
+        description: "Не удалось загрузить изображение",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const triggerImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      handleImageUpload(file);
+    } else {
+      toast({
+        title: "Неверный формат",
+        description: "Выберите файл изображения (JPG, PNG, GIF, WebP)",
+        variant: "destructive",
+      });
+    }
+    // Очищаем input для возможности выбора того же файла снова
+    event.target.value = '';
   };
 
   const addTable = (rows: number, cols: number) => {
@@ -370,16 +433,38 @@ export default function RichTextEditor({
         </Button>
 
         {/* Изображение */}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={addImage}
-          title="Добавить изображение"
-          className="h-8 w-8 p-0"
-        >
-          <ImageIcon className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              title="Добавить изображение"
+              aria-label="Вставить изображение"
+              className="h-8 w-9 p-0 transition-all hover:scale-105 bg-white hover:bg-blue-50 border-blue-200"
+              disabled={uploadingImage}
+            >
+              {uploadingImage ? (
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <ImageIcon className="h-4 w-4" />
+                  <ChevronDown className="h-3 w-3 ml-0.5" />
+                </>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuItem onClick={addImageByUrl} className="cursor-pointer">
+              <LinkIcon className="h-4 w-4 mr-2" />
+              Вставить по URL
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={triggerImageUpload} className="cursor-pointer">
+              <Upload className="h-4 w-4 mr-2" />
+              Загрузить файл
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Таблица */}
         <div className="relative">
@@ -468,6 +553,15 @@ export default function RichTextEditor({
           minHeight: height,
           marginTop: isToolbarSticky ? '0px' : '0px'
         }}
+      />
+      
+      {/* Скрытый input для загрузки файлов */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileSelect}
+        className="hidden"
       />
       
       <style>{`
