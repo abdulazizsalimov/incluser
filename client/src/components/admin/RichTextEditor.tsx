@@ -23,6 +23,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 
 interface RichTextEditorProps {
@@ -339,15 +346,7 @@ export default function RichTextEditor({
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
         {/* Заголовки */}
-        <select 
-          onChange={(e) => {
-            if (e.target.value === 'paragraph') {
-              editor.chain().focus().setParagraph().run();
-            } else {
-              editor.chain().focus().toggleHeading({ level: parseInt(e.target.value) as any }).run();
-            }
-          }}
-          className="px-2 py-1 border rounded text-sm"
+        <Select
           value={
             editor.isActive('paragraph') ? 'paragraph' :
             editor.isActive('heading', { level: 1 }) ? '1' :
@@ -358,15 +357,41 @@ export default function RichTextEditor({
             editor.isActive('heading', { level: 6 }) ? '6' :
             'paragraph'
           }
+          onValueChange={(value) => {
+            if (value === 'paragraph') {
+              editor.chain().focus().setParagraph().run();
+            } else {
+              editor.chain().focus().toggleHeading({ level: parseInt(value) as any }).run();
+            }
+          }}
         >
-          <option value="paragraph">Обычный текст</option>
-          <option value="1">Заголовок 1</option>
-          <option value="2">Заголовок 2</option>
-          <option value="3">Заголовок 3</option>
-          <option value="4">Заголовок 4</option>
-          <option value="5">Заголовок 5</option>
-          <option value="6">Заголовок 6</option>
-        </select>
+          <SelectTrigger className="w-32 h-8 bg-white border-blue-200 text-gray-700 hover:bg-blue-50 transition-colors">
+            <SelectValue placeholder="Стиль текста" />
+          </SelectTrigger>
+          <SelectContent className="bg-white border border-gray-200 shadow-lg">
+            <SelectItem value="paragraph" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              Обычный текст
+            </SelectItem>
+            <SelectItem value="1" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              <span className="text-2xl font-bold">Заголовок 1</span>
+            </SelectItem>
+            <SelectItem value="2" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              <span className="text-xl font-bold">Заголовок 2</span>
+            </SelectItem>
+            <SelectItem value="3" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              <span className="text-lg font-bold">Заголовок 3</span>
+            </SelectItem>
+            <SelectItem value="4" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              <span className="text-base font-bold">Заголовок 4</span>
+            </SelectItem>
+            <SelectItem value="5" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              <span className="text-sm font-bold">Заголовок 5</span>
+            </SelectItem>
+            <SelectItem value="6" className="text-gray-700 hover:bg-blue-50 cursor-pointer">
+              <span className="text-xs font-bold">Заголовок 6</span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
 
         <div className="w-px h-6 bg-gray-300 mx-2 self-center" />
 
