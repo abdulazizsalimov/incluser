@@ -314,21 +314,27 @@ export default function RichTextEditor({
     editor.chain().focus().setHighlight({ color }).run();
   };
 
-  // Функция для озвучивания кнопок
+  // Состояние для ARIA live объявлений
+  const [liveAnnouncement, setLiveAnnouncement] = useState('');
+
+  // Функция для озвучивания кнопок через screen reader
   const announceButton = (text: string) => {
-    if ('speechSynthesis' in window) {
-      // Останавливаем предыдущую речь
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.volume = 0.5;
-      utterance.rate = 1.2;
-      utterance.lang = 'ru-RU';
-      window.speechSynthesis.speak(utterance);
-    }
+    setLiveAnnouncement(text);
+    // Очищаем объявление через короткое время, чтобы одинаковые тексты озвучивались повторно
+    setTimeout(() => setLiveAnnouncement(''), 100);
   };
 
   return (
     <div ref={editorRef} className="w-full border rounded-lg overflow-hidden bg-white">
+      {/* ARIA Live область для screen reader объявлений */}
+      <div 
+        aria-live="polite" 
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {liveAnnouncement}
+      </div>
+      
       {/* Панель инструментов */}
       <div 
         ref={toolbarRef}
