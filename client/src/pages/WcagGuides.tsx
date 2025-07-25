@@ -132,12 +132,22 @@ export default function WcagGuides() {
             </div>
           </header>
 
-          <div className="bg-card rounded-lg border overflow-hidden">
+          <div className="bg-card rounded-lg border-2 border-gray-200 dark:border-gray-600 overflow-hidden shadow-lg">
+            <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  📄 Документ WCAG 2.1
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Используйте элементы управления PDF для навигации
+                </p>
+              </div>
+            </div>
             {!pdfError ? (
-              <div className="relative w-full" style={{ height: '80vh' }}>
+              <div className="relative w-full bg-white dark:bg-gray-800 p-2" style={{ height: '80vh' }}>
                 <iframe
                   src={pdfUrl}
-                  className="w-full h-full border-0"
+                  className="w-full h-full border-0 rounded shadow-inner"
                   title="Руководство по обеспечению доступности веб-контента (WCAG) 2.1"
                   onError={() => setPdfError(true)}
                 />
@@ -181,8 +191,12 @@ export default function WcagGuides() {
                   <li>Скачать PDF файл и открыть его в Adobe Reader или аналогичной программе</li>
                   <li>Использовать кнопку "Открыть в новой вкладке" для просмотра в отдельном окне браузера</li>
                 </ul>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mb-2">
                   Adobe Reader обеспечивает лучшую совместимость с программами чтения с экрана для PDF документов.
+                </p>
+                <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                  <strong>Примечание о темной теме:</strong> Содержимое PDF документа отображается в оригинальном светлом дизайне 
+                  из-за технических ограничений браузера. Рамка адаптирована под темную тему сайта.
                 </p>
               </div>
             </div>
