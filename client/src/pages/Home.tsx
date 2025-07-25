@@ -212,7 +212,7 @@ export default function Home() {
                 Быстрый доступ к ключевым материалам по цифровой доступности
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
                 {/* WCAG Guides */}
                 <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden">
                   <CardContent className="p-8">
@@ -295,6 +295,28 @@ export default function Home() {
                         </h3>
                         <p className="text-muted-foreground mb-4">
                           Образовательные материалы, курсы и записи вебинаров по цифровой доступности
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </article>
+
+                {/* Screen Readers */}
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden md:col-span-2 lg:col-span-1">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 text-4xl" role="img" aria-label="Компьютер с речью">🗣️</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold mb-3">
+                          <Link 
+                            href="#" 
+                            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+                          >
+                            Программы экранного доступа
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          Обзор популярных скринридеров: NVDA, JAWS, VoiceOver и советы по их использованию
                         </p>
                       </div>
                     </div>
