@@ -24,13 +24,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-bold text-gradient mb-4">
-              Incluser
-            </h3>
-            
             {/* Accessibility Statement */}
-            <div className="mb-6">
-              <p className="text-slate-300 mb-4">
+            <div className="mb-4">
+              <p className="text-slate-300 mb-3">
                 Мы стараемся сделать сайт максимально удобным для пользователей экранных дикторов, устройств с клавиатурной навигацией и мобильных пользователей. Если вы столкнулись с проблемой — сообщите нам.
               </p>
               <Link 
@@ -41,6 +37,9 @@ export default function Footer() {
               </Link>
             </div>
             
+            <h3 className="text-2xl font-bold text-gradient mb-4">
+              Incluser
+            </h3>
             <p className="text-slate-300 mb-4">
               Блог о цифровой доступности и инклюзивном дизайне. 
               Делаем интернет доступнее для всех.
