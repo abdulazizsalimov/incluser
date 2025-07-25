@@ -55,10 +55,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/uploads', express.static('uploads'));
   
   // Serve attached assets (PDF files, etc.)
-  app.use('/attached_assets', express.static('attached_assets'));
-  
-  // Additional route for assets in production (fallback for different deployment paths)
-  app.use('/assets', express.static('attached_assets'));
+  // In development: serve from attached_assets folder
+  // In production: serve from dist/public/assets folder (after build)
+  if (app.get("env") === "development") {
+    app.use('/attached_assets', express.static('attached_assets'));
+    app.use('/assets', express.static('attached_assets'));
+  } else {
+    // In production, files are built into dist/public/assets
+    const assetsPath = path.resolve(process.cwd(), 'dist', 'public', 'assets');
+    app.use('/attached_assets', express.static(assetsPath));
+    app.use('/assets', express.static(assetsPath));
+  }
 
   // Image upload endpoint
   app.post('/api/admin/upload-image', isAdmin, upload.single('image'), (req, res) => {

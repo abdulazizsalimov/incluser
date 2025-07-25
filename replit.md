@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 25, 2025. Fixed production PDF serving issue - corrected static file routing for attached_assets to serve from correct dist/public/assets path in production vs attached_assets in development, created automated copy-assets.js script to transfer PDF files during build process, updated DEPLOYMENT.md with comprehensive troubleshooting instructions
 - July 24, 2025. Cleaned up dependencies - removed 1600+ unused packages including CKEditor, WordPress components, Replit Auth (openid-client, passport), unused Radix UI components, and other libraries no longer needed, kept only essential dependencies for TipTap editor, authentication, styling, and core functionality
 - July 4, 2025. Fixed grayscale mode issues completely - resolved black accessibility panel in dark theme by implementing React portals for complete CSS isolation, fixed header positioning in grayscale mode using JavaScript observer that clones header outside filter influence, ensured panel scrolling works independently from background page scrolling, corrected button text visibility in header with proper color styling
 - July 3, 2025. Made all banner buttons transparent - converted "Попробовать" button on accessibility slider and "Прослушать"/"Поделиться" buttons on article pages to use consistent transparent design with white borders and backdrop blur, matching the "Об авторе" button style across both mobile and desktop layouts
