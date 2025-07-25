@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 import ArticleCard from "@/components/ArticleCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -213,80 +214,92 @@ export default function Home() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
                 {/* WCAG Guides */}
-                <Link 
-                  href="#" 
-                  className="block bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-accent group"
-                  aria-describedby="wcag-guides-desc"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Книги">📚</div>
-                    <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        Руководства WCAG
-                      </h3>
-                      <p id="wcag-guides-desc" className="text-muted-foreground">
-                        Подробные руководства по стандартам веб-доступности и их практическому применению
-                      </p>
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 text-4xl" role="img" aria-label="Книги">📚</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold mb-3">
+                          <Link 
+                            href="#" 
+                            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+                          >
+                            Руководства WCAG
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          Подробные руководства по стандартам веб-доступности и их практическому применению
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </CardContent>
+                </article>
 
                 {/* Testing Tools */}
-                <Link 
-                  href="#" 
-                  className="block bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-accent group"
-                  aria-describedby="testing-tools-desc"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Пробирка">🧪</div>
-                    <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        Инструменты тестирования
-                      </h3>
-                      <p id="testing-tools-desc" className="text-muted-foreground">
-                        Обзор лучших инструментов для автоматической и ручной проверки доступности
-                      </p>
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 text-4xl" role="img" aria-label="Пробирка">🧪</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold mb-3">
+                          <Link 
+                            href="#" 
+                            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+                          >
+                            Инструменты тестирования
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          Обзор лучших инструментов для автоматической и ручной проверки доступности
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </CardContent>
+                </article>
 
                 {/* Best Practices */}
-                <Link 
-                  href="#" 
-                  className="block bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-accent group"
-                  aria-describedby="best-practices-desc"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Лампочка">💡</div>
-                    <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        Лучшие практики
-                      </h3>
-                      <p id="best-practices-desc" className="text-muted-foreground">
-                        Проверенные решения и подходы к созданию доступных интерфейсов
-                      </p>
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 text-4xl" role="img" aria-label="Лампочка">💡</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold mb-3">
+                          <Link 
+                            href="#" 
+                            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+                          >
+                            Лучшие практики
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          Проверенные решения и подходы к созданию доступных интерфейсов
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </CardContent>
+                </article>
 
                 {/* Training & Webinars */}
-                <Link 
-                  href="#" 
-                  className="block bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600 focus:outline-none focus:ring-2 focus:ring-accent group"
-                  aria-describedby="training-desc"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Преподаватель">🧑‍🏫</div>
-                    <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        Обучение и вебинары
-                      </h3>
-                      <p id="training-desc" className="text-muted-foreground">
-                        Образовательные материалы, курсы и записи вебинаров по цифровой доступности
-                      </p>
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 text-4xl" role="img" aria-label="Преподаватель">🧑‍🏫</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold mb-3">
+                          <Link 
+                            href="#" 
+                            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+                          >
+                            Обучение и вебинары
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          Образовательные материалы, курсы и записи вебинаров по цифровой доступности
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </CardContent>
+                </article>
               </div>
             </div>
           </div>
