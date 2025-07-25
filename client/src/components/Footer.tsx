@@ -15,6 +15,10 @@ export default function Footer() {
     { href: "/wcag-guides", label: "Руководства WCAG" },
     { href: "/testing-tools", label: "Инструменты тестирования" },
     { href: "/resources", label: "Полезные ссылки" },
+    { href: "#", label: "Лучшие практики" },
+    { href: "#", label: "Обучение и вебинары" },
+    { href: "#", label: "Программы экранного доступа" },
+    { href: "#", label: "Мобильные приложения" },
     { href: "/rss.xml", label: "RSS подписка" },
   ];
 
@@ -94,7 +98,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-white">Ресурсы</h4>
+            <h4 className="text-lg font-semibold mb-4 text-white">Полезные ресурсы</h4>
             <ul className="space-y-2">
               {resourceItems.map((item) => (
                 <li key={item.href}>
