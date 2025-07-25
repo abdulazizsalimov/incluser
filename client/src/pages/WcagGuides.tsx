@@ -104,7 +104,7 @@ export default function WcagGuides() {
     }
   };
 
-  const pdfUrl = "/attached_assets/Руководство по обеспечению доступности веб-контента (WCAG) 2.1 _ Информация для всех_1753427531966.pdf";
+  const pdfUrl = "/attached_assets/wcag-2.1-guide.pdf";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
