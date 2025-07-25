@@ -83,6 +83,7 @@ export default function TestingTools() {
                 Tenon предлагает браузерное расширение и API. Инструмент генерирует подробные отчёты с фрагментами кода, указанием 
                 ошибок и ссылками на руководства по доступности.
               </p>
+              <p><em>Ссылка:</em> <a href="https://tenon.io/" target="_blank" rel="noopener noreferrer">tenon.io</a></p>
 
               <h3>Проверка цветового контраста</h3>
               <p>
@@ -95,6 +96,7 @@ export default function TestingTools() {
                 Простой онлайн-калькулятор контрастности от WebAIM. Позволяет ввести цвет текста и фона (в HEX или RGB) 
                 и показывает коэффициент контрастности и соответствие уровням WCAG (AA/AAA).
               </p>
+              <p><em>Ссылка:</em> <a href="https://webaim.org/resources/contrastchecker/" target="_blank" rel="noopener noreferrer">webaim.org/resources/contrastchecker</a></p>
 
               <h4>Are My Colors Accessible</h4>
               <p>
@@ -102,12 +104,14 @@ export default function TestingTools() {
                 двумя заданными цветами, учитывая размер и начертание шрифта. В «Palette Mode» можно сразу проверить все цвета 
                 палитры друг с другом.
               </p>
+              <p><em>Ссылка:</em> <a href="https://www.aremycolorsaccessible.com/" target="_blank" rel="noopener noreferrer">aremycolorsaccessible.com</a></p>
 
               <h4>Color Contrast Analyser</h4>
               <p>
                 Настольное приложение (Windows/Mac) от TPG Interactive. Оно позволяет замерять контраст напрямую с экрана 
                 с помощью пипетки или по введённым значениям и определяет соответствие уровням WCAG 2.1.
               </p>
+              <p><em>Ссылка:</em> <a href="https://www.tpgi.com/color-contrast-checker/" target="_blank" rel="noopener noreferrer">tpgi.com/color-contrast-checker</a></p>
 
               <h4>Stark</h4>
               <p>
@@ -115,6 +119,7 @@ export default function TestingTools() {
                 виды цветовой слепоты на странице. Это помогает проверить восприятие цветов пользователями с нарушениями 
                 цветоразличения.
               </p>
+              <p><em>Ссылка:</em> <a href="https://www.getstark.co/" target="_blank" rel="noopener noreferrer">getstark.co</a></p>
             </ExpandableSection>
 
             <ExpandableSection
@@ -132,6 +137,7 @@ export default function TestingTools() {
                 <strong>Как использовать:</strong> зайдите на любую страницу и нажмите значок WAVE – поверх страницы сразу появятся 
                 цветные иконки, обозначающие ошибки, предупреждения и важные элементы, а сбоку откроется панель с сводкой результатов.
               </p>
+              <p><em>Ссылка:</em> <a href="https://wave.webaim.org/extension/" target="_blank" rel="noopener noreferrer">wave.webaim.org/extension</a></p>
 
               <h4>axe DevTools</h4>
               <p>
@@ -148,6 +154,7 @@ export default function TestingTools() {
                 <li><strong>Intelligent Guided Tests:</strong> расширение предлагает полуавтоматические guided tests</li>
                 <li><strong>Экспорт отчётов:</strong> результаты сканирования можно сохранять и экспортировать</li>
               </ul>
+              <p><em>Ссылка:</em> <a href="https://www.deque.com/axe/devtools/" target="_blank" rel="noopener noreferrer">deque.com/axe/devtools</a></p>
 
               <h4>Accessibility Insights</h4>
               <p>
@@ -162,6 +169,7 @@ export default function TestingTools() {
                 <li><strong>Assessment (Оценка)</strong> – полный пошаговый сценарий тестирования, объединяющий автоматические, полуавтоматические и ручные проверки</li>
                 <li><strong>Эксплорер структуры</strong> – режим просмотра структуры страницы и информации о каждом элементе</li>
               </ul>
+              <p><em>Ссылка:</em> <a href="https://accessibilityinsights.io/" target="_blank" rel="noopener noreferrer">accessibilityinsights.io</a></p>
 
               <h4>Siteimprove Accessibility Checker</h4>
               <p>
@@ -169,6 +177,7 @@ export default function TestingTools() {
                 с перечнем обнаруженных проблем на странице. Особенность Siteimprove – удобная фильтрация результатов: можно 
                 отфильтровать ошибки по уровню соответствия (A/AA/AAA), по серьёзности и по ответственности.
               </p>
+              <p><em>Ссылка:</em> <a href="https://siteimprove.com/integrations/browser-extensions/" target="_blank" rel="noopener noreferrer">siteimprove.com/integrations/browser-extensions</a></p>
 
               <h4>Google Lighthouse</h4>
               <p>
@@ -229,12 +238,12 @@ export default function TestingTools() {
 
               <h4>Популярные скринридеры</h4>
               <ul>
-                <li><strong>NVDA</strong> (Windows) – бесплатный экранный читатель с открытым кодом</li>
-                <li><strong>JAWS</strong> (Windows) – коммерческий скринридер от Freedom Scientific</li>
+                <li><strong>NVDA</strong> (Windows) – бесплатный экранный читатель с открытым кодом. <em>Ссылка:</em> <a href="https://www.nvaccess.org/" target="_blank" rel="noopener noreferrer">nvaccess.org</a></li>
+                <li><strong>JAWS</strong> (Windows) – коммерческий скринридер от Freedom Scientific. <em>Ссылка:</em> <a href="https://www.freedomscientific.com/products/software/jaws/" target="_blank" rel="noopener noreferrer">freedomscientific.com</a></li>
                 <li><strong>Narrator</strong> (Windows) – встроенный экранный диктор Windows</li>
                 <li><strong>VoiceOver</strong> (macOS и iOS) – встроенный скринридер Apple</li>
                 <li><strong>TalkBack</strong> (Android) – встроенный сервис озвучивания на Android-устройствах</li>
-                <li><strong>Orca</strong> (Linux) – экранный читатель для сред GNOME/Linux</li>
+                <li><strong>Orca</strong> (Linux) – экранный читатель для сред GNOME/Linux. <em>Ссылка:</em> <a href="https://wiki.gnome.org/Projects/Orca" target="_blank" rel="noopener noreferrer">wiki.gnome.org/Projects/Orca</a></li>
                 <li><strong>ChromeVox</strong> (Chrome OS) – встроенный в Chromebooks скринридер</li>
               </ul>
 
@@ -327,8 +336,8 @@ export default function TestingTools() {
               <h4>4. Используйте эмуляторы при необходимости</h4>
               <p>
                 Если нет возможности физически тестировать на всех устройствах, есть онлайн-сервисы, предоставляющие доступ 
-                к скринридерам. Например, <strong>BrowserStack</strong> позволяет запускать различные ОС/браузеры со скринридерами, 
-                а сервис <strong>Assistiv Labs</strong> эмулирует удалённое тестирование популярных скринридеров.
+                к скринридерам. Например, <strong>BrowserStack</strong> (<a href="https://www.browserstack.com/" target="_blank" rel="noopener noreferrer">browserstack.com</a>) позволяет запускать различные ОС/браузеры со скринридерами, 
+                а сервис <strong>Assistiv Labs</strong> (<a href="https://assistivlabs.com/" target="_blank" rel="noopener noreferrer">assistivlabs.com</a>) эмулирует удалённое тестирование популярных скринридеров.
               </p>
 
               <h4>5. Привлекайте реальных пользователей</h4>
@@ -354,8 +363,13 @@ export default function TestingTools() {
                   </a>
                 </li>
                 <li>
-                  <a href="https://wave.webaim.org/extension/" target="_blank" rel="noopener noreferrer">
-                    WAVE – расширения браузера
+                  <a href="https://validator.w3.org/" target="_blank" rel="noopener noreferrer">
+                    W3C HTML Validator – проверка разметки
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.deque.com/axe/devtools/" target="_blank" rel="noopener noreferrer">
+                    axe DevTools – расширение для тестирования доступности
                   </a>
                 </li>
                 <li>
@@ -365,7 +379,12 @@ export default function TestingTools() {
                 </li>
                 <li>
                   <a href="https://www.nvaccess.org/" target="_blank" rel="noopener noreferrer">
-                    NVDA Screen Reader
+                    NVDA Screen Reader – бесплатный экранный читатель
+                  </a>
+                </li>
+                <li>
+                  <a href="https://webaim.org/resources/contrastchecker/" target="_blank" rel="noopener noreferrer">
+                    WebAIM Contrast Checker – проверка цветового контраста
                   </a>
                 </li>
               </ul>
