@@ -302,7 +302,7 @@ export default function Home() {
                 </article>
 
                 {/* Screen Readers */}
-                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden md:col-span-2 lg:col-span-1">
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden">
                   <CardContent className="p-8">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 text-4xl" role="img" aria-label="Компьютер с речью">🗣️</div>
@@ -317,6 +317,28 @@ export default function Home() {
                         </h3>
                         <p className="text-muted-foreground mb-4">
                           Обзор популярных скринридеров: NVDA, JAWS, VoiceOver и советы по их использованию
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </article>
+
+                {/* Mobile Apps */}
+                <article className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 focus-within:ring-2 focus-within:ring-accent overflow-hidden md:col-span-2 lg:col-span-1">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 text-4xl" role="img" aria-label="Мобильный телефон">📱</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold mb-3">
+                          <Link 
+                            href="#" 
+                            className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
+                          >
+                            Мобильные приложения
+                          </Link>
+                        </h3>
+                        <p className="text-muted-foreground mb-4">
+                          Приложения для мобильных устройств, направленные на обеспечение доступности и инклюзивности
                         </p>
                       </div>
                     </div>
