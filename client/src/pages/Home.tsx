@@ -221,7 +221,7 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="#" 
+                            href="/wcag-guides" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Руководства WCAG
