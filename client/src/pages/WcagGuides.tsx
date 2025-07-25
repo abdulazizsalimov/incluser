@@ -132,7 +132,7 @@ export default function WcagGuides() {
             </div>
           </header>
 
-          <div className="bg-card rounded-lg border-2 border-gray-200 dark:border-gray-600 overflow-hidden shadow-lg">
+          <div className="bg-card rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden shadow-lg">
             <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 border-b border-gray-200 dark:border-gray-600">
               <div className="flex items-center justify-between">
                 <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -144,10 +144,10 @@ export default function WcagGuides() {
               </div>
             </div>
             {!pdfError ? (
-              <div className="relative w-full bg-white dark:bg-gray-800 p-2" style={{ height: '80vh' }}>
+              <div className="relative w-full bg-gray-50 dark:bg-gray-800 p-1" style={{ height: '80vh' }}>
                 <iframe
                   src={pdfUrl}
-                  className="w-full h-full border-0 rounded shadow-inner"
+                  className="w-full h-full border-0 rounded"
                   title="Руководство по обеспечению доступности веб-контента (WCAG) 2.1"
                   onError={() => setPdfError(true)}
                 />
