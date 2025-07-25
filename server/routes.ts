@@ -502,7 +502,23 @@ ${articles.map(article => {
 
   app.delete('/api/admin/categories/:id', isAdmin, async (req, res) => {
     try {
-      await storage.deleteCategory(parseInt(req.params.id));
+      const categoryId = parseInt(req.params.id);
+      
+      // Получаем категорию для проверки
+      const category = await storage.getCategoryById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      
+      // Защищенные категории нельзя удалять
+      const protectedSlugs = ['accessibility', 'best-practices', 'screen-readers', 'mobile-apps', 'education'];
+      if (protectedSlugs.includes(category.slug)) {
+        return res.status(403).json({ 
+          message: "Эта категория является системной и не может быть удалена" 
+        });
+      }
+      
+      await storage.deleteCategory(categoryId);
       res.status(204).send();
     } catch (error) {
       console.error("Error deleting category:", error);

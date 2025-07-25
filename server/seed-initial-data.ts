@@ -2,16 +2,41 @@ import { storage } from "./storage";
 
 export async function seedInitialData() {
   try {
-    // Создаем базовую категорию если её нет
-    const existingCategory = await storage.getCategoryBySlug("accessibility");
-    
-    if (!existingCategory) {
-      await storage.createCategory({
+    // Создаем все необходимые категории
+    const defaultCategories = [
+      {
         name: "Доступность",
         slug: "accessibility",
         description: "Статьи о цифровой доступности и инклюзивном дизайне"
-      });
-      console.log("✓ Создана базовая категория: Доступность");
+      },
+      {
+        name: "Лучшие практики",
+        slug: "best-practices",
+        description: "Проверенные решения и подходы к созданию доступных интерфейсов"
+      },
+      {
+        name: "Программы экранного доступа",
+        slug: "screen-readers",
+        description: "Обзор популярных скринридеров: NVDA, JAWS, VoiceOver и советы по их использованию"
+      },
+      {
+        name: "Мобильные приложения",
+        slug: "mobile-apps",
+        description: "Доступность в мобильных приложениях: iOS, Android и кроссплатформенные решения"
+      },
+      {
+        name: "Образование и вебинары",
+        slug: "education",
+        description: "Образовательные материалы, курсы и записи вебинаров по цифровой доступности"
+      }
+    ];
+
+    for (const categoryData of defaultCategories) {
+      const existingCategory = await storage.getCategoryBySlug(categoryData.slug);
+      if (!existingCategory) {
+        await storage.createCategory(categoryData);
+        console.log(`✓ Создана категория: ${categoryData.name}`);
+      }
     }
 
     // Создаем приветственную статью если её нет

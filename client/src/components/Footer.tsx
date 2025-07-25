@@ -14,10 +14,10 @@ export default function Footer() {
   const resourceItems = [
     { href: "/wcag-guides", label: "Руководства WCAG" },
     { href: "/testing-tools", label: "Инструменты тестирования" },
-    { href: "#best-practices", label: "Лучшие практики" },
-    { href: "#education", label: "Обучение и вебинары" },
-    { href: "#screen-readers", label: "Программы экранного доступа" },
-    { href: "#mobile-apps", label: "Мобильные приложения" },
+    { href: "/articles?category=best-practices", label: "Лучшие практики" },
+    { href: "/articles?category=education", label: "Обучение и вебинары" },
+    { href: "/articles?category=screen-readers", label: "Программы экранного доступа" },
+    { href: "/articles?category=mobile-apps", label: "Мобильные приложения" },
   ];
 
   return (

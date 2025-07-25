@@ -270,7 +270,7 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="#" 
+                            href="/articles?category=best-practices" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Лучшие практики
@@ -292,7 +292,7 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="#" 
+                            href="/articles?category=education" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Обучение и вебинары
@@ -314,7 +314,7 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="#" 
+                            href="/articles?category=screen-readers" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Программы экранного доступа
@@ -336,7 +336,7 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="#" 
+                            href="/articles?category=mobile-apps" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Мобильные приложения
