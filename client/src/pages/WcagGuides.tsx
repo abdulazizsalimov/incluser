@@ -11,6 +11,9 @@ export default function WcagGuides() {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   
   useEffect(() => {
+    // Прокручиваем в начало страницы при загрузке
+    window.scrollTo(0, 0);
+    
     document.title = "Руководство по обеспечению доступности веб-контента (WCAG) 2.1 - Incluser";
     
     // Определяем текущую тему

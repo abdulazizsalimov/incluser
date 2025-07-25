@@ -21,6 +21,8 @@ export default function Articles() {
 
   // Parse URL parameters for category filtering
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
     if (categoryParam) {

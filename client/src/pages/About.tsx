@@ -1,10 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import type { Page } from "@shared/schema";
 
 export default function About() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data: page, isLoading } = useQuery<Page>({
     queryKey: ["/api/pages/about"],
     queryFn: async () => {

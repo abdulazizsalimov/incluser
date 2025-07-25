@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +14,10 @@ import type { ArticleWithRelations } from "@shared/schema";
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { isPlaying, isPaused, speakText, toggleSpeech, stopSpeech } = useSpeechSynthesis();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   const { data: article, isLoading, error } = useQuery<ArticleWithRelations>({
     queryKey: ["/api/articles", slug],

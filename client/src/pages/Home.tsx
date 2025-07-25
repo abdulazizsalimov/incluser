@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,6 +13,10 @@ import heroPhoto from "@/assets/hero-photo.png";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data: articlesData, isLoading } = useQuery<{
     articles: ArticleWithRelations[];
     totalCount: number;

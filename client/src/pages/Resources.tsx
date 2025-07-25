@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,6 +10,10 @@ export default function Resources() {
   const { data: page, isLoading, error } = useQuery<Page>({
     queryKey: ['/api/pages/resources'],
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
 
 
