@@ -8,9 +8,28 @@ export default function WcagGuides() {
   const [pdfError, setPdfError] = useState(false);
   const [isReading, setIsReading] = useState(false);
   const [speechInstance, setSpeechInstance] = useState<SpeechSynthesisUtterance | null>(null);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   
   useEffect(() => {
     document.title = "Руководство по обеспечению доступности веб-контента (WCAG) 2.1 - Incluser";
+    
+    // Определяем текущую тему
+    const checkTheme = () => {
+      const htmlElement = document.documentElement;
+      setIsDarkTheme(htmlElement.classList.contains('dark'));
+    };
+    
+    // Проверяем при загрузке
+    checkTheme();
+    
+    // Наблюдаем за изменениями темы
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+    
+    return () => observer.disconnect();
   }, []);
 
   // Текст для озвучивания основных разделов WCAG 2.1
@@ -194,10 +213,12 @@ export default function WcagGuides() {
                 <p className="text-xs text-muted-foreground mb-2">
                   Adobe Reader обеспечивает лучшую совместимость с программами чтения с экрана для PDF документов.
                 </p>
-                <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-2 rounded border border-amber-200 dark:border-amber-800">
-                  <strong>Примечание о темной теме:</strong> Содержимое PDF документа отображается в оригинальном светлом дизайне 
-                  из-за технических ограничений браузера. Рамка адаптирована под темную тему сайта.
-                </p>
+                {isDarkTheme && (
+                  <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-2 rounded border border-amber-200 dark:border-amber-800">
+                    <strong>Примечание о темной теме:</strong> Содержимое PDF документа отображается в оригинальном светлом дизайне 
+                    из-за технических ограничений браузера. Рамка адаптирована под темную тему сайта.
+                  </p>
+                )}
               </div>
             </div>
 
