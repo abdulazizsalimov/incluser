@@ -12,6 +12,8 @@ function copyFile(src, dest) {
     
     // Копируем файл
     fs.copyFileSync(src, dest);
+    // Устанавливаем правильные права доступа (644 - читать/писать для владельца, читать для группы и остальных)
+    fs.chmodSync(dest, 0o644);
     console.log(`Copied: ${src} -> ${dest}`);
   } catch (error) {
     console.error(`Error copying ${src}:`, error.message);
