@@ -1,0 +1,60 @@
+salimov@debian:~/incluser$ npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming (4) src/App.tsxBrowserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1962 modules transformed.
+warnings when minifying css:
+▲ [WARNING] Unexpected "*" [css-syntax-error]
+
+    <stdin>:502:81:
+      502 │ ...e header[role="banner"].bg-background.shadow-sm.border-b*.fixed {
+          ╵                                                            ^
+
+
+▲ [WARNING] Unexpected "body" [css-syntax-error]
+
+    <stdin>:523:48:
+      523 │ ...le-mode header[role="banner"]body.shadow-sm.border-b.border-bo...
+          ╵                                 ~~~~
+
+
+▲ [WARNING] Unexpected "header" [css-syntax-error]
+
+    <stdin>:3946:84:
+      3946 │ ...kground[data-state="active"]header[role="banner"].shadow-sm.b...
+           ╵                                ~~~~~~
+
+
+▲ [WARNING] Unexpected "header" [css-syntax-error]
+
+    <stdin>:3963:80:
+      3963 │ ...adow-sm[data-state="active"]header[role="banner"].bg-backgrou...
+           ╵                                ~~~~~~
+
+
+../dist/public/index.html                                                                     2.64 kB │ gzip:   1.14 kB
+../dist/public/assets/hero-photo-DEmQnMKI.png                                             1,175.36 kB
+../dist/public/assets/Slyde1_1751518088264-DTZyu0_l.png                                   1,738.57 kB
+../dist/public/assets/Slyde3_1751518094773-DJd2un0L.png                                   1,858.69 kB
+../dist/public/assets/Slyde2_1751518092093-DNVAUH90.png                                   1,966.05 kB
+../dist/public/assets/ChatGPT Image 30 июн. 2025 г._ 08_27_22_1751254062366-CeZvuFO1.png  2,119.62 kB
+../dist/public/assets/Slyde5_1751518104614-U9Poao8W.png                                   2,128.74 kB
+../dist/public/assets/Slyde4_1751518100860-BIEW-4MP.png                                   2,288.77 kB
+../dist/public/assets/index-V7bqMbma.css                                                    123.27 kB │ gzip:  19.67 kB
+../dist/public/assets/index-C8RvWtAz.js                                                   1,145.25 kB │ gzip: 344.82 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 26.00s
+
+  dist/index.js  75.5kb
+
+⚡ Done in 37ms
+salimov@debian:~/incluser$

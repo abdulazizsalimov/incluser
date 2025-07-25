@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Download, ExternalLink, Volume2, VolumeX } from "lucide-react";
+import wcagPdfUrl from "@assets/wcag-2.1-guide.pdf";
 
 export default function WcagGuides() {
   const [pdfError, setPdfError] = useState(false);
@@ -104,7 +105,8 @@ export default function WcagGuides() {
     }
   };
 
-  const pdfUrl = "/attached_assets/wcag-2.1-guide.pdf";
+  // Используем импорт Vite для правильной обработки PDF файла в любом режиме
+  const pdfUrl = wcagPdfUrl;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
