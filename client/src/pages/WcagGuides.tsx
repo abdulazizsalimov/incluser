@@ -1,410 +1,100 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { Download, ExternalLink } from "lucide-react";
 
 export default function WcagGuides() {
+  const [pdfError, setPdfError] = useState(false);
+  
   useEffect(() => {
     document.title = "Руководство по обеспечению доступности веб-контента (WCAG) 2.1 - Incluser";
   }, []);
+
+  const pdfUrl = "/attached_assets/Руководство по обеспечению доступности веб-контента (WCAG) 2.1 _ Информация для всех_1753427531966.pdf";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
       
       <main className="pt-32 pb-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <article className="prose prose-lg dark:prose-invert max-w-none">
-            <header className="mb-12 text-center">
-              <h1 className="text-4xl font-bold mb-6">
-                Руководство по обеспечению доступности веб-контента (WCAG) 2.1
-              </h1>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Рекомендация W3C от 5 июня 2018 г. - Полный текст руководства на русском языке
-              </p>
-            </header>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <header className="mb-8 text-center">
+            <h1 className="text-4xl font-bold mb-6">
+              Руководство по обеспечению доступности веб-контента (WCAG) 2.1
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
+              Рекомендация W3C от 5 июня 2018 г. - Полный текст руководства на русском языке
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <Button asChild variant="default">
+                <a href={pdfUrl} download>
+                  <Download className="w-4 h-4 mr-2" />
+                  Скачать PDF
+                </a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Открыть в новой вкладке
+                </a>
+              </Button>
+            </div>
+          </header>
 
-            <div className="bg-card p-6 rounded-lg border mb-8">
-              <p className="mb-4 text-sm text-muted-foreground">
+          <div className="bg-card rounded-lg border overflow-hidden">
+            {!pdfError ? (
+              <div className="relative w-full" style={{ height: '80vh' }}>
+                <iframe
+                  src={pdfUrl}
+                  className="w-full h-full border-0"
+                  title="Руководство по обеспечению доступности веб-контента (WCAG) 2.1"
+                  onError={() => setPdfError(true)}
+                />
+              </div>
+            ) : (
+              <div className="p-8 text-center">
+                <h3 className="text-xl font-semibold mb-4">Не удается отобразить PDF</h3>
+                <p className="text-muted-foreground mb-6">
+                  Ваш браузер не поддерживает встроенное отображение PDF файлов.
+                </p>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Button asChild>
+                    <a href={pdfUrl} download>
+                      <Download className="w-4 h-4 mr-2" />
+                      Скачать документ
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <a href={pdfUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Открыть в новой вкладке
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8 bg-card p-6 rounded-lg border">
+            <h2 className="text-2xl font-bold mb-4">О документе</h2>
+            <div className="prose dark:prose-invert max-w-none">
+              <p className="mb-4">
                 Оригинальный нормативный текст Рекомендации Консорциума Всемирной паутины (W3C) на английском языке 
                 Web Content Accessibility Guidelines (WCAG) 2.1 доступен на его сайте. Настоящий перевод выполнен 
-                в инициативном порядке, имеет статус волонтерского (Volunteer Translation) и может содержать ошибки перевода, 
-                в случае обнаружения которых просим связаться с переводчиком.
+                в инициативном порядке, имеет статус волонтерского (Volunteer Translation) и может содержать ошибки перевода.
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="mb-4">
                 <strong>Благодарность за помощь в работе над переводом:</strong> Шади Абу-Захра (Shadi Abou-Zahra), 
                 Майкл Купер (Michael Cooper), Эндрю Киркпатрик (Andrew Kirkpatrick), Николай Башмаков, Татьяна Фокина и dom1n1k.
               </p>
-              <p className="text-sm text-muted-foreground mt-4">
+              <p className="text-sm text-muted-foreground">
                 <strong>Авторские права:</strong> на оригинальный текст © 2017-2018, W3C® (MIT, ERCIM, Keio и Beihang). 
                 Перевод © 2019-2020, Евгений Альтовский (ОД «Информация для всех»).
               </p>
             </div>
-
-            <nav className="bg-card p-6 rounded-lg border mb-8">
-              <h2 className="text-2xl font-bold mb-4">Оглавление</h2>
-              <ul className="space-y-1 text-sm">
-                <li><a href="#summary" className="text-primary hover:underline">Резюме</a></li>
-                <li><a href="#introduction" className="text-primary hover:underline">Введение</a></li>
-                <li className="ml-4"><a href="#background" className="text-primary hover:underline">0.1. Предпосылки WCAG 2</a></li>
-                <li className="ml-4"><a href="#guidance-levels" className="text-primary hover:underline">0.2. Уровни руководства WCAG 2</a></li>
-                <li><a href="#perceivable" className="text-primary hover:underline">1. Воспринимаемость</a></li>
-                <li><a href="#operable" className="text-primary hover:underline">2. Управляемость</a></li>
-                <li><a href="#understandable" className="text-primary hover:underline">3. Понятность</a></li>
-                <li><a href="#robust" className="text-primary hover:underline">4. Устойчивость</a></li>
-                <li><a href="#conformance" className="text-primary hover:underline">5. Соответствие</a></li>
-              </ul>
-            </nav>
-
-            <section id="summary" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">Резюме</h2>
-              <div className="bg-card p-6 rounded-lg border">
-                <p className="mb-4">
-                  Руководство по обеспечению доступности веб-контента (WCAG) 2.1 содержит широкий спектр
-                  рекомендаций по обеспечению большей доступности веб-контента. Следование Руководству позволит
-                  сделать контент более доступным для большего числа людей с различными ограничениями, включая
-                  незрячих и слабовидящих, глухих и слабослышащих, с ограничениями подвижности, нарушениями
-                  речи, светочувствительностью, и их комбинациями, а также пониженной обучаемостью и расстройством
-                  когнитивных функций, но не сможет сделать его доступным для всех людей с перечисленными
-                  ограничениями.
-                </p>
-                <p className="mb-4">
-                  Руководство касается обеспечения доступности веб-контента с помощью стационарных
-                  и мобильных устройств. Зачастую следование Руководству также поможет сделать использование
-                  контента более удобным для всех пользователей.
-                </p>
-                <p className="mb-4">
-                  Критерии успеха в Руководстве представлены в виде утверждений, соответствие которым можно
-                  проверить, и которые не зависят от используемых технологий. Инструкции по выполнению Критериев
-                  успеха с помощью конкретных технологий, а также общая информация по интерпретации этих
-                  критериев, доступна в отдельных документах.
-                </p>
-                <p>
-                  Руководство в редакции 2.1 продолжает и расширяет редакцию 2.0, опубликованную в статусе
-                  Рекомендации W3C в декабре 2008 г. Контент, соответствующий WCAG 2.1, также соответствует WCAG
-                  2.0, а для политик, требующих соответствия редакции 2.0, редакция 2.1 предоставляет альтернативные
-                  способы достижения соответствия.
-                </p>
-              </div>
-            </section>
-
-            <section id="introduction" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">Введение</h2>
-              
-              <div id="background" className="mb-8">
-                <h3 className="text-2xl font-semibold mb-4">0.1. Предпосылки WCAG 2</h3>
-                <div className="bg-card p-6 rounded-lg border">
-                  <p className="mb-4">
-                    Руководство по обеспечению доступности веб-контента (WCAG) 2.1 описывает, как сделать веб-контент
-                    более доступным для людей с ограничениями. Обеспечение доступности касается широкого спектра
-                    ограничений, включая зрительные, слуховые, физические, речевые, когнитивные, языковые,
-                    образовательные и неврологические.
-                  </p>
-                  <p className="mb-4">
-                    Хотя Руководство и помогает в решении многих проблем с
-                    доступностью, оно не может удовлетворить потребности людей со всеми типами, степенями и
-                    комбинациями ограничений. Руководство также делает веб-контент более доступным для пожилых
-                    людей с изменившимися в силу возраста возможностями и для пользователей в целом.
-                  </p>
-                  <p>
-                    Руководство разработано в соответствии с процедурами W3C в сотрудничестве с людьми и
-                    организациями со всего мира, имеющими целью создание общего стандарта по доступности веб-
-                    контента, отвечающего потребностям людей, организаций и правительств в международном масштабе.
-                  </p>
-                </div>
-              </div>
-
-              <div id="guidance-levels" className="mb-8">
-                <h3 className="text-2xl font-semibold mb-4">0.2. Уровни руководства WCAG 2</h3>
-                <div className="bg-card p-6 rounded-lg border">
-                  <p className="mb-4">
-                    Среди пользователей Руководства – веб-дизайнеры, разработчики, руководящие работники, агенты по
-                    закупкам, учителя и студенты. Чтобы удовлетворить разнообразные потребности этих людей,
-                    предлагается несколько уровней руководства, включая общие принципы, основные директивы,
-                    проверяемые критерии успеха и большой набор достаточных и рекомендуемых техник, советов,
-                    примеров типичных ошибок, ссылок и кода.
-                  </p>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-lg font-semibold mb-2">Принципы</h4>
-                      <p>
-                        Во главе – четыре принципа, закладывающих фундамент веб-доступности:
-                        воспринимаемость, управляемость, понятность и устойчивость.
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-lg font-semibold mb-2">Директивы</h4>
-                      <p>
-                        Идущие следом за принципами, тринадцать директив обозначают базовые задачи,
-                        которые следует решить авторам, чтобы сделать контент более доступным для пользователей с
-                        ограничениями.
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-lg font-semibold mb-2">Критерии успеха</h4>
-                      <p>
-                        Для каждой директивы существуют критерии успеха, соответствие которым
-                        может быть проверено, что требуется, например, при разработке спецификаций, закупках,
-                        регуляторной деятельности или заключении контрактов. Чтобы удовлетворить потребности
-                        разных групп в разных ситуациях, определены три уровня соответствия: A (нижний), AA и AAA
-                        (верхний).
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-lg font-semibold mb-2">Достаточные и рекомендуемые техники</h4>
-                      <p>
-                        Для каждой директивы и критерия успеха Рабочая
-                        группа предлагает широкий выбор подходящих техник. Описание техник является
-                        информативным разделом, а сами они делятся на две категории: те, которых достаточно для
-                        достижения критериев успеха, и те, что рекомендуются как превосходящие их.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section id="perceivable" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">1. Воспринимаемость</h2>
-              <p className="text-lg mb-6 text-muted-foreground">
-                Информация и компоненты интерфейса пользователя должны быть представлены пользователям в
-                форме, которая будет им доступна для восприятия.
-              </p>
-
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 1.1. Текстовые альтернативы</h3>
-                  <p className="mb-4">
-                    Предоставьте текстовые альтернативы любому нетекстовому контенту, которые пользователи смогут
-                    преобразовать в удобную им форму – в крупный или брайлевский шрифт, речь, символы или
-                    упрощенный язык.
-                  </p>
-                  
-                  <div className="bg-card p-6 rounded-lg border">
-                    <h4 className="text-lg font-semibold mb-3">Критерий успеха 1.1.1. Нетекстовой контент (Уровень А)</h4>
-                    <p className="mb-4">
-                      Весь представляемый пользователю нетекстовой контент сопровождается равноценной текстовой
-                      альтернативой, кроме нижеперечисленных случаев:
-                    </p>
-                    <ul className="list-disc list-inside space-y-2 text-sm">
-                      <li><strong>Элементы управления или ввода данных:</strong> если нетекстовой контент является элементом
-                        управления или предназначен для ввода данных пользователем, он снабжен именем,
-                        описывающим его назначение.</li>
-                      <li><strong>Динамичный медиа-контент:</strong> если нетекстовой контент является динамичным медиа-контентом,
-                        то текстовая альтернатива как минимум описывает его.</li>
-                      <li><strong>Тест:</strong> если нетекстовой контент является тестом или упражнением и теряет смысл в текстовом
-                        виде, то текстовая альтернатива как минимум описывает его.</li>
-                      <li><strong>Капча:</strong> если назначение нетекстового контента – различение людей и компьютеров,
-                        предоставляются текстовая альтернатива, описывающая нетекстовой контент, а также
-                        альтернативные формы капчи.</li>
-                      <li><strong>Декоративные элементы:</strong> если нетекстовой контент
-                        исключительно декоративный, предназначен только для форматирования или не представляется
-                        пользователям, он применяется способом, позволяющим ассистивным технологиям игнорировать
-                        его.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 1.4. Различимость</h3>
-                  <p className="mb-4">
-                    Сделайте так, чтобы пользователям было легко видеть и слышать контент, в том числе, разделите
-                    передний план и фон.
-                  </p>
-                  
-                  <div className="space-y-4">
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="text-lg font-semibold mb-3">Критерий успеха 1.4.3. Контраст (минимальный) (Уровень АА)</h4>
-                      <p className="mb-3">
-                        Визуальное представление текста и изображений текста имеют контрастность не менее 4,5:1, кроме
-                        следующих случаев:
-                      </p>
-                      <ul className="list-disc list-inside space-y-2 text-sm">
-                        <li><strong>Крупный текст:</strong> крупный текст и изображения крупного текста имеют контрастность не менее 3:1</li>
-                        <li><strong>Второстепенные объекты:</strong> текст и изображения текста, являющиеся частью неактивных
-                          компонентов интерфейса пользователя, использующиеся исключительно в декоративных целях,
-                          невидимые пользователю или являющиеся частью изображения, могут не соответствовать этому критерию</li>
-                        <li><strong>Логотипы:</strong> текст, являющийся частью эмблемы или фирменного наименования, может не
-                          соответствовать этому критерию</li>
-                      </ul>
-                    </div>
-
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="text-lg font-semibold mb-3">Критерий успеха 1.4.10. Переформатирование (Уровень АА)</h4>
-                      <p>
-                        Контент может быть представлен без ущерба для содержания или функциональности и без
-                        необходимости прокручивания в двух направлениях при ширине 320 CSS-пикселей и высоте 256 CSS-пикселей,
-                        за исключением частей контента, которые требуют двумерной разметки для использования или смысла.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section id="operable" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">2. Управляемость</h2>
-              <p className="text-lg mb-6 text-muted-foreground">
-                Компоненты интерфейса пользователя и навигация должны быть управляемыми.
-              </p>
-
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 2.1. Доступность с клавиатуры</h3>
-                  <p className="mb-4">Обеспечьте доступность всей функциональности с клавиатуры.</p>
-                  
-                  <div className="bg-card p-6 rounded-lg border">
-                    <h4 className="text-lg font-semibold mb-3">Критерий успеха 2.1.1. Клавиатура (Уровень А)</h4>
-                    <p>
-                      Вся функциональность контента доступна с клавиатуры, не требуя конкретного времени 
-                      для отдельных нажатий клавиш, кроме случаев, когда основная функция требует ввода, 
-                      который зависит от пути движения пользователя, а не только от конечных точек.
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 2.4. Навигация</h3>
-                  <p className="mb-4">Предоставьте способы помочь пользователям навигировать, находить контент и определять, где они находятся.</p>
-                  
-                  <div className="space-y-4">
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="text-lg font-semibold mb-3">Критерий успеха 2.4.1. Обход блоков (Уровень А)</h4>
-                      <p>
-                        Доступен механизм для обхода блоков контента, которые повторяются на нескольких веб-страницах.
-                      </p>
-                    </div>
-
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="text-lg font-semibold mb-3">Критерий успеха 2.4.2. Заголовки страниц (Уровень А)</h4>
-                      <p>
-                        Веб-страницы имеют заголовки, которые описывают тему или цель.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section id="understandable" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">3. Понятность</h2>
-              <p className="text-lg mb-6 text-muted-foreground">
-                Информация и работа пользовательского интерфейса должны быть понятными.
-              </p>
-
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 3.1. Читаемость</h3>
-                  <p className="mb-4">Сделайте текстовый контент читаемым и понятным.</p>
-                  
-                  <div className="bg-card p-6 rounded-lg border">
-                    <h4 className="text-lg font-semibold mb-3">Критерий успеха 3.1.1. Язык страницы (Уровень А)</h4>
-                    <p>
-                      Основной человеческий язык каждой веб-страницы может быть определен программно.
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 3.3. Помощь при вводе</h3>
-                  <p className="mb-4">Помогите пользователям избежать и исправить ошибки.</p>
-                  
-                  <div className="bg-card p-6 rounded-lg border">
-                    <h4 className="text-lg font-semibold mb-3">Критерий успеха 3.3.1. Идентификация ошибки (Уровень А)</h4>
-                    <p>
-                      Если ошибка ввода обнаружена автоматически, элемент с ошибкой 
-                      идентифицируется и ошибка описывается пользователю в тексте.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section id="robust" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">4. Устойчивость</h2>
-              <p className="text-lg mb-6 text-muted-foreground">
-                Контент должен быть достаточно устойчивым, чтобы его могли интерпретировать 
-                самые разнообразные пользовательские агенты, включая вспомогательные технологии.
-              </p>
-
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-2xl font-semibold mb-4">Директива 4.1. Совместимость</h3>
-                  <p className="mb-4">Максимизируйте совместимость с текущими и будущими вспомогательными технологиями.</p>
-                  
-                  <div className="space-y-4">
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="text-lg font-semibold mb-3">Критерий успеха 4.1.2. Имя, роль, значение (Уровень А)</h4>
-                      <p>
-                        Для всех компонентов пользовательского интерфейса (включая, но не ограничиваясь: 
-                        элементы формы, ссылки и компоненты, созданные скриптами), имя и роль могут быть 
-                        определены программно; состояния, свойства и значения, которые могут быть 
-                        установлены пользователем, могут быть установлены программно.
-                      </p>
-                    </div>
-
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="text-lg font-semibold mb-3">Критерий успеха 4.1.3. Сообщения о статусе (Уровень АА)</h4>
-                      <p>
-                        В контенте, реализованном с использованием языков разметки, 
-                        сообщения о статусе могут быть определены программно через роль или свойства 
-                        таким образом, чтобы они могли быть представлены пользователю 
-                        вспомогательными технологиями без получения фокуса.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section id="conformance" className="mb-12">
-              <h2 className="text-3xl font-bold mb-6">5. Соответствие</h2>
-              <div className="bg-card p-6 rounded-lg border">
-                <p className="mb-4">
-                  Для достижения соответствия WCAG 2.1, веб-страница должна удовлетворять 
-                  всем следующим требованиям соответствия:
-                </p>
-                
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">5.2.1. Уровень соответствия</h4>
-                    <p className="text-sm">
-                      Один из следующих уровней соответствия удовлетворяется полностью:
-                    </p>
-                    <ul className="list-disc list-inside space-y-1 text-sm mt-2 ml-4">
-                      <li><strong>Уровень A:</strong> Веб-страница удовлетворяет всем Критериям успеха Уровня A</li>
-                      <li><strong>Уровень AA:</strong> Веб-страница удовлетворяет всем Критериям успеха Уровня A и Уровня AA</li>
-                      <li><strong>Уровень AAA:</strong> Веб-страница удовлетворяет всем Критериям успеха Уровня A, Уровня AA и Уровня AAA</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-lg font-semibold mb-2">5.2.2. Страницы целиком</h4>
-                    <p className="text-sm">
-                      Соответствие (и уровень соответствия) относится только к целым веб-страницам 
-                      и не может быть достигнуто, если часть веб-страницы исключена.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <div className="text-center py-8 text-muted-foreground border-t">
-              <p className="mb-2 font-semibold">Полный текст руководства WCAG 2.1 на русском языке</p>
-              <p className="text-sm">
-                Оригинальный нормативный текст Рекомендации Консорциума Всемирной паутины (W3C) на английском языке 
-                Web Content Accessibility Guidelines (WCAG) 2.1 доступен на его сайте.
-              </p>
-              <p className="text-sm text-muted-foreground mt-4">
-                <strong>Рекомендация W3C от 5 июня 2018 г.</strong><br />
-                Авторские права на оригинальный текст © 2017-2018, W3C® (MIT, ERCIM, Keio и Beihang).<br />
-                Перевод © 2019-2020, Евгений Альтовский (ОД «Информация для всех»).
-              </p>
-            </div>
-          </article>
+          </div>
         </div>
       </main>
       

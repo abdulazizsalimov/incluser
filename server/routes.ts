@@ -53,6 +53,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded images
   app.use('/uploads', express.static('uploads'));
+  
+  // Serve attached assets (PDF files, etc.)
+  app.use('/attached_assets', express.static('attached_assets'));
 
   // Image upload endpoint
   app.post('/api/admin/upload-image', isAdmin, upload.single('image'), (req, res) => {
