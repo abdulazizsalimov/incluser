@@ -30,7 +30,8 @@ export default function Footer() {
             
             {/* Accessibility Statement */}
             <div className="mb-6">
-              <p className="text-slate-300 mb-4">
+              <h4 className="text-lg font-semibold mb-4 text-white">Доступность</h4>
+              <p className="text-slate-400 mb-4">
                 Мы стараемся сделать сайт максимально удобным для пользователей экранных дикторов, устройств с клавиатурной навигацией и мобильных пользователей. Если вы столкнулись с проблемой — сообщите нам.
               </p>
               <Link 
