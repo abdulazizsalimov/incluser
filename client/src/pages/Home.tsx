@@ -200,53 +200,101 @@ export default function Home() {
         {/* Accessibility Features Banner with Rotating Slides */}
         <AccessibilityFeaturesSlider />
 
-        {/* Digital Accessibility Info Section */}
-        <section className="bg-muted py-16" aria-labelledby="accessibility-info">
+        {/* Popular Sections Navigation */}
+        <section className="bg-muted py-16" aria-labelledby="popular-sections">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center">
-              <h2 id="accessibility-info" className="text-3xl font-bold text-foreground mb-8">
-                Что такое цифровая доступность?
+              <h2 id="popular-sections" className="text-3xl font-bold text-foreground mb-8">
+                Популярные разделы
               </h2>
+              <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
+                Быстрый доступ к ключевым материалам по цифровой доступности
+              </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <div className="bg-card p-6 rounded-lg shadow-sm">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                    </svg>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+                {/* WCAG Guides */}
+                <Link 
+                  href="#" 
+                  className="group bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Руководства WCAG"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Книги">📚</div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Руководства WCAG
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Подробные руководства по стандартам веб-доступности и их практическому применению
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">Для всех пользователей</h3>
-                  <p className="text-muted-foreground">
-                    Доступность означает, что веб-сайты и приложения могут использовать люди 
-                    с различными способностями и ограничениями.
-                  </p>
-                </div>
+                </Link>
 
-                <div className="bg-card p-6 rounded-lg shadow-sm">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
-                    </svg>
+                {/* Testing Tools */}
+                <Link 
+                  href="#" 
+                  className="group bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Инструменты тестирования"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Пробирка">🧪</div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Инструменты тестирования
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Обзор лучших инструментов для автоматической и ручной проверки доступности
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">Стандарты WCAG</h3>
-                  <p className="text-muted-foreground">
-                    Следование международным стандартам WCAG обеспечивает 
-                    высокое качество и доступность цифровых продуктов.
-                  </p>
-                </div>
+                </Link>
 
-                <div className="bg-card p-6 rounded-lg shadow-sm">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A2.006 2.006 0 0 0 18.06 7c-.8 0-1.54.5-1.85 1.26l-1.92 5.75c-.16.48-.21 1.03-.12 1.58L15.49 19H12l-.53-4H9.41l.59 4.5c.1.75.69 1.33 1.45 1.5H20v-1h-1.5l.5-4z"/>
-                    </svg>
+                {/* Best Practices */}
+                <Link 
+                  href="#" 
+                  className="group bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Лучшие практики"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Лампочка">💡</div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Лучшие практики
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Проверенные решения и подходы к созданию доступных интерфейсов
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-3">Социальная ответственность</h3>
-                  <p className="text-muted-foreground">
-                    Создание инклюзивных решений — это вопрос социальной ответственности 
-                    и равных возможностей в цифровом мире.
-                  </p>
-                </div>
+                </Link>
+
+                {/* Training & Webinars */}
+                <Link 
+                  href="#" 
+                  className="group bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Обучение и вебинары"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 text-4xl" role="img" aria-label="Преподаватель">🧑‍🏫</div>
+                    <div className="text-left">
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Обучение и вебинары
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Образовательные материалы, курсы и записи вебинаров по цифровой доступности
+                      </p>
+                    </div>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>
