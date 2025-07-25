@@ -97,16 +97,32 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-700 mt-8 pt-8 text-center">
-          <p className="text-slate-400">
-            © {currentYear} Incluser. Все права защищены.{" "}
-            <a
-              href="#"
-              className="text-cyan-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+        <div className="border-t border-slate-700 mt-8 pt-8">
+          {/* Accessibility Statement */}
+          <div className="text-center mb-6">
+            <p className="text-slate-300 mb-4 max-w-4xl mx-auto">
+              Мы стараемся сделать сайт максимально удобным для пользователей экранных дикторов, устройств с клавиатурной навигацией и мобильных пользователей. Если вы столкнулись с проблемой — сообщите нам.
+            </p>
+            <Link 
+              href="/contact"
+              className="inline-flex items-center px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
-              Политика конфиденциальности
-            </a>
-          </p>
+              Обратная связь
+            </Link>
+          </div>
+          
+          {/* Copyright */}
+          <div className="text-center">
+            <p className="text-slate-400">
+              © {currentYear} Incluser. Все права защищены.{" "}
+              <a
+                href="#"
+                className="text-cyan-400 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded"
+              >
+                Политика конфиденциальности
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
