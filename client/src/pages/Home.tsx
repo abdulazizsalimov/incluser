@@ -211,86 +211,110 @@ export default function Home() {
                 Быстрый доступ к ключевым материалам по цифровой доступности
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12" role="list">
                 {/* WCAG Guides */}
-                <div className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600">
+                <article 
+                  className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="listitem"
+                  aria-labelledby="wcag-guides-title"
+                  aria-describedby="wcag-guides-desc"
+                >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 text-4xl" role="img" aria-label="Книги">📚</div>
                     <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 id="wcag-guides-title" className="text-xl font-semibold mb-2">
                         <Link 
                           href="#" 
                           className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          aria-describedby="wcag-guides-desc"
                         >
                           Руководства WCAG
                         </Link>
                       </h3>
-                      <p className="text-muted-foreground">
+                      <p id="wcag-guides-desc" className="text-muted-foreground">
                         Подробные руководства по стандартам веб-доступности и их практическому применению
                       </p>
                     </div>
                   </div>
-                </div>
+                </article>
 
                 {/* Testing Tools */}
-                <div className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600">
+                <article 
+                  className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="listitem"
+                  aria-labelledby="testing-tools-title"
+                  aria-describedby="testing-tools-desc"
+                >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 text-4xl" role="img" aria-label="Пробирка">🧪</div>
                     <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 id="testing-tools-title" className="text-xl font-semibold mb-2">
                         <Link 
                           href="#" 
                           className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          aria-describedby="testing-tools-desc"
                         >
                           Инструменты тестирования
                         </Link>
                       </h3>
-                      <p className="text-muted-foreground">
+                      <p id="testing-tools-desc" className="text-muted-foreground">
                         Обзор лучших инструментов для автоматической и ручной проверки доступности
                       </p>
                     </div>
                   </div>
-                </div>
+                </article>
 
                 {/* Best Practices */}
-                <div className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600">
+                <article 
+                  className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="listitem"
+                  aria-labelledby="best-practices-title"
+                  aria-describedby="best-practices-desc"
+                >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 text-4xl" role="img" aria-label="Лампочка">💡</div>
                     <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 id="best-practices-title" className="text-xl font-semibold mb-2">
                         <Link 
                           href="#" 
                           className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          aria-describedby="best-practices-desc"
                         >
                           Лучшие практики
                         </Link>
                       </h3>
-                      <p className="text-muted-foreground">
+                      <p id="best-practices-desc" className="text-muted-foreground">
                         Проверенные решения и подходы к созданию доступных интерфейсов
                       </p>
                     </div>
                   </div>
-                </div>
+                </article>
 
                 {/* Training & Webinars */}
-                <div className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600">
+                <article 
+                  className="bg-card p-8 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 border-transparent hover:border-blue-300 dark:hover:border-blue-600"
+                  role="listitem"
+                  aria-labelledby="training-title"
+                  aria-describedby="training-desc"
+                >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0 text-4xl" role="img" aria-label="Преподаватель">🧑‍🏫</div>
                     <div className="text-left">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 id="training-title" className="text-xl font-semibold mb-2">
                         <Link 
                           href="#" 
                           className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          aria-describedby="training-desc"
                         >
                           Обучение и вебинары
                         </Link>
                       </h3>
-                      <p className="text-muted-foreground">
+                      <p id="training-desc" className="text-muted-foreground">
                         Образовательные материалы, курсы и записи вебинаров по цифровой доступности
                       </p>
                     </div>
                   </div>
-                </div>
+                </article>
               </div>
             </div>
           </div>
