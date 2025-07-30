@@ -166,6 +166,11 @@ export default function Programs() {
     window.scrollTo(0, 0);
   }, [categorySlug]);
 
+  // Scroll to top when page or search changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage, search]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
