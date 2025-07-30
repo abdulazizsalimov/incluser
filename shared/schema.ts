@@ -88,6 +88,36 @@ export const contactMessages = pgTable("contact_messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Program categories table
+export const programCategories = pgTable("program_categories", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  slug: varchar("slug", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Programs table (for software and apps)
+export const programs = pgTable("programs", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 200 }).notNull(),
+  slug: varchar("slug", { length: 200 }).notNull().unique(),
+  description: text("description").notNull(),
+  logo: varchar("logo"), // Logo/screenshot image path
+  developer: varchar("developer", { length: 200 }),
+  officialWebsite: varchar("official_website"),
+  releaseYear: integer("release_year"),
+  license: varchar("license", { length: 100 }),
+  platforms: text("platforms").array(), // Array of platforms
+  downloadUrl: varchar("download_url"),
+  googlePlayUrl: varchar("google_play_url"),
+  appStoreUrl: varchar("app_store_url"),
+  isPublished: boolean("is_published").default(false),
+  categoryId: integer("category_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   articles: many(articles),
@@ -105,6 +135,17 @@ export const articlesRelations = relations(articles, ({ one }) => ({
   category: one(categories, {
     fields: [articles.categoryId],
     references: [categories.id],
+  }),
+}));
+
+export const programCategoriesRelations = relations(programCategories, ({ many }) => ({
+  programs: many(programs),
+}));
+
+export const programsRelations = relations(programs, ({ one }) => ({
+  category: one(programCategories, {
+    fields: [programs.categoryId],
+    references: [programCategories.id],
   }),
 }));
 
@@ -131,6 +172,15 @@ export const insertContactMessageSchema = createInsertSchema(contactMessages).om
   id: true,
   isRead: true,
   createdAt: true,
+});
+export const insertProgramCategorySchema = createInsertSchema(programCategories).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertProgramSchema = createInsertSchema(programs).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 // Login schema
@@ -166,3 +216,10 @@ export type InsertPage = z.infer<typeof insertPageSchema>;
 export type Page = typeof pages.$inferSelect;
 export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
 export type ContactMessage = typeof contactMessages.$inferSelect;
+export type InsertProgramCategory = z.infer<typeof insertProgramCategorySchema>;
+export type ProgramCategory = typeof programCategories.$inferSelect;
+export type InsertProgram = z.infer<typeof insertProgramSchema>;
+export type Program = typeof programs.$inferSelect;
+export type ProgramWithRelations = Program & {
+  category: ProgramCategory | null;
+};

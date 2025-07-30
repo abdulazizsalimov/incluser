@@ -314,14 +314,14 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="/articles?category=screen-readers" 
+                            href="/programs/screen-readers" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Программы экранного доступа
                           </Link>
                         </h3>
                         <p className="text-muted-foreground mb-4">
-                          Обзор популярных скринридеров: NVDA, JAWS, VoiceOver и советы по их использованию
+                          Обзор популярных скринридеров: NVDA, JAWS, VoiceOver и руководства по их использованию
                         </p>
                       </div>
                     </div>
@@ -336,14 +336,14 @@ export default function Home() {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold mb-3">
                           <Link 
-                            href="/articles?category=mobile-apps" 
+                            href="/programs/mobile-apps" 
                             className="text-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-accent rounded transition-colors"
                           >
                             Мобильные приложения
                           </Link>
                         </h3>
                         <p className="text-muted-foreground mb-4">
-                          Приложения для мобильных устройств, направленные на обеспечение доступности и инклюзивности
+                          Доступные мобильные приложения для iOS и Android, облегчающие повседневные задачи
                         </p>
                       </div>
                     </div>

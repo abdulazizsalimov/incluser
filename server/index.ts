@@ -4,6 +4,8 @@ import { setupVite, serveStatic, log } from "./vite";
 import { seedPages } from "./seed-pages";
 import { seedAdmin } from "./seed-admin";
 import { seedInitialData } from "./seed-initial-data";
+import { seedProgramCategories } from "./seed-program-categories";
+import { seedPrograms } from "./seed-programs";
 
 const app = express();
 app.use(express.json());
@@ -46,6 +48,8 @@ app.use((req, res, next) => {
   await seedPages();
   await seedAdmin();
   await seedInitialData();
+  await seedProgramCategories();
+  await seedPrograms();
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

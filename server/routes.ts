@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { insertArticleSchema, insertCategorySchema, insertPageSchema, insertContactMessageSchema } from "@shared/schema";
+import { insertArticleSchema, insertCategorySchema, insertPageSchema, insertContactMessageSchema, insertProgramSchema, insertProgramCategorySchema } from "@shared/schema";
 import { z } from "zod";
 
 // Configure multer for file uploads
@@ -741,6 +741,223 @@ ${articles.map(article => {
     } catch (error) {
       console.error("Error updating about page:", error);
       res.status(500).json({ message: "Failed to update about page" });
+    }
+  });
+
+  // Program category routes
+  app.get('/api/program-categories', async (req, res) => {
+    try {
+      const categories = await storage.getProgramCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching program categories:", error);
+      res.status(500).json({ message: "Failed to fetch program categories" });
+    }
+  });
+
+  app.get('/api/program-categories/:slug', async (req, res) => {
+    try {
+      const category = await storage.getProgramCategoryBySlug(req.params.slug);
+      if (!category) {
+        return res.status(404).json({ message: "Program category not found" });
+      }
+      res.json(category);
+    } catch (error) {
+      console.error("Error fetching program category:", error);
+      res.status(500).json({ message: "Failed to fetch program category" });
+    }
+  });
+
+  // Admin program category management
+  app.get('/api/admin/program-categories', isAdmin, async (req, res) => {
+    try {
+      const categories = await storage.getProgramCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching program categories:", error);
+      res.status(500).json({ message: "Failed to fetch program categories" });
+    }
+  });
+
+  app.post('/api/admin/program-categories', isAdmin, async (req, res) => {
+    try {
+      const validatedData = insertProgramCategorySchema.parse(req.body);
+      const category = await storage.createProgramCategory(validatedData);
+      res.status(201).json(category);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error creating program category:", error);
+      res.status(500).json({ message: "Failed to create program category" });
+    }
+  });
+
+  app.put('/api/admin/program-categories/:id', isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertProgramCategorySchema.partial().parse(req.body);
+      
+      const category = await storage.updateProgramCategory(id, validatedData);
+      res.json(category);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error updating program category:", error);
+      res.status(500).json({ message: "Failed to update program category" });
+    }
+  });
+
+  app.delete('/api/admin/program-categories/:id', isAdmin, async (req, res) => {
+    try {
+      await storage.deleteProgramCategory(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting program category:", error);
+      res.status(500).json({ message: "Failed to delete program category" });
+    }
+  });
+
+  // Program routes
+  app.get('/api/programs', async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const search = req.query.search as string;
+      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
+      const offset = (page - 1) * limit;
+
+      const programs = await storage.getPrograms({
+        published: true,
+        limit,
+        offset,
+        search,
+        categoryId
+      });
+
+      const total = await storage.getProgramsCount({
+        published: true,
+        search,
+        categoryId
+      });
+
+      res.json({
+        programs,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit)
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+      res.status(500).json({ message: "Failed to fetch programs" });
+    }
+  });
+
+  app.get('/api/programs/:slug', async (req, res) => {
+    try {
+      const program = await storage.getProgramBySlug(req.params.slug);
+      if (!program) {
+        return res.status(404).json({ message: "Program not found" });
+      }
+      res.json(program);
+    } catch (error) {
+      console.error("Error fetching program:", error);
+      res.status(500).json({ message: "Failed to fetch program" });
+    }
+  });
+
+  // Admin program management
+  app.get('/api/admin/programs', isAdmin, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const search = req.query.search as string;
+      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
+      const offset = (page - 1) * limit;
+
+      const programs = await storage.getPrograms({
+        published: undefined, // Show all programs for admin
+        limit,
+        offset,
+        search,
+        categoryId
+      });
+
+      const total = await storage.getProgramsCount({
+        published: undefined,
+        search,
+        categoryId
+      });
+
+      res.json({
+        programs,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit)
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+      res.status(500).json({ message: "Failed to fetch programs" });
+    }
+  });
+
+  app.get('/api/admin/programs/:id', isAdmin, async (req, res) => {
+    try {
+      const program = await storage.getProgramById(parseInt(req.params.id));
+      if (!program) {
+        return res.status(404).json({ message: "Program not found" });
+      }
+      res.json(program);
+    } catch (error) {
+      console.error("Error fetching program:", error);
+      res.status(500).json({ message: "Failed to fetch program" });
+    }
+  });
+
+  app.post('/api/admin/programs', isAdmin, async (req, res) => {
+    try {
+      const validatedData = insertProgramSchema.parse(req.body);
+      const program = await storage.createProgram(validatedData);
+      res.status(201).json(program);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error creating program:", error);
+      res.status(500).json({ message: "Failed to create program" });
+    }
+  });
+
+  app.put('/api/admin/programs/:id', isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertProgramSchema.partial().parse(req.body);
+      
+      const program = await storage.updateProgram(id, validatedData);
+      res.json(program);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error updating program:", error);
+      res.status(500).json({ message: "Failed to update program" });
+    }
+  });
+
+  app.delete('/api/admin/programs/:id', isAdmin, async (req, res) => {
+    try {
+      await storage.deleteProgram(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting program:", error);
+      res.status(500).json({ message: "Failed to delete program" });
     }
   });
 

@@ -4,6 +4,8 @@ import {
   categories,
   pages,
   contactMessages,
+  programs,
+  programCategories,
   type User,
   type InsertUser,
   type LoginData,
@@ -17,6 +19,11 @@ import {
   type InsertPage,
   type ContactMessage,
   type InsertContactMessage,
+  type Program,
+  type InsertProgram,
+  type ProgramWithRelations,
+  type ProgramCategory,
+  type InsertProgramCategory,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, like, count, or, ilike } from "drizzle-orm";
@@ -62,6 +69,28 @@ export interface IStorage {
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
   markMessageAsRead(id: number): Promise<ContactMessage>;
   deleteContactMessage(id: number): Promise<void>;
+
+  // Program category operations
+  getProgramCategories(): Promise<ProgramCategory[]>;
+  getProgramCategoryBySlug(slug: string): Promise<ProgramCategory | undefined>;
+  createProgramCategory(category: InsertProgramCategory): Promise<ProgramCategory>;
+  updateProgramCategory(id: number, category: Partial<InsertProgramCategory>): Promise<ProgramCategory>;
+  deleteProgramCategory(id: number): Promise<void>;
+
+  // Program operations
+  getPrograms(options?: {
+    published?: boolean;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    categoryId?: number;
+  }): Promise<ProgramWithRelations[]>;
+  getProgramBySlug(slug: string): Promise<ProgramWithRelations | undefined>;
+  getProgramById(id: number): Promise<ProgramWithRelations | undefined>;
+  createProgram(program: InsertProgram): Promise<Program>;
+  updateProgram(id: number, program: Partial<InsertProgram>): Promise<Program>;
+  deleteProgram(id: number): Promise<void>;
+  getProgramsCount(options?: { published?: boolean; search?: string; categoryId?: number }): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -302,6 +331,199 @@ export class DatabaseStorage implements IStorage {
 
   async deleteContactMessage(id: number): Promise<void> {
     await db.delete(contactMessages).where(eq(contactMessages.id, id));
+  }
+
+  // Program category operations
+  async getProgramCategories(): Promise<ProgramCategory[]> {
+    return await db.select().from(programCategories).orderBy(programCategories.name);
+  }
+
+  async getProgramCategoryBySlug(slug: string): Promise<ProgramCategory | undefined> {
+    const [category] = await db.select().from(programCategories).where(eq(programCategories.slug, slug));
+    return category;
+  }
+
+  async createProgramCategory(categoryData: InsertProgramCategory): Promise<ProgramCategory> {
+    const [category] = await db.insert(programCategories).values(categoryData).returning();
+    return category;
+  }
+
+  async updateProgramCategory(id: number, categoryData: Partial<InsertProgramCategory>): Promise<ProgramCategory> {
+    const [updatedCategory] = await db
+      .update(programCategories)
+      .set(categoryData)
+      .where(eq(programCategories.id, id))
+      .returning();
+    return updatedCategory;
+  }
+
+  async deleteProgramCategory(id: number): Promise<void> {
+    await db.delete(programCategories).where(eq(programCategories.id, id));
+  }
+
+  // Program operations
+  async getPrograms(options: {
+    published?: boolean;
+    limit?: number;
+    offset?: number;
+    search?: string;
+    categoryId?: number;
+  } = {}): Promise<ProgramWithRelations[]> {
+    const { published = true, limit = 20, offset = 0, search, categoryId } = options;
+
+    let query = db
+      .select({
+        id: programs.id,
+        title: programs.title,
+        slug: programs.slug,
+        description: programs.description,
+        logo: programs.logo,
+        developer: programs.developer,
+        officialWebsite: programs.officialWebsite,
+        releaseYear: programs.releaseYear,
+        license: programs.license,
+        platforms: programs.platforms,
+        downloadUrl: programs.downloadUrl,
+        googlePlayUrl: programs.googlePlayUrl,
+        appStoreUrl: programs.appStoreUrl,
+        isPublished: programs.isPublished,
+        categoryId: programs.categoryId,
+        createdAt: programs.createdAt,
+        updatedAt: programs.updatedAt,
+        category: programCategories,
+      })
+      .from(programs)
+      .leftJoin(programCategories, eq(programs.categoryId, programCategories.id));
+
+    const whereConditions = [];
+    if (published !== undefined) {
+      whereConditions.push(eq(programs.isPublished, published));
+    }
+    if (search) {
+      whereConditions.push(
+        or(
+          ilike(programs.title, `%${search}%`),
+          ilike(programs.description, `%${search}%`),
+          ilike(programs.developer, `%${search}%`)
+        )
+      );
+    }
+    if (categoryId) {
+      whereConditions.push(eq(programs.categoryId, categoryId));
+    }
+
+    if (whereConditions.length > 0) {
+      query = query.where(and(...whereConditions));
+    }
+
+    return await query
+      .orderBy(desc(programs.createdAt))
+      .limit(limit)
+      .offset(offset);
+  }
+
+  async getProgramBySlug(slug: string): Promise<ProgramWithRelations | undefined> {
+    const [program] = await db
+      .select({
+        id: programs.id,
+        title: programs.title,
+        slug: programs.slug,
+        description: programs.description,
+        logo: programs.logo,
+        developer: programs.developer,
+        officialWebsite: programs.officialWebsite,
+        releaseYear: programs.releaseYear,
+        license: programs.license,
+        platforms: programs.platforms,
+        downloadUrl: programs.downloadUrl,
+        googlePlayUrl: programs.googlePlayUrl,
+        appStoreUrl: programs.appStoreUrl,
+        isPublished: programs.isPublished,
+        categoryId: programs.categoryId,
+        createdAt: programs.createdAt,
+        updatedAt: programs.updatedAt,
+        category: programCategories,
+      })
+      .from(programs)
+      .leftJoin(programCategories, eq(programs.categoryId, programCategories.id))
+      .where(eq(programs.slug, slug));
+    return program;
+  }
+
+  async getProgramById(id: number): Promise<ProgramWithRelations | undefined> {
+    const [program] = await db
+      .select({
+        id: programs.id,
+        title: programs.title,
+        slug: programs.slug,
+        description: programs.description,
+        logo: programs.logo,
+        developer: programs.developer,
+        officialWebsite: programs.officialWebsite,
+        releaseYear: programs.releaseYear,
+        license: programs.license,
+        platforms: programs.platforms,
+        downloadUrl: programs.downloadUrl,
+        googlePlayUrl: programs.googlePlayUrl,
+        appStoreUrl: programs.appStoreUrl,
+        isPublished: programs.isPublished,
+        categoryId: programs.categoryId,
+        createdAt: programs.createdAt,
+        updatedAt: programs.updatedAt,
+        category: programCategories,
+      })
+      .from(programs)
+      .leftJoin(programCategories, eq(programs.categoryId, programCategories.id))
+      .where(eq(programs.id, id));
+    return program;
+  }
+
+  async createProgram(programData: InsertProgram): Promise<Program> {
+    const [program] = await db.insert(programs).values(programData).returning();
+    return program;
+  }
+
+  async updateProgram(id: number, programData: Partial<InsertProgram>): Promise<Program> {
+    const [updatedProgram] = await db
+      .update(programs)
+      .set({ ...programData, updatedAt: new Date() })
+      .where(eq(programs.id, id))
+      .returning();
+    return updatedProgram;
+  }
+
+  async deleteProgram(id: number): Promise<void> {
+    await db.delete(programs).where(eq(programs.id, id));
+  }
+
+  async getProgramsCount(options: { published?: boolean; search?: string; categoryId?: number } = {}): Promise<number> {
+    const { published = true, search, categoryId } = options;
+
+    let query = db.select({ count: count() }).from(programs);
+
+    const whereConditions = [];
+    if (published !== undefined) {
+      whereConditions.push(eq(programs.isPublished, published));
+    }
+    if (search) {
+      whereConditions.push(
+        or(
+          ilike(programs.title, `%${search}%`),
+          ilike(programs.description, `%${search}%`),
+          ilike(programs.developer, `%${search}%`)
+        )
+      );
+    }
+    if (categoryId) {
+      whereConditions.push(eq(programs.categoryId, categoryId));
+    }
+
+    if (whereConditions.length > 0) {
+      query = query.where(and(...whereConditions));
+    }
+
+    const [result] = await query;
+    return result.count;
   }
 }
 
