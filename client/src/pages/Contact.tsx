@@ -105,10 +105,10 @@ export default function Contact() {
                         Основной способ связи для деловых вопросов
                       </p>
                       <a 
-                        href="mailto:hello@incluser.com" 
+                        href="mailto:salimov.abdulaziz.98@gmail.com" 
                         className="text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-accent rounded"
                       >
-                        hello@incluser.com
+                        salimov.abdulaziz.98@gmail.com
                       </a>
                     </div>
                   </div>
@@ -123,10 +123,10 @@ export default function Contact() {
                         Для срочных вопросов и консультаций
                       </p>
                       <a 
-                        href="tel:+79991234567" 
+                        href="tel:+998998316983" 
                         className="text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-accent rounded"
                       >
-                        +7 (999) 123-45-67
+                        +998 (99) 831-69-83
                       </a>
                     </div>
                   </div>
@@ -138,10 +138,10 @@ export default function Contact() {
                     <div>
                       <h3 className="font-semibold text-foreground mb-1">Местоположение</h3>
                       <p className="text-muted-foreground">
-                        Москва, Россия
+                        Ташкент, Узбекистан
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Часовой пояс: UTC+3
+                        Часовой пояс: UTC+5
                       </p>
                     </div>
                   </div>
