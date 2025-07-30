@@ -36,6 +36,11 @@ export default function ManagePrograms() {
     appStoreUrl: "",
     categoryId: 0,
     isPublished: true,
+    releaseYear: new Date().getFullYear(),
+    license: "",
+    platforms: [] as string[],
+    pricing: "free",
+    price: "",
   });
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoUploadType, setLogoUploadType] = useState<"url" | "file">("url");
@@ -124,6 +129,11 @@ export default function ManagePrograms() {
         appStoreUrl: "",
         categoryId: 0,
         isPublished: true,
+        releaseYear: new Date().getFullYear(),
+        license: "",
+        platforms: [] as string[],
+        pricing: "free",
+        price: "",
       });
       setLogoFile(null);
       toast({
@@ -162,6 +172,11 @@ export default function ManagePrograms() {
         appStoreUrl: "",
         categoryId: 0,
         isPublished: true,
+        releaseYear: new Date().getFullYear(),
+        license: "",
+        platforms: [] as string[],
+        pricing: "free",
+        price: "",
       });
       setLogoFile(null);
       setLogoUploadType("url");
@@ -230,6 +245,11 @@ export default function ManagePrograms() {
       appStoreUrl: program.appStoreUrl || "",
       categoryId: program.categoryId || 0,
       isPublished: program.isPublished || false,
+      releaseYear: program.releaseYear || new Date().getFullYear(),
+      license: program.license || "",
+      platforms: program.platforms || [],
+      pricing: program.pricing || "free",
+      price: program.price || "",
     });
     setLogoFile(null);
     setLogoUploadType("url");
@@ -524,6 +544,108 @@ export default function ManagePrograms() {
                   </SelectContent>
                 </Select>
               </div>
+              
+              {/* Год выпуска */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="releaseYear" className="text-right">
+                  Год выпуска
+                </Label>
+                <Input
+                  id="releaseYear"
+                  type="number"
+                  value={newProgram.releaseYear}
+                  onChange={(e) => handleNewProgramChange('releaseYear', parseInt(e.target.value) || new Date().getFullYear())}
+                  className="col-span-3"
+                  placeholder="2024"
+                  min="1990"
+                  max={new Date().getFullYear() + 1}
+                />
+              </div>
+              
+              {/* Лицензия */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="license" className="text-right">
+                  Лицензия
+                </Label>
+                <Input
+                  id="license"
+                  value={newProgram.license}
+                  onChange={(e) => handleNewProgramChange('license', e.target.value)}
+                  className="col-span-3"
+                  placeholder="GPL, MIT, Проприетарная, Бесплатная и т.д."
+                />
+              </div>
+              
+              {/* Операционные системы */}
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right mt-2">
+                  Операционные системы
+                </Label>
+                <div className="col-span-3 space-y-2">
+                  {['windows', 'macos', 'linux', 'ios', 'android', 'web'].map((platform) => (
+                    <label key={platform} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={newProgram.platforms.includes(platform)}
+                        onChange={(e) => {
+                          const currentPlatforms = [...newProgram.platforms];
+                          if (e.target.checked) {
+                            currentPlatforms.push(platform);
+                          } else {
+                            const index = currentPlatforms.indexOf(platform);
+                            if (index > -1) currentPlatforms.splice(index, 1);
+                          }
+                          handleNewProgramChange('platforms', currentPlatforms);
+                        }}
+                        className="rounded border-gray-300"
+                      />
+                      <span className="text-sm capitalize">
+                        {platform === 'macos' ? 'macOS' : 
+                         platform === 'ios' ? 'iOS' : 
+                         platform === 'web' ? 'Веб-браузер' :
+                         platform.charAt(0).toUpperCase() + platform.slice(1)}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Стоимость */}
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="pricing" className="text-right">
+                  Стоимость
+                </Label>
+                <Select
+                  value={newProgram.pricing}
+                  onValueChange={(value) => handleNewProgramChange('pricing', value)}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Выберите тип стоимости" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="free">Бесплатная</SelectItem>
+                    <SelectItem value="freemium">Условно бесплатная</SelectItem>
+                    <SelectItem value="paid">Платная</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Цена (показывается только для платных) */}
+              {newProgram.pricing === 'paid' && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="price" className="text-right">
+                    Цена
+                  </Label>
+                  <Input
+                    id="price"
+                    value={newProgram.price}
+                    onChange={(e) => handleNewProgramChange('price', e.target.value)}
+                    className="col-span-3"
+                    placeholder="$19.99, 1500 руб., €15 и т.д."
+                  />
+                </div>
+              )}
+              
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="description" className="text-right mt-2">
                   Описание *

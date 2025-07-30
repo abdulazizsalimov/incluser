@@ -112,6 +112,8 @@ export const programs = pgTable("programs", {
   releaseYear: integer("release_year"),
   license: varchar("license", { length: 100 }),
   platforms: text("platforms").array(), // Array of platforms
+  pricing: varchar("pricing", { length: 20 }).default("free"), // free, paid, freemium
+  price: varchar("price", { length: 100 }), // Price description if paid
   downloadUrl: varchar("download_url"),
   googlePlayUrl: varchar("google_play_url"),
   appStoreUrl: varchar("app_store_url"),
