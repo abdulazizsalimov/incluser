@@ -239,30 +239,33 @@ export default function ProgramDetail() {
               
               {/* Action buttons */}
               <Card className="mt-4">
-                <CardHeader>
-                  <CardTitle>Ссылки</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {program.officialWebsite && (
-                    <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                      <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer">
-                        <Globe className="w-4 h-4 mr-2" />
-                        Официальный сайт
-                        <ExternalLink className="w-4 h-4 ml-auto" />
-                      </a>
-                    </Button>
+                <CardContent className="pt-6 space-y-3">
+                  {/* Горизонтальные кнопки: Официальный сайт и Скачать */}
+                  {(program.officialWebsite || program.downloadUrl) && (
+                    <div className="grid grid-cols-2 gap-2">
+                      {program.officialWebsite && (
+                        <Button asChild variant="outline" size="sm" className="justify-center">
+                          <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer">
+                            <Globe className="w-4 h-4 mr-2" />
+                            Официальный сайт
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </a>
+                        </Button>
+                      )}
+                      
+                      {program.downloadUrl && (
+                        <Button asChild size="sm" className="justify-center">
+                          <a href={program.downloadUrl} target="_blank" rel="noopener noreferrer">
+                            <Download className="w-4 h-4 mr-2" />
+                            Скачать
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </a>
+                        </Button>
+                      )}
+                    </div>
                   )}
                   
-                  {program.downloadUrl && (
-                    <Button asChild size="sm" className="w-full justify-start">
-                      <a href={program.downloadUrl} target="_blank" rel="noopener noreferrer">
-                        <Download className="w-4 h-4 mr-2" />
-                        Скачать
-                        <ExternalLink className="w-4 h-4 ml-auto" />
-                      </a>
-                    </Button>
-                  )}
-                  
+                  {/* Вертикальные кнопки: мобильные приложения */}
                   {program.googlePlayUrl && (
                     <Button asChild variant="outline" size="sm" className="w-full justify-start">
                       <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer">
