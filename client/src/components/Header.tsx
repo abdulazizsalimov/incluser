@@ -23,6 +23,11 @@ export default function Header() {
     queryKey: ['/api/categories'],
   });
 
+  // Fetch program categories for dropdown
+  const { data: programCategories = [] } = useQuery({
+    queryKey: ['/api/program-categories'],
+  });
+
 
 
   const navItems = [
@@ -60,54 +65,135 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav id="navigation" role="navigation" aria-label="Основная навигация" className="hidden md:block">
             <ul className="flex space-x-8">
-              {navItems.map((item) => (
-                <li key={item.href} className="flex items-center">
-                  <Link 
-                    href={item.href}
-                    className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
-                      isActive(item.href)
-                        ? "text-primary"
-                        : "text-muted-foreground hover:text-primary"
-                    }`}
-                    aria-current={isActive(item.href) ? "page" : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                  
-                  {/* Categories dropdown for Articles */}
-                  {item.href === "/articles" && categories.length > 0 && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="ml-1 h-6 w-6 p-0"
-                          aria-label="Категории статей"
-                        >
-                          <ChevronDown className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="min-w-[200px]">
-                        <DropdownMenuItem asChild>
-                          <Link href="/articles" className="w-full cursor-pointer">
-                            Все статьи
+              {/* Main navigation items */}
+              <li className="flex items-center">
+                <Link 
+                  href="/"
+                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                    isActive("/")
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                  aria-current={isActive("/") ? "page" : undefined}
+                >
+                  Главная
+                </Link>
+              </li>
+
+              <li className="flex items-center">
+                <Link 
+                  href="/articles"
+                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                    isActive("/articles")
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                  aria-current={isActive("/articles") ? "page" : undefined}
+                >
+                  Статьи
+                </Link>
+                
+                {/* Categories dropdown for Articles */}
+                {categories.length > 0 && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="ml-1 h-6 w-6 p-0"
+                        aria-label="Категории статей"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="min-w-[200px]">
+                      <DropdownMenuItem asChild>
+                        <Link href="/articles" className="w-full cursor-pointer">
+                          Все статьи
+                        </Link>
+                      </DropdownMenuItem>
+                      {categories.map((category) => (
+                        <DropdownMenuItem key={category.id} asChild>
+                          <Link 
+                            href={`/articles?category=${category.slug}`} 
+                            className="w-full cursor-pointer"
+                          >
+                            {category.name}
                           </Link>
                         </DropdownMenuItem>
-                        {categories.map((category) => (
-                          <DropdownMenuItem key={category.id} asChild>
-                            <Link 
-                              href={`/articles?category=${category.slug}`} 
-                              className="w-full cursor-pointer"
-                            >
-                              {category.name}
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
-                </li>
-              ))}
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </li>
+
+              <li className="flex items-center">
+                <span 
+                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                    location.startsWith("/programs")
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                >
+                  Программы
+                </span>
+                
+                {/* Program categories dropdown */}
+                {programCategories.length > 0 && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="ml-1 h-6 w-6 p-0"
+                        aria-label="Категории программ"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="min-w-[200px]">
+                      {programCategories.map((category: any) => (
+                        <DropdownMenuItem key={category.id} asChild>
+                          <Link 
+                            href={`/programs/${category.slug}`} 
+                            className="w-full cursor-pointer"
+                          >
+                            {category.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </li>
+
+              <li className="flex items-center">
+                <Link 
+                  href="/about"
+                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                    isActive("/about")
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                  aria-current={isActive("/about") ? "page" : undefined}
+                >
+                  Об авторе
+                </Link>
+              </li>
+
+              <li className="flex items-center">
+                <Link 
+                  href="/contact"
+                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                    isActive("/contact")
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                  aria-current={isActive("/contact") ? "page" : undefined}
+                >
+                  Контакты
+                </Link>
+              </li>
             </ul>
           </nav>
 
@@ -182,44 +268,112 @@ export default function Header() {
               <SheetContent side="right" className="w-[280px] flex flex-col p-0">
                 <div className="flex-1 overflow-y-auto p-4">
                   <nav className="flex flex-col space-y-3 mt-4">
-                    {navItems.map((item) => (
-                      <div key={item.href}>
-                        <Link 
-                          href={item.href}
-                          className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                            isActive(item.href)
-                              ? "bg-primary text-primary-foreground"
-                              : "text-muted-foreground hover:text-primary hover:bg-muted"
-                          }`}
-                        >
-                          {item.label}
-                        </Link>
-                        
-                        {/* Categories submenu for Articles in mobile */}
-                        {item.href === "/articles" && categories.length > 0 && (
-                          <div className="ml-4 mt-2 space-y-1">
-                            <div className="text-sm font-medium text-muted-foreground px-3 py-1">
-                              Категории:
-                            </div>
+                    {/* Main navigation items */}
+                    <div>
+                      <Link 
+                        href="/"
+                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          isActive("/")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-primary hover:bg-muted"
+                        }`}
+                      >
+                        Главная
+                      </Link>
+                    </div>
+
+                    <div>
+                      <Link 
+                        href="/articles"
+                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          isActive("/articles")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-primary hover:bg-muted"
+                        }`}
+                      >
+                        Статьи
+                      </Link>
+                      
+                      {/* Categories submenu for Articles in mobile */}
+                      {categories.length > 0 && (
+                        <div className="ml-4 mt-2 space-y-1">
+                          <div className="text-sm font-medium text-muted-foreground px-3 py-1">
+                            Категории:
+                          </div>
+                          <Link 
+                            href="/articles"
+                            className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
+                          >
+                            Все статьи
+                          </Link>
+                          {categories.map((category) => (
                             <Link 
-                              href="/articles"
+                              key={category.id}
+                              href={`/articles?category=${category.slug}`}
                               className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
                             >
-                              Все статьи
+                              {category.name}
                             </Link>
-                            {categories.map((category) => (
-                              <Link 
-                                key={category.id}
-                                href={`/articles?category=${category.slug}`}
-                                className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
-                              >
-                                {category.name}
-                              </Link>
-                            ))}
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <span 
+                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          location.startsWith("/programs")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        Программы
+                      </span>
+                      
+                      {/* Program categories submenu in mobile */}
+                      {programCategories.length > 0 && (
+                        <div className="ml-4 mt-2 space-y-1">
+                          <div className="text-sm font-medium text-muted-foreground px-3 py-1">
+                            Категории:
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {programCategories.map((category: any) => (
+                            <Link 
+                              key={category.id}
+                              href={`/programs/${category.slug}`}
+                              className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
+                            >
+                              {category.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <Link 
+                        href="/about"
+                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          isActive("/about")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-primary hover:bg-muted"
+                        }`}
+                      >
+                        Об авторе
+                      </Link>
+                    </div>
+
+                    <div>
+                      <Link 
+                        href="/contact"
+                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                          isActive("/contact")
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-primary hover:bg-muted"
+                        }`}
+                      >
+                        Контакты
+                      </Link>
+                    </div>
                   </nav>
                 </div>
                 

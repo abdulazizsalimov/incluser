@@ -105,8 +105,15 @@ export default function Programs() {
   const params = useParams();
   const categorySlug = params.categorySlug;
 
-  const { data: category } = useQuery<ProgramCategory>({
+  const { data: category, isLoading: categoryLoading } = useQuery<ProgramCategory>({
     queryKey: ["/api/program-categories", categorySlug],
+    queryFn: async () => {
+      const response = await fetch(`/api/program-categories/${categorySlug}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch category');
+      }
+      return response.json();
+    },
     enabled: !!categorySlug,
   });
 
@@ -147,7 +154,7 @@ export default function Programs() {
     );
   }
 
-  if (programsLoading) {
+  if (categoryLoading || programsLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse">
