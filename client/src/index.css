@@ -293,7 +293,7 @@
   }
 
   /* Protect header from grayscale filter effects with maximum specificity */
-  html body.grayscale-mode header[role="banner"].bg-background.shadow-sm.border-b.border-border.fixed {
+  html body.grayscale-mode header[role="banner"] {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -311,8 +311,8 @@
     contain: none !important;
   }
 
-  /* Force header visibility regardless of parent filters */
-  html body.grayscale-mode header[role="banner"] {
+  /* Additional header protection styles */
+  html body.grayscale-mode header[role="banner"].fixed {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
