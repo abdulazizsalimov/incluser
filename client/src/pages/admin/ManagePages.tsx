@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import PageEditor from "@/components/admin/PageEditor";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { 
   Plus, 
   Edit, 
@@ -21,6 +22,7 @@ import {
 import type { Page } from "@shared/schema";
 
 export default function ManagePages() {
+  usePageTitle("Управление страницами - Админ панель");
   const [showEditor, setShowEditor] = useState(false);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
   const { toast } = useToast();

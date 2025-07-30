@@ -4,9 +4,12 @@ import { Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NotFound from "@/pages/not-found";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { Page } from "@shared/schema";
 
 export default function Resources() {
+  usePageTitle("Полезные ресурсы по доступности - Incluser");
+  
   const { data: page, isLoading, error } = useQuery<Page>({
     queryKey: ['/api/pages/resources'],
   });

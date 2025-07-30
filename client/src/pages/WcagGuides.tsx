@@ -3,9 +3,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Download, ExternalLink, Volume2, VolumeX } from "lucide-react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import wcagPdfUrl from "@assets/wcag-2.1-guide.pdf";
 
 export default function WcagGuides() {
+  usePageTitle("Руководства WCAG - Incluser");
+  
   const [pdfError, setPdfError] = useState(false);
   const [isReading, setIsReading] = useState(false);
   const [speechInstance, setSpeechInstance] = useState<SpeechSynthesisUtterance | null>(null);
@@ -14,8 +17,6 @@ export default function WcagGuides() {
   useEffect(() => {
     // Прокручиваем в начало страницы при загрузке
     window.scrollTo(0, 0);
-    
-    document.title = "Руководство по обеспечению доступности веб-контента (WCAG) 2.1 - Incluser";
     
     // Определяем текущую тему
     const checkTheme = () => {

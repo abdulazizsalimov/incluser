@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import ArticleEditor from "@/components/admin/ArticleEditor";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { 
   Plus, 
   Search, 
@@ -26,6 +27,7 @@ import {
 import type { ArticleWithRelations, Category } from "@shared/schema";
 
 export default function ManageArticles() {
+  usePageTitle("Управление статьями - Админ панель");
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");

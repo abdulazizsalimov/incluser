@@ -11,9 +11,11 @@ import { Plus, Edit, Trash2, Search, Tag, ArrowLeft } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import CategoryEditor from "@/components/admin/CategoryEditor";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import type { Category } from "@shared/schema";
 
 export default function ManageCategories() {
+  usePageTitle("Управление категориями - Админ панель");
   const [showEditor, setShowEditor] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [search, setSearch] = useState("");

@@ -3,11 +3,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MetaTags from "@/components/MetaTags";
 import ExpandableSection from "@/components/ExpandableSection";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 export default function TestingTools() {
+  usePageTitle("Инструменты тестирования доступности - Incluser");
+  
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "Инструменты тестирования доступности - Incluser";
   }, []);
 
   return (

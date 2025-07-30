@@ -3,9 +3,12 @@ import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import type { Page } from "@shared/schema";
 
 export default function About() {
+  usePageTitle("Об авторе - Incluser");
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

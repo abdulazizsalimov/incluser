@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, "Текущий пароль обязателен"),
@@ -22,6 +23,7 @@ const changePasswordSchema = z.object({
 type ChangePasswordData = z.infer<typeof changePasswordSchema>;
 
 export default function AdminSettings() {
+  usePageTitle("Настройки - Админ панель");
   const { toast } = useToast();
   
   const form = useForm<ChangePasswordData>({

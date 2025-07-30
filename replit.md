@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- July 30, 2025. Fixed page title updating issues - created usePageTitle hook for automatic title management, added dynamic titles to all pages including articles with actual article names, ensured browser tab names update correctly when navigating between pages
 - July 30, 2025. Fixed contact form focus issue - removed automatic focus return to accessibility button that was causing focus to jump from form fields to header button during typing, improved form usability
 - July 30, 2025. Implemented complete contact form functionality - created working form submission to server, added contact_messages database table, built admin Messages section for viewing/managing form submissions, updated contact page with real contact information (email: salimov.abdulaziz.98@gmail.com, phone: +998 (99) 831-69-83, location: Ташкент, Узбекистан, timezone: UTC+5), improved contact page text clarity
 - July 25, 2025. Created default protected categories system - automatically generates "Лучшие практики", "Программы экранного доступа", "Мобильные приложения", "Обучение и вебинары" categories on deployment, these categories cannot be deleted as they serve as foundation for homepage navigation cards, updated all resource links to filter articles by category

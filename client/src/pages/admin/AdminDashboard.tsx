@@ -12,9 +12,11 @@ import {
   Edit,
   Settings
 } from "lucide-react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import type { ArticleWithRelations, Category, Page } from "@shared/schema";
 
 export default function AdminDashboard() {
+  usePageTitle("Админ панель - Incluser");
   const [, setLocation] = useLocation();
   
   const { data: articlesData, isLoading: articlesLoading } = useQuery<{

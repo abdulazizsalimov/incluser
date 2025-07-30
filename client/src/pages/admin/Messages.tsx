@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Trash2, Mail, MailOpen, Clock, User, Calendar, AlertTriangle, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import type { ContactMessage } from "@shared/schema";
 
 export default function Messages() {
+  usePageTitle("Сообщения - Админ панель");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

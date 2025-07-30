@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import ShareButton from "@/components/ShareButton";
 import MetaTags from "@/components/MetaTags";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import type { ArticleWithRelations } from "@shared/schema";
 
 export default function ArticleDetail() {
@@ -33,6 +34,9 @@ export default function ArticleDetail() {
     },
     enabled: !!slug,
   });
+
+  // Update page title when article data is loaded
+  usePageTitle(article ? `${article.title} - Incluser` : "Загрузка статьи - Incluser");
 
   const formatDate = (date: string | null) => {
     if (!date) return "";
