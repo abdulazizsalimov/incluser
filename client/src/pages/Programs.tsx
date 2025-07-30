@@ -1,5 +1,6 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -149,6 +150,10 @@ export default function Programs() {
   });
 
   usePageTitle(category ? `${category.name} - Программы` : "Программы");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [categorySlug]);
 
   if (!categorySlug) {
     return (

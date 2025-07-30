@@ -1,5 +1,6 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,10 @@ export default function ProgramDetail() {
   });
 
   usePageTitle(program ? `${program.title} - Программы` : "Программа");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [programSlug]);
 
   const platformIcons = {
     windows: <Monitor className="w-4 h-4" />,
