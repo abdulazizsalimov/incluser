@@ -1,13 +1,15 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download, Globe, Smartphone, Tablet, Monitor } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Download, Globe, Smartphone, Tablet, Monitor, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MetaTags from "@/components/MetaTags";
 import type { ProgramWithRelations, ProgramCategory } from "@shared/schema";
 
 function ProgramCard({ program }: { program: ProgramWithRelations }) {
@@ -112,6 +114,9 @@ function ProgramCard({ program }: { program: ProgramWithRelations }) {
 export default function Programs() {
   const params = useParams();
   const categorySlug = params.categorySlug;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const programsPerPage = 12;
 
   const { data: category, isLoading: categoryLoading } = useQuery<ProgramCategory>({
     queryKey: ["/api/program-categories", categorySlug],
@@ -134,11 +139,17 @@ export default function Programs() {
       totalPages: number;
     };
   }>({
-    queryKey: ["/api/programs", { categoryId: category?.id }],
+    queryKey: ["/api/programs", { categoryId: category?.id, page: currentPage, search }],
     queryFn: async () => {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: programsPerPage.toString(),
+      });
       if (category?.id) {
         params.append('categoryId', category.id.toString());
+      }
+      if (search) {
+        params.append('search', search);
       }
       const response = await fetch(`/api/programs?${params}`);
       if (!response.ok) {
@@ -154,6 +165,13 @@ export default function Programs() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [categorySlug]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentPage(1);
+  };
+
+  const totalPages = programsData?.pagination.totalPages || 1;
 
   if (!categorySlug) {
     return (
@@ -204,7 +222,6 @@ export default function Programs() {
             <div className="text-center">
               <Button asChild>
                 <Link href="/">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
                   На главную
                 </Link>
               </Button>
@@ -219,41 +236,105 @@ export default function Programs() {
   const programs = programsData?.programs || [];
 
   return (
-    <>
+    <div className="min-h-screen bg-background">
+      <MetaTags
+        title={`${category.name} | Incluser`}
+        description={category.description || `Программы в категории "${category.name}"`}
+        url={window.location.href}
+      />
       <Header />
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <Button asChild variant="ghost" className="mb-4">
-              <Link href="/">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                На главную
-              </Link>
-            </Button>
-            
-            <h1 className="text-3xl font-bold mb-4">{category.name}</h1>
-            {category.description && (
-              <p className="text-lg text-muted-foreground">{category.description}</p>
+      
+      <main id="main-content" role="main">
+        {/* Header Section */}
+        <section className="bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-purple-700 dark:via-blue-700 dark:to-indigo-700 text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl font-bold mb-4">{category.name}</h1>
+            <p className="text-xl opacity-90 max-w-2xl">
+              {category.description || `Программы в категории "${category.name}"`}
+            </p>
+          </div>
+        </section>
+
+        {/* Search */}
+        <section className="py-8 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <form onSubmit={handleSearch} className="flex gap-2 max-w-md">
+              <Input
+                type="text"
+                placeholder="Поиск программ..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1"
+              />
+              <Button type="submit" size="icon">
+                <Search className="h-4 w-4" />
+                <span className="sr-only">Поиск</span>
+              </Button>
+            </form>
+          </div>
+        </section>
+
+        {/* Programs Grid */}
+        <section className="py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {programs.length === 0 ? (
+              <div className="text-center py-12">
+                <h2 className="text-2xl font-semibold mb-4">Программы не найдены</h2>
+                <p className="text-muted-foreground text-lg">
+                  {search ? `По запросу "${search}" ничего не найдено` : "В этой категории пока нет программ"}
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="mb-8">
+                  <p className="text-sm text-muted-foreground">
+                    Найдено программ: {programsData?.pagination.total || 0}
+                    {search && ` по запросу "${search}"`}
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {programs.map((program) => (
+                    <ProgramCard key={program.id} program={program} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center space-x-2 mt-12">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                      Назад
+                    </Button>
+                    
+                    <span className="text-sm text-muted-foreground">
+                      Страница {currentPage} из {totalPages}
+                    </span>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                    >
+                      Вперед
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
+        </section>
 
-          {programs.length === 0 ? (
-            <div className="text-center py-12">
-              <h2 className="text-xl font-semibold mb-4">Программы не найдены</h2>
-              <p className="text-muted-foreground">
-                В этой категории пока нет программ
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {programs.map((program) => (
-                <ProgramCard key={program.id} program={program} />
-              ))}
-            </div>
-          )}
-
-          {/* Disclaimer */}
-          <div className="mt-12 p-6 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        {/* Disclaimer */}
+        <section className="py-8 bg-amber-50 dark:bg-amber-950/20 border-t border-amber-200 dark:border-amber-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-start space-x-3">
               <div className="flex-shrink-0">
                 <svg className="w-6 h-6 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -273,9 +354,10 @@ export default function Programs() {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </main>
+      
       <Footer />
-    </>
+    </div>
   );
 }
