@@ -231,6 +231,8 @@ export default function ManagePrograms() {
       categoryId: program.categoryId || 0,
       isPublished: program.isPublished || false,
     });
+    setLogoFile(null);
+    setLogoUploadType("url");
     setIsEditDialogOpen(true);
   };
 
@@ -318,7 +320,31 @@ export default function ManagePrograms() {
             Всего программ: {programsData?.pagination.total || 0}
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <Dialog open={isCreateDialogOpen || isEditDialogOpen} onOpenChange={(open) => {
+          setIsCreateDialogOpen(open && !editingProgram);
+          setIsEditDialogOpen(open && !!editingProgram);
+          if (!open) {
+            setEditingProgram(null);
+            setNewProgram({
+              title: "",
+              version: "",
+              slug: "",
+              description: "",
+              whatsNew: "",
+              detailedDescription: "",
+              developer: "",
+              logo: "",
+              officialWebsite: "",
+              downloadUrl: "",
+              googlePlayUrl: "",
+              appStoreUrl: "",
+              categoryId: 0,
+              isPublished: true,
+            });
+            setLogoFile(null);
+            setLogoUploadType("url");
+          }
+        }}>
           <DialogTrigger asChild>
             <Button className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
@@ -327,9 +353,9 @@ export default function ManagePrograms() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
             <DialogHeader>
-              <DialogTitle>Добавить новую программу</DialogTitle>
+              <DialogTitle>{editingProgram ? "Редактировать программу" : "Добавить новую программу"}</DialogTitle>
               <DialogDescription>
-                Заполните информацию о программе. Поля отмеченные * обязательны для заполнения.
+                {editingProgram ? "Изменить информацию о программе." : "Заполните информацию о программе."} Поля отмеченные * обязательны для заполнения.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4 overflow-y-auto flex-1">
@@ -542,138 +568,22 @@ export default function ManagePrograms() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsCreateDialogOpen(false)}
+                onClick={() => {
+                  setIsCreateDialogOpen(false);
+                  setIsEditDialogOpen(false);
+                }}
               >
                 Отмена
               </Button>
               <Button
                 type="button"
                 onClick={handleCreateProgram}
-                disabled={createProgram.isPending}
+                disabled={createProgram.isPending || updateProgram.isPending}
               >
-                {createProgram.isPending ? "Создание..." : "Создать программу"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
-          setIsEditDialogOpen(open);
-          if (!open) {
-            setEditingProgram(null);
-            setNewProgram({
-              title: "",
-              version: "",
-              slug: "",
-              description: "",
-              whatsNew: "",
-              detailedDescription: "",
-              developer: "",
-              logo: "",
-              officialWebsite: "",
-              downloadUrl: "",
-              googlePlayUrl: "",
-              appStoreUrl: "",
-              categoryId: 0,
-              isPublished: true,
-            });
-            setLogoFile(null);
-            setLogoUploadType("url");
-          }
-        }}>
-          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
-            <DialogHeader>
-              <DialogTitle>Редактировать программу</DialogTitle>
-              <DialogDescription>
-                Изменить информацию о программе. Поля отмеченные * обязательны для заполнения.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4 overflow-y-auto flex-1">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-title" className="text-right">
-                  Название *
-                </Label>
-                <Input
-                  id="edit-title"
-                  value={newProgram.title}
-                  onChange={(e) => handleNewProgramChange('title', e.target.value)}
-                  className="col-span-3"
-                  placeholder="Название программы"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-version" className="text-right">
-                  Версия
-                </Label>
-                <Input
-                  id="edit-version"
-                  value={newProgram.version}
-                  onChange={(e) => handleNewProgramChange('version', e.target.value)}
-                  className="col-span-3"
-                  placeholder="1.0.0"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-developer" className="text-right">
-                  Разработчик *
-                </Label>
-                <Input
-                  id="edit-developer"
-                  value={newProgram.developer}
-                  onChange={(e) => handleNewProgramChange('developer', e.target.value)}
-                  className="col-span-3"
-                  placeholder="Название разработчика"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">
-                  Категория *
-                </Label>
-                <Select 
-                  value={newProgram.categoryId.toString()} 
-                  onValueChange={(value) => handleNewProgramChange('categoryId', parseInt(value))}
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Выберите категорию" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.isArray(categories) && categories.map((category: any) => (
-                      <SelectItem key={category.id} value={category.id.toString()}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-4 items-start gap-4">
-                <Label htmlFor="edit-description" className="text-right mt-2">
-                  Описание *
-                </Label>
-                <Textarea
-                  id="edit-description"
-                  value={newProgram.description}
-                  onChange={(e) => handleNewProgramChange('description', e.target.value)}
-                  className="col-span-3"
-                  placeholder="Краткое описание программы..."
-                  rows={3}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsEditDialogOpen(false)}
-              >
-                Отмена
-              </Button>
-              <Button
-                type="button"
-                onClick={handleCreateProgram}
-                disabled={updateProgram.isPending}
-              >
-                {updateProgram.isPending ? "Сохранение..." : "Сохранить изменения"}
+                {editingProgram 
+                  ? (updateProgram.isPending ? "Сохранение..." : "Сохранить изменения")
+                  : (createProgram.isPending ? "Создание..." : "Создать программу")
+                }
               </Button>
             </DialogFooter>
           </DialogContent>
