@@ -128,26 +128,20 @@ export default function Header() {
               </li>
 
               <li className="flex items-center">
-                <span 
-                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
-                    location.startsWith("/programs")
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-primary"
-                  }`}
-                >
-                  Программы
-                </span>
-                
                 {/* Program categories dropdown */}
-                {programCategories.length > 0 && (
+                {programCategories.length > 0 ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="ml-1 h-6 w-6 p-0"
-                        aria-label="Категории программ"
+                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 flex items-center gap-1 ${
+                          location.startsWith("/programs")
+                            ? "text-primary"
+                            : "text-muted-foreground hover:text-primary"
+                        }`}
+                        aria-label="Программы"
                       >
+                        Программы
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -164,6 +158,18 @@ export default function Header() {
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
+                ) : (
+                  <Link 
+                    href="/programs"
+                    className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                      location.startsWith("/programs")
+                        ? "text-primary"
+                        : "text-muted-foreground hover:text-primary"
+                    }`}
+                    aria-current={location.startsWith("/programs") ? "page" : undefined}
+                  >
+                    Программы
+                  </Link>
                 )}
               </li>
 
@@ -320,32 +326,42 @@ export default function Header() {
                     </div>
 
                     <div>
-                      <span 
-                        className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                          location.startsWith("/programs")
-                            ? "bg-primary text-primary-foreground"
-                            : "text-muted-foreground"
-                        }`}
-                      >
-                        Программы
-                      </span>
-                      
-                      {/* Program categories submenu in mobile */}
-                      {programCategories.length > 0 && (
-                        <div className="ml-4 mt-2 space-y-1">
-                          <div className="text-sm font-medium text-muted-foreground px-3 py-1">
-                            Категории:
+                      {programCategories.length > 0 ? (
+                        <>
+                          <div className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                            location.startsWith("/programs")
+                              ? "bg-primary text-primary-foreground"
+                              : "text-muted-foreground"
+                          }`}>
+                            Программы
                           </div>
-                          {programCategories.map((category: any) => (
-                            <Link 
-                              key={category.id}
-                              href={`/programs/${category.slug}`}
-                              className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
-                            >
-                              {category.name}
-                            </Link>
-                          ))}
-                        </div>
+                          {/* Program categories submenu in mobile */}
+                          <div className="ml-4 mt-2 space-y-1">
+                            <div className="text-sm font-medium text-muted-foreground px-3 py-1">
+                              Категории:
+                            </div>
+                            {programCategories.map((category: any) => (
+                              <Link 
+                                key={category.id}
+                                href={`/programs/${category.slug}`}
+                                className="block px-3 py-1 text-sm text-muted-foreground hover:text-primary hover:bg-muted rounded"
+                              >
+                                {category.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </>
+                      ) : (
+                        <Link 
+                          href="/programs"
+                          className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                            location.startsWith("/programs")
+                              ? "bg-primary text-primary-foreground"
+                              : "text-muted-foreground hover:text-primary hover:bg-muted"
+                          }`}
+                        >
+                          Программы
+                        </Link>
                       )}
                     </div>
 
