@@ -117,8 +117,9 @@ export default function ProgramDetail() {
                           <span className="text-2xl text-muted-foreground ml-3">v{program.version}</span>
                         )}
                       </h1>
+                      <p className="text-lg text-muted-foreground mb-2">{program.description}</p>
                       {program.developer && (
-                        <p className="text-lg text-muted-foreground">
+                        <p className="text-base text-muted-foreground">
                           Разработчик: {program.developer}
                         </p>
                       )}
@@ -137,11 +138,6 @@ export default function ProgramDetail() {
                   )}
                 </header>
 
-                <section className="mb-8">
-                  <h2>Описание</h2>
-                  <p className="text-lg">{program.description}</p>
-                </section>
-
                 {program.whatsNew && (
                   <section className="mb-8">
                     <h2>Что нового</h2>
@@ -151,7 +147,7 @@ export default function ProgramDetail() {
 
                 {program.detailedDescription && (
                   <section className="mb-8">
-                    <h2>Подробное описание</h2>
+                    <h2>Описание</h2>
                     <div className="whitespace-pre-wrap">{program.detailedDescription}</div>
                   </section>
                 )}
