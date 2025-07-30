@@ -121,17 +121,7 @@ export default function ProgramDetail() {
                       </p>
                     )}
                   </div>
-                  
-                  {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {program.platforms.map((platform: string) => (
-                        <Badge key={platform} variant="secondary" className="flex items-center gap-1">
-                          {platformIcons[platform as keyof typeof platformIcons]}
-                          {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
+
                 </header>
 
                 {program.whatsNew && (
@@ -236,6 +226,13 @@ export default function ProgramDetail() {
                   <CardTitle>Информация о программе</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {program.version && (
+                    <div>
+                      <h4 className="font-medium mb-1">Версия</h4>
+                      <p className="text-sm text-muted-foreground">{program.version}</p>
+                    </div>
+                  )}
+                  
                   {program.releaseYear && (
                     <div>
                       <h4 className="font-medium mb-1">Год выпуска</h4>
@@ -254,6 +251,42 @@ export default function ProgramDetail() {
                     <div>
                       <h4 className="font-medium mb-1">Категория</h4>
                       <Badge variant="secondary">{program.category.name}</Badge>
+                    </div>
+                  )}
+                  
+                  {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
+                    <div>
+                      <h4 className="font-medium mb-1">Операционные системы</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {program.platforms.map((platform: string) => (
+                          <Badge key={platform} variant="outline" className="text-xs">
+                            {platform === 'macos' ? 'macOS' : 
+                             platform === 'ios' ? 'iOS' : 
+                             platform === 'web' ? 'Веб' :
+                             platform.charAt(0).toUpperCase() + platform.slice(1)}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {program.pricing && (
+                    <div>
+                      <h4 className="font-medium mb-1">Стоимость</h4>
+                      <div className="text-sm text-muted-foreground">
+                        {program.pricing === 'free' && 'Бесплатная'}
+                        {program.pricing === 'freemium' && 'Условно бесплатная'}
+                        {program.pricing === 'paid' && (
+                          <>
+                            Платная
+                            {program.price && (
+                              <span className="ml-2 font-medium text-foreground">
+                                {program.price}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   )}
                 </CardContent>
