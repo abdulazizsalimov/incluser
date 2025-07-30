@@ -132,9 +132,8 @@ export default function Header() {
                 {programCategories.length > 0 ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 flex items-center gap-1 hover:bg-transparent ${
+                      <button
+                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 flex items-center gap-1 bg-transparent border-none cursor-pointer ${
                           location.startsWith("/programs")
                             ? "text-primary"
                             : "text-muted-foreground hover:text-primary"
@@ -143,7 +142,7 @@ export default function Header() {
                       >
                         Программы
                         <ChevronDown className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="min-w-[200px]">
                       {programCategories.map((category: any) => (
