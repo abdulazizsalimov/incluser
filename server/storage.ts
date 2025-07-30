@@ -3,6 +3,7 @@ import {
   articles,
   categories,
   pages,
+  contactMessages,
   type User,
   type InsertUser,
   type LoginData,
@@ -14,6 +15,8 @@ import {
   type InsertCategory,
   type Page,
   type InsertPage,
+  type ContactMessage,
+  type InsertContactMessage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, like, count, or, ilike } from "drizzle-orm";
@@ -53,6 +56,12 @@ export interface IStorage {
   createPage(page: InsertPage): Promise<Page>;
   updatePage(id: number, page: Partial<InsertPage>): Promise<Page>;
   deletePage(id: number): Promise<void>;
+
+  // Contact message operations
+  getContactMessages(): Promise<ContactMessage[]>;
+  createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
+  markMessageAsRead(id: number): Promise<ContactMessage>;
+  deleteContactMessage(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -270,6 +279,29 @@ export class DatabaseStorage implements IStorage {
 
   async deletePage(id: number): Promise<void> {
     await db.delete(pages).where(eq(pages.id, id));
+  }
+
+  // Contact message operations
+  async getContactMessages(): Promise<ContactMessage[]> {
+    return await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+  }
+
+  async createContactMessage(messageData: InsertContactMessage): Promise<ContactMessage> {
+    const [message] = await db.insert(contactMessages).values(messageData).returning();
+    return message;
+  }
+
+  async markMessageAsRead(id: number): Promise<ContactMessage> {
+    const [updatedMessage] = await db
+      .update(contactMessages)
+      .set({ isRead: true })
+      .where(eq(contactMessages.id, id))
+      .returning();
+    return updatedMessage;
+  }
+
+  async deleteContactMessage(id: number): Promise<void> {
+    await db.delete(contactMessages).where(eq(contactMessages.id, id));
   }
 }
 

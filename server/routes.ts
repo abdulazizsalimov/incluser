@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { insertArticleSchema, insertCategorySchema, insertPageSchema } from "@shared/schema";
+import { insertArticleSchema, insertCategorySchema, insertPageSchema, insertContactMessageSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Configure multer for file uploads
@@ -587,6 +587,52 @@ ${articles.map(article => {
     } catch (error) {
       console.error("Error deleting page:", error);
       res.status(500).json({ message: "Failed to delete page" });
+    }
+  });
+
+  // Contact form endpoint
+  app.post('/api/contact', async (req, res) => {
+    try {
+      const validatedData = insertContactMessageSchema.parse(req.body);
+      const message = await storage.createContactMessage(validatedData);
+      res.json(message);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error creating contact message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Admin contact messages
+  app.get('/api/admin/messages', isAdmin, async (req, res) => {
+    try {
+      const messages = await storage.getContactMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.patch('/api/admin/messages/:id/read', isAdmin, async (req, res) => {
+    try {
+      const message = await storage.markMessageAsRead(parseInt(req.params.id));
+      res.json(message);
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+      res.status(500).json({ message: "Failed to mark message as read" });
+    }
+  });
+
+  app.delete('/api/admin/messages/:id', isAdmin, async (req, res) => {
+    try {
+      await storage.deleteContactMessage(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting message:", error);
+      res.status(500).json({ message: "Failed to delete message" });
     }
   });
 

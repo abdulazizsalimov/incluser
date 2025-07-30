@@ -9,7 +9,8 @@ import {
   FileText, 
   Tags, 
   Settings, 
-  ArrowLeft 
+  ArrowLeft,
+  Mail
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -52,6 +53,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: "/admin/articles", label: "Статьи", icon: FileText },
     { href: "/admin/categories", label: "Категории", icon: Tags },
     { href: "/admin/pages", label: "Страницы", icon: FileText },
+    { href: "/admin/messages", label: "Сообщения", icon: Mail },
     { href: "/admin/settings", label: "Настройки", icon: Settings },
   ];
 

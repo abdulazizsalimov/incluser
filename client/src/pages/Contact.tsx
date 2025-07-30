@@ -43,12 +43,21 @@ export default function Contact() {
     setIsSubmitting(true);
     
     try {
-      // Simulate form submission - in a real app, this would send to an API
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
       
       toast({
         title: "Сообщение отправлено!",
-        description: "Спасибо за ваше сообщение. Мы свяжемся с вами в ближайшее время.",
+        description: "Спасибо за ваше сообщение. Отвечу в течение 24 часов.",
       });
       
       form.reset();
@@ -89,8 +98,8 @@ export default function Contact() {
                     Как со мной связаться
                   </h2>
                   <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-                    Если у вас есть вопросы о веб-доступности, предложения по сотрудничеству 
-                    или вы хотите поделиться своим опытом — буду рад услышать от вас!
+                    Готов ответить на ваши вопросы о веб-доступности, обсудить возможности 
+                    сотрудничества или выслушать ваш опыт в области инклюзивного дизайна.
                   </p>
                 </div>
 

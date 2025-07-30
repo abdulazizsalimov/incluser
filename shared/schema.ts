@@ -76,6 +76,17 @@ export const pages = pgTable("pages", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Contact messages table
+export const contactMessages = pgTable("contact_messages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  subject: varchar("subject", { length: 200 }).notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   articles: many(articles),
@@ -115,6 +126,11 @@ export const insertPageSchema = createInsertSchema(pages).omit({
   id: true,
   updatedAt: true,
 });
+export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
+  id: true,
+  isRead: true,
+  createdAt: true,
+});
 
 // Login schema
 export const loginSchema = z.object({
@@ -147,3 +163,5 @@ export type ArticleWithRelations = Article & {
 };
 export type InsertPage = z.infer<typeof insertPageSchema>;
 export type Page = typeof pages.$inferSelect;
+export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
+export type ContactMessage = typeof contactMessages.$inferSelect;
