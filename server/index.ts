@@ -5,7 +5,7 @@ import { seedPages } from "./seed-pages";
 import { seedAdmin } from "./seed-admin";
 import { seedInitialData } from "./seed-initial-data";
 import { seedProgramCategories } from "./seed-program-categories";
-import { seedPrograms } from "./seed-programs";
+
 
 const app = express();
 app.use(express.json());
