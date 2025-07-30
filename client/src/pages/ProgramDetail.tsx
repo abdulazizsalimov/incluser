@@ -188,13 +188,6 @@ export default function ProgramDetail() {
                         </tr>
                       )}
                       
-                      {program.price && (
-                        <tr className="border-b border-border last:border-b-0">
-                          <td className="py-2 pr-4 font-medium text-sm">Цена</td>
-                          <td className="py-2 text-sm text-muted-foreground">{program.price}</td>
-                        </tr>
-                      )}
-                      
                       {program.category && (
                         <tr className="border-b border-border last:border-b-0">
                           <td className="py-2 pr-4 font-medium text-sm">Категория</td>
@@ -226,7 +219,16 @@ export default function ProgramDetail() {
                           <td className="py-2 text-sm text-muted-foreground">
                             {program.pricing === 'free' && 'Бесплатная'}
                             {program.pricing === 'freemium' && 'Условно бесплатная'}
-                            {program.pricing === 'paid' && 'Платная'}
+                            {program.pricing === 'paid' && (
+                              <>
+                                Платная
+                                {program.price && (
+                                  <span className="ml-2 font-medium text-foreground">
+                                    {program.price}
+                                  </span>
+                                )}
+                              </>
+                            )}
                           </td>
                         </tr>
                       )}
