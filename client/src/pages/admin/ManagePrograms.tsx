@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Search, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -13,6 +17,15 @@ import type { ProgramWithRelations } from "@shared/schema";
 export default function ManagePrograms() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newProgram, setNewProgram] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    developer: "",
+    categoryId: 0,
+    isPublished: true,
+  });
   const { toast } = useToast();
 
   usePageTitle("Управление программами - Админ панель");
@@ -29,15 +42,13 @@ export default function ManagePrograms() {
     queryKey: ["/api/admin/programs", { search: searchTerm, categoryId: selectedCategory }],
   });
 
-  const { data: categories } = useQuery({
+  const { data: categories = [] } = useQuery({
     queryKey: ["/api/admin/program-categories"],
   });
 
   const deleteProgram = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/admin/programs/${id}`, {
-        method: "DELETE",
-      });
+      await apiRequest(`/api/admin/programs/${id}`, "DELETE");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/programs"] });
@@ -55,12 +66,39 @@ export default function ManagePrograms() {
     },
   });
 
+  const createProgram = useMutation({
+    mutationFn: async (programData: any) => {
+      return await apiRequest("/api/admin/programs", "POST", programData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/programs"] });
+      setIsCreateDialogOpen(false);
+      setNewProgram({
+        title: "",
+        slug: "",
+        description: "",
+        developer: "",
+        categoryId: 0,
+        isPublished: true,
+      });
+      toast({
+        title: "Программа создана",
+        description: "Новая программа была успешно добавлена",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const togglePublish = useMutation({
     mutationFn: async ({ id, isPublished }: { id: number; isPublished: boolean }) => {
-      await apiRequest(`/api/admin/programs/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isPublished: !isPublished }),
+      return await apiRequest(`/api/admin/programs/${id}`, "PUT", { 
+        isPublished: !isPublished 
       });
     },
     onSuccess: () => {
@@ -80,6 +118,40 @@ export default function ManagePrograms() {
   });
 
   const programs = programsData?.programs || [];
+
+  // Helper function to create slug from title
+  const createSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9а-я]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  };
+
+  // Handle form changes
+  const handleNewProgramChange = (field: string, value: any) => {
+    setNewProgram(prev => {
+      const updated = { ...prev, [field]: value };
+      // Auto-generate slug when title changes
+      if (field === 'title') {
+        updated.slug = createSlug(value);
+      }
+      return updated;
+    });
+  };
+
+  // Handle form submission
+  const handleCreateProgram = () => {
+    if (!newProgram.title || !newProgram.description || !newProgram.developer || !newProgram.categoryId) {
+      toast({
+        title: "Ошибка",
+        description: "Пожалуйста, заполните все обязательные поля",
+        variant: "destructive",
+      });
+      return;
+    }
+    createProgram.mutate(newProgram);
+  };
 
   if (isLoading) {
     return (
@@ -106,10 +178,109 @@ export default function ManagePrograms() {
             Всего программ: {programsData?.pagination.total || 0}
           </p>
         </div>
-        <Button className="w-full sm:w-auto">
-          <Plus className="w-4 h-4 mr-2" />
-          Добавить программу
-        </Button>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-full sm:w-auto">
+              <Plus className="w-4 h-4 mr-2" />
+              Добавить программу
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Добавить новую программу</DialogTitle>
+              <DialogDescription>
+                Заполните информацию о программе. Поля отмеченные * обязательны для заполнения.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="title" className="text-right">
+                  Название *
+                </Label>
+                <Input
+                  id="title"
+                  value={newProgram.title}
+                  onChange={(e) => handleNewProgramChange('title', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Название программы"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="slug" className="text-right">
+                  Slug
+                </Label>
+                <Input
+                  id="slug"
+                  value={newProgram.slug}
+                  onChange={(e) => handleNewProgramChange('slug', e.target.value)}
+                  className="col-span-3"
+                  placeholder="url-адрес"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="developer" className="text-right">
+                  Разработчик *
+                </Label>
+                <Input
+                  id="developer"
+                  value={newProgram.developer}
+                  onChange={(e) => handleNewProgramChange('developer', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Название разработчика"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="category" className="text-right">
+                  Категория *
+                </Label>
+                <Select
+                  value={newProgram.categoryId ? newProgram.categoryId.toString() : ""}
+                  onValueChange={(value) => handleNewProgramChange('categoryId', parseInt(value))}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Выберите категорию" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories?.map((category: any) => (
+                      <SelectItem key={category.id} value={category.id.toString()}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="description" className="text-right mt-2">
+                  Описание *
+                </Label>
+                <Textarea
+                  id="description"
+                  value={newProgram.description}
+                  onChange={(e) => handleNewProgramChange('description', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Описание программы..."
+                  rows={4}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCreateDialogOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                type="button"
+                onClick={handleCreateProgram}
+                disabled={createProgram.isPending}
+              >
+                {createProgram.isPending ? "Создание..." : "Создать программу"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -145,7 +316,7 @@ export default function ManagePrograms() {
                 ? "Попробуйте изменить параметры поиска"
                 : "Создайте первую программу, чтобы начать"}
             </p>
-            <Button>
+            <Button onClick={() => setIsCreateDialogOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Добавить программу
             </Button>
