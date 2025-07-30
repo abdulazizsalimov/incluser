@@ -19,6 +19,8 @@ export default function ManagePrograms() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingProgram, setEditingProgram] = useState<ProgramWithRelations | null>(null);
   const [newProgram, setNewProgram] = useState({
     title: "",
     version: "",
@@ -66,6 +68,67 @@ export default function ManagePrograms() {
       toast({
         title: "Программа удалена",
         description: "Программа была успешно удалена",
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateProgram = useMutation({
+    mutationFn: async (data: any) => {
+      if (!editingProgram) throw new Error("No program selected for editing");
+      
+      let finalData = { ...data };
+      
+      // Handle logo file upload if needed
+      if (logoFile && logoUploadType === "file") {
+        const formData = new FormData();
+        formData.append("image", logoFile);
+        
+        const response = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          throw new Error("Failed to upload logo");
+        }
+        
+        const result = await response.json();
+        finalData.logo = result.url;
+      }
+      
+      return await apiRequest(`/api/admin/programs/${editingProgram.id}`, "PUT", finalData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/programs"] });
+      setIsEditDialogOpen(false);
+      setEditingProgram(null);
+      setNewProgram({
+        title: "",
+        version: "",
+        slug: "",
+        description: "",
+        whatsNew: "",
+        detailedDescription: "",
+        developer: "",
+        logo: "",
+        officialWebsite: "",
+        downloadUrl: "",
+        googlePlayUrl: "",
+        appStoreUrl: "",
+        categoryId: 0,
+        isPublished: true,
+      });
+      setLogoFile(null);
+      toast({
+        title: "Программа обновлена",
+        description: "Программа была успешно обновлена",
       });
     },
     onError: (error: Error) => {
@@ -149,6 +212,28 @@ export default function ManagePrograms() {
       .replace(/^-|-$/g, '');
   };
 
+  // Open edit dialog
+  const openEditDialog = (program: ProgramWithRelations) => {
+    setEditingProgram(program);
+    setNewProgram({
+      title: program.title || "",
+      version: program.version || "",
+      slug: program.slug || "",
+      description: program.description || "",
+      whatsNew: program.whatsNew || "",
+      detailedDescription: program.detailedDescription || "",
+      developer: program.developer || "",
+      logo: program.logo || "",
+      officialWebsite: program.officialWebsite || "",
+      downloadUrl: program.downloadUrl || "",
+      googlePlayUrl: program.googlePlayUrl || "",
+      appStoreUrl: program.appStoreUrl || "",
+      categoryId: program.categoryId || 0,
+      isPublished: program.isPublished || false,
+    });
+    setIsEditDialogOpen(true);
+  };
+
   // Handle form changes
   const handleNewProgramChange = (field: string, value: any) => {
     setNewProgram(prev => {
@@ -201,7 +286,11 @@ export default function ManagePrograms() {
       }
     }
 
-    createProgram.mutate(programData);
+    if (editingProgram) {
+      updateProgram.mutate(programData);
+    } else {
+      createProgram.mutate(programData);
+    }
   };
 
   if (isLoading) {
@@ -467,6 +556,128 @@ export default function ManagePrograms() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
+          setIsEditDialogOpen(open);
+          if (!open) {
+            setEditingProgram(null);
+            setNewProgram({
+              title: "",
+              version: "",
+              slug: "",
+              description: "",
+              whatsNew: "",
+              detailedDescription: "",
+              developer: "",
+              logo: "",
+              officialWebsite: "",
+              downloadUrl: "",
+              googlePlayUrl: "",
+              appStoreUrl: "",
+              categoryId: 0,
+              isPublished: true,
+            });
+            setLogoFile(null);
+            setLogoUploadType("url");
+          }
+        }}>
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
+            <DialogHeader>
+              <DialogTitle>Редактировать программу</DialogTitle>
+              <DialogDescription>
+                Изменить информацию о программе. Поля отмеченные * обязательны для заполнения.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4 overflow-y-auto flex-1">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-title" className="text-right">
+                  Название *
+                </Label>
+                <Input
+                  id="edit-title"
+                  value={newProgram.title}
+                  onChange={(e) => handleNewProgramChange('title', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Название программы"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-version" className="text-right">
+                  Версия
+                </Label>
+                <Input
+                  id="edit-version"
+                  value={newProgram.version}
+                  onChange={(e) => handleNewProgramChange('version', e.target.value)}
+                  className="col-span-3"
+                  placeholder="1.0.0"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-developer" className="text-right">
+                  Разработчик *
+                </Label>
+                <Input
+                  id="edit-developer"
+                  value={newProgram.developer}
+                  onChange={(e) => handleNewProgramChange('developer', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Название разработчика"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">
+                  Категория *
+                </Label>
+                <Select 
+                  value={newProgram.categoryId.toString()} 
+                  onValueChange={(value) => handleNewProgramChange('categoryId', parseInt(value))}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Выберите категорию" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.isArray(categories) && categories.map((category: any) => (
+                      <SelectItem key={category.id} value={category.id.toString()}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="edit-description" className="text-right mt-2">
+                  Описание *
+                </Label>
+                <Textarea
+                  id="edit-description"
+                  value={newProgram.description}
+                  onChange={(e) => handleNewProgramChange('description', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Краткое описание программы..."
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                type="button"
+                onClick={handleCreateProgram}
+                disabled={updateProgram.isPending}
+              >
+                {updateProgram.isPending ? "Сохранение..." : "Сохранить изменения"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -559,7 +770,12 @@ export default function ManagePrograms() {
                 )}
 
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="flex-1">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => openEditDialog(program)}
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     Изменить
                   </Button>
