@@ -12,6 +12,7 @@ import type { ProgramWithRelations } from "@shared/schema";
 export default function ProgramDetail() {
   const params = useParams();
   const programSlug = params.slug;
+  const categorySlug = params.categorySlug;
 
   const { data: program, isLoading, error } = useQuery<ProgramWithRelations>({
     queryKey: ["/api/programs", programSlug],
@@ -89,7 +90,7 @@ export default function ProgramDetail() {
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <Button asChild variant="ghost" className="mb-4">
-              <Link href={`/programs/${program.category?.slug}`}>
+              <Link href={`/programs/${categorySlug || program.category?.slug}`}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Назад к {program.category?.name}
               </Link>

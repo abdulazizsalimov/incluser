@@ -45,8 +45,8 @@ function Router() {
       <Route path="/wcag-guides" component={WcagGuides} />
       <Route path="/testing-tools" component={TestingTools} />
       <Route path="/resources" component={Resources} />
-      <Route path="/programs/:categorySlug" component={Programs} />
       <Route path="/programs/:categorySlug/:slug" component={ProgramDetail} />
+      <Route path="/programs/:categorySlug" component={Programs} />
       <Route path="/login" component={Login} />
 
       {/* Admin routes - only for authenticated users */}
