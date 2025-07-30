@@ -154,7 +154,7 @@ export default function ProgramDetail() {
 
                 {/* Action buttons table */}
                 <section className="mb-8">
-                  <h2>Загрузка и ссылки</h2>
+                  <hr className="border-border mb-6" />
                   <div className="not-prose">
                     <table className="w-full border border-border rounded-lg overflow-hidden">
                       <tbody>
