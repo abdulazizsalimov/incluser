@@ -138,75 +138,7 @@ export default function ProgramDetail() {
                   </section>
                 )}
 
-                {/* Action buttons table */}
-                <section className="mb-8">
-                  <hr className="border-border mb-6" />
-                  <div className="not-prose">
-                    <table className="w-full border border-border rounded-lg overflow-hidden">
-                      <tbody>
-                        {program.downloadUrl && (
-                          <tr className="border-b border-border last:border-b-0">
-                            <td className="p-4 font-medium bg-muted/50">Скачать</td>
-                            <td className="p-4">
-                              <Button asChild size="sm">
-                                <a href={program.downloadUrl} target="_blank" rel="noopener noreferrer">
-                                  <Download className="w-4 h-4 mr-2" />
-                                  Прямая загрузка
-                                  <ExternalLink className="w-4 h-4 ml-2" />
-                                </a>
-                              </Button>
-                            </td>
-                          </tr>
-                        )}
-                        
-                        {program.officialWebsite && (
-                          <tr className="border-b border-border last:border-b-0">
-                            <td className="p-4 font-medium bg-muted/50">Официальный сайт</td>
-                            <td className="p-4">
-                              <Button asChild variant="outline" size="sm">
-                                <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer">
-                                  <Globe className="w-4 h-4 mr-2" />
-                                  Посетить сайт
-                                  <ExternalLink className="w-4 h-4 ml-2" />
-                                </a>
-                              </Button>
-                            </td>
-                          </tr>
-                        )}
-                        
-                        {program.googlePlayUrl && (
-                          <tr className="border-b border-border last:border-b-0">
-                            <td className="p-4 font-medium bg-muted/50">Google Play</td>
-                            <td className="p-4">
-                              <Button asChild variant="outline" size="sm">
-                                <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer">
-                                  <Smartphone className="w-4 h-4 mr-2" />
-                                  Google Play Store
-                                  <ExternalLink className="w-4 h-4 ml-2" />
-                                </a>
-                              </Button>
-                            </td>
-                          </tr>
-                        )}
-                        
-                        {program.appStoreUrl && (
-                          <tr className="border-b border-border last:border-b-0">
-                            <td className="p-4 font-medium bg-muted/50">App Store</td>
-                            <td className="p-4">
-                              <Button asChild variant="outline" size="sm">
-                                <a href={program.appStoreUrl} target="_blank" rel="noopener noreferrer">
-                                  <Smartphone className="w-4 h-4 mr-2" />
-                                  Apple App Store
-                                  <ExternalLink className="w-4 h-4 ml-2" />
-                                </a>
-                              </Button>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
+
               </article>
             </div>
 
@@ -225,69 +157,130 @@ export default function ProgramDetail() {
                 <CardHeader>
                   <CardTitle>Информация о программе</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {program.version && (
-                    <div>
-                      <h4 className="font-medium mb-1">Версия</h4>
-                      <p className="text-sm text-muted-foreground">{program.version}</p>
-                    </div>
-                  )}
-                  
-                  {program.releaseYear && (
-                    <div>
-                      <h4 className="font-medium mb-1">Год выпуска</h4>
-                      <p className="text-sm text-muted-foreground">{program.releaseYear}</p>
-                    </div>
-                  )}
-                  
-                  {program.license && (
-                    <div>
-                      <h4 className="font-medium mb-1">Лицензия</h4>
-                      <p className="text-sm text-muted-foreground">{program.license}</p>
-                    </div>
-                  )}
-                  
-                  {program.category && (
-                    <div>
-                      <h4 className="font-medium mb-1">Категория</h4>
-                      <Badge variant="secondary">{program.category.name}</Badge>
-                    </div>
-                  )}
-                  
-                  {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
-                    <div>
-                      <h4 className="font-medium mb-1">Операционные системы</h4>
-                      <div className="flex flex-wrap gap-1">
-                        {program.platforms.map((platform: string) => (
-                          <Badge key={platform} variant="outline" className="text-xs">
-                            {platform === 'macos' ? 'macOS' : 
-                             platform === 'ios' ? 'iOS' : 
-                             platform === 'web' ? 'Веб' :
-                             platform.charAt(0).toUpperCase() + platform.slice(1)}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {program.pricing && (
-                    <div>
-                      <h4 className="font-medium mb-1">Стоимость</h4>
-                      <div className="text-sm text-muted-foreground">
-                        {program.pricing === 'free' && 'Бесплатная'}
-                        {program.pricing === 'freemium' && 'Условно бесплатная'}
-                        {program.pricing === 'paid' && (
-                          <>
-                            Платная
-                            {program.price && (
-                              <span className="ml-2 font-medium text-foreground">
-                                {program.price}
-                              </span>
+                <CardContent>
+                  <table className="w-full">
+                    <tbody>
+                      {program.version && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Версия</td>
+                          <td className="py-2 text-sm text-muted-foreground">{program.version}</td>
+                        </tr>
+                      )}
+                      
+                      {program.developer && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Разработчик</td>
+                          <td className="py-2 text-sm text-muted-foreground">{program.developer}</td>
+                        </tr>
+                      )}
+                      
+                      {program.releaseYear && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Год выпуска</td>
+                          <td className="py-2 text-sm text-muted-foreground">{program.releaseYear}</td>
+                        </tr>
+                      )}
+                      
+                      {program.license && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Лицензия</td>
+                          <td className="py-2 text-sm text-muted-foreground">{program.license}</td>
+                        </tr>
+                      )}
+                      
+                      {program.category && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Категория</td>
+                          <td className="py-2 text-sm text-muted-foreground">{program.category.name}</td>
+                        </tr>
+                      )}
+                      
+                      {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Операционные системы</td>
+                          <td className="py-2">
+                            <div className="flex flex-wrap gap-1">
+                              {program.platforms.map((platform: string) => (
+                                <Badge key={platform} variant="outline" className="text-xs">
+                                  {platform === 'macos' ? 'macOS' : 
+                                   platform === 'ios' ? 'iOS' : 
+                                   platform === 'web' ? 'Веб' :
+                                   platform.charAt(0).toUpperCase() + platform.slice(1)}
+                                </Badge>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      
+                      {program.pricing && (
+                        <tr className="border-b border-border last:border-b-0">
+                          <td className="py-2 pr-4 font-medium text-sm">Стоимость</td>
+                          <td className="py-2 text-sm text-muted-foreground">
+                            {program.pricing === 'free' && 'Бесплатная'}
+                            {program.pricing === 'freemium' && 'Условно бесплатная'}
+                            {program.pricing === 'paid' && (
+                              <>
+                                Платная
+                                {program.price && (
+                                  <span className="ml-2 font-medium text-foreground">
+                                    {program.price}
+                                  </span>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      </div>
-                    </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </CardContent>
+              </Card>
+              
+              {/* Action buttons */}
+              <Card className="mt-4">
+                <CardHeader>
+                  <CardTitle>Ссылки</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {program.officialWebsite && (
+                    <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                      <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer">
+                        <Globe className="w-4 h-4 mr-2" />
+                        Официальный сайт
+                        <ExternalLink className="w-4 h-4 ml-auto" />
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {program.downloadUrl && (
+                    <Button asChild size="sm" className="w-full justify-start">
+                      <a href={program.downloadUrl} target="_blank" rel="noopener noreferrer">
+                        <Download className="w-4 h-4 mr-2" />
+                        Скачать
+                        <ExternalLink className="w-4 h-4 ml-auto" />
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {program.googlePlayUrl && (
+                    <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                      <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer">
+                        <Smartphone className="w-4 h-4 mr-2" />
+                        Google Play
+                        <ExternalLink className="w-4 h-4 ml-auto" />
+                      </a>
+                    </Button>
+                  )}
+                  
+                  {program.appStoreUrl && (
+                    <Button asChild variant="outline" size="sm" className="w-full justify-start">
+                      <a href={program.appStoreUrl} target="_blank" rel="noopener noreferrer">
+                        <Smartphone className="w-4 h-4 mr-2" />
+                        App Store
+                        <ExternalLink className="w-4 h-4 ml-auto" />
+                      </a>
+                    </Button>
                   )}
                 </CardContent>
               </Card>
