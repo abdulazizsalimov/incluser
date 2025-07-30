@@ -123,15 +123,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       setTimeout(() => {
         firstFocusableRef.current?.focus();
       }, 100);
-    } else {
-      // Return focus to accessibility button when panel closes
-      setTimeout(() => {
-        const accessibilityButton = document.querySelector('[aria-label="Специальные возможности"]') as HTMLElement;
-        if (accessibilityButton) {
-          accessibilityButton.focus();
-        }
-      }, 50); // Small delay to ensure panel is closed
     }
+    // Removed automatic focus return to prevent interference with form inputs
   }, [open]);
 
   // Focus trap implementation
