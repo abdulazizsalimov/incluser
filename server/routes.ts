@@ -744,6 +744,54 @@ ${articles.map(article => {
     }
   });
 
+  // Program routes
+  app.get('/api/programs', async (req, res) => {
+    try {
+      const { page = '1', limit = '12', search, categoryId } = req.query;
+      const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
+      
+      const programs = await storage.getPrograms({
+        published: true,
+        limit: parseInt(limit as string),
+        offset,
+        search: search as string,
+        categoryId: categoryId ? parseInt(categoryId as string) : undefined,
+      });
+
+      const totalCount = await storage.getProgramsCount({
+        published: true,
+        search: search as string,
+        categoryId: categoryId ? parseInt(categoryId as string) : undefined,
+      });
+
+      res.json({
+        programs,
+        pagination: {
+          page: parseInt(page as string),
+          limit: parseInt(limit as string),
+          total: totalCount,
+          totalPages: Math.ceil(totalCount / parseInt(limit as string)),
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+      res.status(500).json({ message: "Failed to fetch programs" });
+    }
+  });
+
+  app.get('/api/programs/:slug', async (req, res) => {
+    try {
+      const program = await storage.getProgramBySlug(req.params.slug);
+      if (!program || !program.isPublished) {
+        return res.status(404).json({ message: "Program not found" });
+      }
+      res.json(program);
+    } catch (error) {
+      console.error("Error fetching program:", error);
+      res.status(500).json({ message: "Failed to fetch program" });
+    }
+  });
+
   // Program category routes
   app.get('/api/program-categories', async (req, res) => {
     try {
@@ -819,56 +867,7 @@ ${articles.map(article => {
     }
   });
 
-  // Program routes
-  app.get('/api/programs', async (req, res) => {
-    try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-      const search = req.query.search as string;
-      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
-      const offset = (page - 1) * limit;
 
-      const programs = await storage.getPrograms({
-        published: true,
-        limit,
-        offset,
-        search,
-        categoryId
-      });
-
-      const total = await storage.getProgramsCount({
-        published: true,
-        search,
-        categoryId
-      });
-
-      res.json({
-        programs,
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages: Math.ceil(total / limit)
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching programs:", error);
-      res.status(500).json({ message: "Failed to fetch programs" });
-    }
-  });
-
-  app.get('/api/programs/:slug', async (req, res) => {
-    try {
-      const program = await storage.getProgramBySlug(req.params.slug);
-      if (!program) {
-        return res.status(404).json({ message: "Program not found" });
-      }
-      res.json(program);
-    } catch (error) {
-      console.error("Error fetching program:", error);
-      res.status(500).json({ message: "Failed to fetch program" });
-    }
-  });
 
   // Admin program management
   app.get('/api/admin/programs', isAdmin, async (req, res) => {

@@ -53,6 +53,7 @@ export interface IStorage {
   // Category operations
   getCategories(): Promise<Category[]>;
   getCategoryBySlug(slug: string): Promise<Category | undefined>;
+  getCategoryById(id: number): Promise<Category | undefined>;
   createCategory(category: InsertCategory): Promise<Category>;
   updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category>;
   deleteCategory(id: number): Promise<void>;
@@ -73,6 +74,7 @@ export interface IStorage {
   // Program category operations
   getProgramCategories(): Promise<ProgramCategory[]>;
   getProgramCategoryBySlug(slug: string): Promise<ProgramCategory | undefined>;
+  getProgramCategoryById(id: number): Promise<ProgramCategory | undefined>;
   createProgramCategory(category: InsertProgramCategory): Promise<ProgramCategory>;
   updateProgramCategory(id: number, category: Partial<InsertProgramCategory>): Promise<ProgramCategory>;
   deleteProgramCategory(id: number): Promise<void>;
@@ -340,6 +342,11 @@ export class DatabaseStorage implements IStorage {
 
   async getProgramCategoryBySlug(slug: string): Promise<ProgramCategory | undefined> {
     const [category] = await db.select().from(programCategories).where(eq(programCategories.slug, slug));
+    return category;
+  }
+
+  async getProgramCategoryById(id: number): Promise<ProgramCategory | undefined> {
+    const [category] = await db.select().from(programCategories).where(eq(programCategories.id, id));
     return category;
   }
 

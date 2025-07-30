@@ -21,6 +21,7 @@ import Login from "@/pages/Login";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ManageArticles from "@/pages/admin/ManageArticles";
 import ManageCategories from "@/pages/admin/ManageCategories";
+import ManagePrograms from "@/pages/admin/ManagePrograms";
 import ManagePages from "@/pages/admin/ManagePages";
 import Messages from "@/pages/admin/Messages";
 import AdminSettings from "@/pages/admin/AdminSettings";
@@ -52,6 +53,7 @@ function Router() {
           <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
           <Route path="/admin/articles" component={() => <AdminLayout><ManageArticles /></AdminLayout>} />
           <Route path="/admin/categories" component={() => <AdminLayout><ManageCategories /></AdminLayout>} />
+          <Route path="/admin/programs" component={() => <AdminLayout><ManagePrograms /></AdminLayout>} />
           <Route path="/admin/pages" component={() => <AdminLayout><ManagePages /></AdminLayout>} />
           <Route path="/admin/messages" component={() => <AdminLayout><Messages /></AdminLayout>} />
           <Route path="/admin/settings" component={() => <AdminLayout><AdminSettings /></AdminLayout>} />

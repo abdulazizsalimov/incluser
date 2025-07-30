@@ -110,7 +110,7 @@ export default function Programs() {
     enabled: !!categorySlug,
   });
 
-  const { data: programsData, isLoading } = useQuery<{
+  const { data: programsData, isLoading: programsLoading } = useQuery<{
     programs: ProgramWithRelations[];
     pagination: {
       page: number;
@@ -120,6 +120,17 @@ export default function Programs() {
     };
   }>({
     queryKey: ["/api/programs", { categoryId: category?.id }],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (category?.id) {
+        params.append('categoryId', category.id.toString());
+      }
+      const response = await fetch(`/api/programs?${params}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch programs');
+      }
+      return response.json();
+    },
     enabled: !!category?.id,
   });
 
@@ -136,7 +147,7 @@ export default function Programs() {
     );
   }
 
-  if (isLoading) {
+  if (programsLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse">
