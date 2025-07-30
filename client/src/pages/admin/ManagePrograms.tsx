@@ -360,6 +360,11 @@ export default function ManagePrograms() {
               appStoreUrl: "",
               categoryId: 0,
               isPublished: true,
+              releaseYear: new Date().getFullYear(),
+              license: "",
+              platforms: [] as string[],
+              pricing: "free",
+              price: "",
             });
             setLogoFile(null);
             setLogoUploadType("url");
@@ -588,7 +593,7 @@ export default function ManagePrograms() {
                         type="checkbox"
                         checked={newProgram.platforms && newProgram.platforms.includes(platform)}
                         onChange={(e) => {
-                          const currentPlatforms = [...newProgram.platforms];
+                          const currentPlatforms = [...(newProgram.platforms || [])];
                           if (e.target.checked) {
                             currentPlatforms.push(platform);
                           } else {
