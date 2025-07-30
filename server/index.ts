@@ -49,7 +49,6 @@ app.use((req, res, next) => {
   await seedAdmin();
   await seedInitialData();
   await seedProgramCategories();
-  await seedPrograms();
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
