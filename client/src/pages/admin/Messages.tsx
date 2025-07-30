@@ -22,7 +22,7 @@ export default function Messages() {
 
   const markAsReadMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/admin/messages/${id}/read`, 'PATCH');
+      await apiRequest(`/api/admin/messages/${id}/read`, 'PATCH', {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/messages'] });
@@ -41,7 +41,7 @@ export default function Messages() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest(`/api/admin/messages/${id}`, 'DELETE');
+      await apiRequest(`/api/admin/messages/${id}`, 'DELETE', undefined);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/messages'] });
