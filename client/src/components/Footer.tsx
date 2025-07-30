@@ -18,8 +18,8 @@ export default function Footer() {
     { href: "/testing-tools", label: "Инструменты тестирования" },
     { href: "/articles?category=best-practices", label: "Лучшие практики" },
     { href: "/articles?category=education", label: "Обучение и вебинары" },
-    { href: "/articles?category=screen-readers", label: "Программы экранного доступа" },
-    { href: "/articles?category=mobile-apps", label: "Мобильные приложения" },
+    { href: "/programs/screen-readers", label: "Программы экранного доступа" },
+    { href: "/programs/mobile-apps", label: "Мобильные приложения" },
   ];
 
   return (
