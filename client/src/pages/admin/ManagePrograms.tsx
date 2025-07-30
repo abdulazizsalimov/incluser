@@ -586,7 +586,7 @@ export default function ManagePrograms() {
                     <label key={platform} className="flex items-center space-x-2">
                       <input
                         type="checkbox"
-                        checked={newProgram.platforms.includes(platform)}
+                        checked={newProgram.platforms && newProgram.platforms.includes(platform)}
                         onChange={(e) => {
                           const currentPlatforms = [...newProgram.platforms];
                           if (e.target.checked) {
