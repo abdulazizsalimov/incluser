@@ -25,6 +25,10 @@ export default function ManagePrograms() {
     description: "",
     developer: "",
     logo: "",
+    officialWebsite: "",
+    downloadUrl: "",
+    googlePlayUrl: "",
+    appStoreUrl: "",
     categoryId: 0,
     isPublished: true,
   });
@@ -83,6 +87,10 @@ export default function ManagePrograms() {
         description: "",
         developer: "",
         logo: "",
+        officialWebsite: "",
+        downloadUrl: "",
+        googlePlayUrl: "",
+        appStoreUrl: "",
         categoryId: 0,
         isPublished: true,
       });
@@ -314,6 +322,54 @@ export default function ManagePrograms() {
                     </TabsContent>
                   </Tabs>
                 </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="officialWebsite" className="text-right">
+                  Сайт
+                </Label>
+                <Input
+                  id="officialWebsite"
+                  value={newProgram.officialWebsite}
+                  onChange={(e) => handleNewProgramChange('officialWebsite', e.target.value)}
+                  className="col-span-3"
+                  placeholder="https://example.com"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="downloadUrl" className="text-right">
+                  Скачать
+                </Label>
+                <Input
+                  id="downloadUrl"
+                  value={newProgram.downloadUrl}
+                  onChange={(e) => handleNewProgramChange('downloadUrl', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Прямая ссылка для скачивания"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="googlePlayUrl" className="text-right">
+                  Google Play
+                </Label>
+                <Input
+                  id="googlePlayUrl"
+                  value={newProgram.googlePlayUrl}
+                  onChange={(e) => handleNewProgramChange('googlePlayUrl', e.target.value)}
+                  className="col-span-3"
+                  placeholder="https://play.google.com/store/apps/details?id=..."
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="appStoreUrl" className="text-right">
+                  App Store
+                </Label>
+                <Input
+                  id="appStoreUrl"
+                  value={newProgram.appStoreUrl}
+                  onChange={(e) => handleNewProgramChange('appStoreUrl', e.target.value)}
+                  className="col-span-3"
+                  placeholder="https://apps.apple.com/app/..."
+                />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="category" className="text-right">
