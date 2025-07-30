@@ -230,14 +230,14 @@ export default function ManagePrograms() {
               Добавить программу
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[600px]">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
             <DialogHeader>
               <DialogTitle>Добавить новую программу</DialogTitle>
               <DialogDescription>
                 Заполните информацию о программе. Поля отмеченные * обязательны для заполнения.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-4 py-4 overflow-y-auto flex-1">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="title" className="text-right">
                   Название *
