@@ -83,7 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
-- July 30, 2025. Fixed About page layout issue for production deployment - added correct HTML content with flexbox layout for text wrapping around author photo to seed-pages.ts initialization, created special API endpoint /api/admin/update-about-page for updating existing incorrect About page content on production servers to match development environment layout
+- July 30, 2025. Fixed About page layout issue completely - replaced flexbox with CSS float layout for proper text wrapping around author photo, updated seed-pages.ts, API endpoint /api/admin/update-about-page, and About.tsx fallback content, created fix-about-page.md with three deployment methods for production servers
 - July 30, 2025. Fixed page title updating issues - created usePageTitle hook for automatic title management, added dynamic titles to all pages including articles with actual article names, ensured browser tab names update correctly when navigating between pages
 - July 30, 2025. Fixed contact form focus issue - removed automatic focus return to accessibility button that was causing focus to jump from form fields to header button during typing, improved form usability
 - July 30, 2025. Implemented complete contact form functionality - created working form submission to server, added contact_messages database table, built admin Messages section for viewing/managing form submissions, updated contact page with real contact information (email: salimov.abdulaziz.98@gmail.com, phone: +998 (99) 831-69-83, location: Ташкент, Узбекистан, timezone: UTC+5), improved contact page text clarity
