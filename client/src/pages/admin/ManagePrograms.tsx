@@ -23,6 +23,7 @@ export default function ManagePrograms() {
     slug: "",
     description: "",
     developer: "",
+    logo: "",
     categoryId: 0,
     isPublished: true,
   });
@@ -78,6 +79,7 @@ export default function ManagePrograms() {
         slug: "",
         description: "",
         developer: "",
+        logo: "",
         categoryId: 0,
         isPublished: true,
       });
@@ -230,6 +232,18 @@ export default function ManagePrograms() {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="logo" className="text-right">
+                  Логотип/Иконка
+                </Label>
+                <Input
+                  id="logo"
+                  value={newProgram.logo}
+                  onChange={(e) => handleNewProgramChange('logo', e.target.value)}
+                  className="col-span-3"
+                  placeholder="URL изображения логотипа"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="category" className="text-right">
                   Категория *
                 </Label>
@@ -241,7 +255,7 @@ export default function ManagePrograms() {
                     <SelectValue placeholder="Выберите категорию" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.map((category: any) => (
+                    {Array.isArray(categories) && categories.map((category: any) => (
                       <SelectItem key={category.id} value={category.id.toString()}>
                         {category.name}
                       </SelectItem>
@@ -299,7 +313,7 @@ export default function ManagePrograms() {
           className="px-3 py-2 border border-input bg-background rounded-md"
         >
           <option value="">Все категории</option>
-          {categories?.map((category: any) => (
+          {Array.isArray(categories) && categories.map((category: any) => (
             <option key={category.id} value={category.id}>
               {category.name}
             </option>
