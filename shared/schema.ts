@@ -101,8 +101,11 @@ export const programCategories = pgTable("program_categories", {
 export const programs = pgTable("programs", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 200 }).notNull(),
+  version: varchar("version", { length: 50 }),
   slug: varchar("slug", { length: 200 }).notNull().unique(),
   description: text("description").notNull(),
+  whatsNew: text("whats_new"),
+  detailedDescription: text("detailed_description"),
   logo: varchar("logo"), // Logo/screenshot image path
   developer: varchar("developer", { length: 200 }),
   officialWebsite: varchar("official_website"),

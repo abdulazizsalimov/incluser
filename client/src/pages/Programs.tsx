@@ -31,7 +31,12 @@ function ProgramCard({ program }: { program: ProgramWithRelations }) {
             />
           )}
           <div className="flex-1">
-            <CardTitle className="text-xl">{program.title}</CardTitle>
+            <CardTitle className="text-xl">
+              <Link href={`/programs/${program.slug}`} className="hover:text-primary transition-colors">
+                {program.title}
+                {program.version && <span className="text-base text-muted-foreground ml-2">v{program.version}</span>}
+              </Link>
+            </CardTitle>
             <CardDescription className="mt-2">
               {program.developer && (
                 <span className="block text-sm text-muted-foreground">

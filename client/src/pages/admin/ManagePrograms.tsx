@@ -21,8 +21,11 @@ export default function ManagePrograms() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newProgram, setNewProgram] = useState({
     title: "",
+    version: "",
     slug: "",
     description: "",
+    whatsNew: "",
+    detailedDescription: "",
     developer: "",
     logo: "",
     officialWebsite: "",
@@ -83,8 +86,11 @@ export default function ManagePrograms() {
       setIsCreateDialogOpen(false);
       setNewProgram({
         title: "",
+        version: "",
         slug: "",
         description: "",
+        whatsNew: "",
+        detailedDescription: "",
         developer: "",
         logo: "",
         officialWebsite: "",
@@ -251,6 +257,18 @@ export default function ManagePrograms() {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="version" className="text-right">
+                  Версия
+                </Label>
+                <Input
+                  id="version"
+                  value={newProgram.version}
+                  onChange={(e) => handleNewProgramChange('version', e.target.value)}
+                  className="col-span-3"
+                  placeholder="1.0.0"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="slug" className="text-right">
                   Slug
                 </Label>
@@ -400,8 +418,34 @@ export default function ManagePrograms() {
                   value={newProgram.description}
                   onChange={(e) => handleNewProgramChange('description', e.target.value)}
                   className="col-span-3"
-                  placeholder="Описание программы..."
-                  rows={4}
+                  placeholder="Краткое описание программы..."
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="whatsNew" className="text-right mt-2">
+                  Что нового
+                </Label>
+                <Textarea
+                  id="whatsNew"
+                  value={newProgram.whatsNew}
+                  onChange={(e) => handleNewProgramChange('whatsNew', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Новые функции и изменения..."
+                  rows={3}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label htmlFor="detailedDescription" className="text-right mt-2">
+                  Подробное описание
+                </Label>
+                <Textarea
+                  id="detailedDescription"
+                  value={newProgram.detailedDescription}
+                  onChange={(e) => handleNewProgramChange('detailedDescription', e.target.value)}
+                  className="col-span-3"
+                  placeholder="Детальная информация о программе..."
+                  rows={5}
                 />
               </div>
             </div>
