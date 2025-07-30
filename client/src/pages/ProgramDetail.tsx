@@ -102,28 +102,19 @@ export default function ProgramDetail() {
             <div className="lg:col-span-2">
               <article className="prose prose-lg dark:prose-invert max-w-none">
                 <header className="mb-8">
-                  <div className="flex items-start gap-6 mb-6">
-                    {program.logo && (
-                      <img
-                        src={program.logo}
-                        alt={`${program.title} логотип`}
-                        className="w-20 h-20 object-contain"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <h1 className="text-4xl font-bold mb-2">
-                        {program.title}
-                        {program.version && (
-                          <span className="text-2xl text-muted-foreground ml-3">v{program.version}</span>
-                        )}
-                      </h1>
-                      <p className="text-lg text-muted-foreground mb-2">{program.description}</p>
-                      {program.developer && (
-                        <p className="text-base text-muted-foreground">
-                          Разработчик: {program.developer}
-                        </p>
+                  <div className="mb-6">
+                    <h1 className="text-4xl font-bold mb-2">
+                      {program.title}
+                      {program.version && (
+                        <span className="text-2xl text-muted-foreground ml-3">v{program.version}</span>
                       )}
-                    </div>
+                    </h1>
+                    <p className="text-lg text-muted-foreground mb-2">{program.description}</p>
+                    {program.developer && (
+                      <p className="text-base text-muted-foreground">
+                        Разработчик: {program.developer}
+                      </p>
+                    )}
                   </div>
                   
                   {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
@@ -226,6 +217,15 @@ export default function ProgramDetail() {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
+              {program.logo && (
+                <div className="mb-4">
+                  <img
+                    src={program.logo}
+                    alt={`${program.title} логотип`}
+                    className="w-full max-w-full h-auto object-contain rounded-lg border border-border"
+                  />
+                </div>
+              )}
               <Card>
                 <CardHeader>
                   <CardTitle>Информация о программе</CardTitle>
