@@ -1,5 +1,7 @@
 import { Link } from "wouter";
 import { SiFacebook, SiTelegram, SiVk } from "react-icons/si";
+import ReportProblemDialog from "@/components/ReportProblemDialog";
+import { Button } from "@/components/ui/button";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -31,12 +33,13 @@ export default function Footer() {
               <p className="text-slate-300 mb-3">
                 Мы стараемся сделать сайт максимально удобным для пользователей экранных дикторов, устройств с клавиатурной навигацией и мобильных пользователей. Если вы столкнулись с проблемой — сообщите нам.
               </p>
-              <Link 
-                href="/contact"
-                className="inline-flex items-center px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
-              >
-                Сообщить о проблеме
-              </Link>
+              <ReportProblemDialog>
+                <Button 
+                  className="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+                >
+                  Сообщить о проблеме
+                </Button>
+              </ReportProblemDialog>
             </div>
             
             <h3 className="text-2xl font-bold text-gradient mb-4">

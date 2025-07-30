@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Mail, MailOpen, Clock, User, Calendar } from "lucide-react";
+import { Trash2, Mail, MailOpen, Clock, User, Calendar, AlertTriangle, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { ContactMessage } from "@shared/schema";
@@ -105,6 +105,18 @@ export default function Messages() {
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <CardTitle className="text-lg">{message.subject}</CardTitle>
+                      {message.type === "problem_report" && (
+                        <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                          <AlertTriangle className="w-3 h-3 mr-1" />
+                          Проблема
+                        </Badge>
+                      )}
+                      {(!message.type || message.type === "contact") && (
+                        <Badge variant="outline" className="text-xs">
+                          <MessageCircle className="w-3 h-3 mr-1" />
+                          Обратная связь
+                        </Badge>
+                      )}
                       {!message.isRead && (
                         <Badge variant="default" className="text-xs">
                           Новое

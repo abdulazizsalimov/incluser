@@ -48,7 +48,10 @@ export default function Contact() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          type: "contact"
+        }),
       });
 
       if (!response.ok) {
