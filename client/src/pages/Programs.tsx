@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Download, Globe, Smartphone, Tablet, Monitor } from "lucide-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import type { ProgramWithRelations, ProgramCategory } from "@shared/schema";
 
 function ProgramCard({ program }: { program: ProgramWithRelations }) {
@@ -145,79 +147,103 @@ export default function Programs() {
 
   if (!categorySlug) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Программы и приложения</h1>
-        <p className="text-center text-muted-foreground">
-          Выберите категорию программ для просмотра
-        </p>
-      </div>
+      <>
+        <Header />
+        <main className="flex-1">
+          <div className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold text-center mb-8">Программы и приложения</h1>
+            <p className="text-center text-muted-foreground">
+              Выберите категорию программ для просмотра
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </>
     );
   }
 
   if (categoryLoading || programsLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3 mb-8"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded"></div>
-            ))}
+      <>
+        <Header />
+        <main className="flex-1">
+          <div className="container mx-auto px-4 py-8">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+              <div className="h-4 bg-gray-200 rounded w-2/3 mb-8"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div key={i} className="h-64 bg-gray-200 rounded"></div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </main>
+        <Footer />
+      </>
     );
   }
 
   if (!category) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">Категория не найдена</h1>
-        <div className="text-center">
-          <Button asChild>
-            <Link href="/">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              На главную
-            </Link>
-          </Button>
-        </div>
-      </div>
+      <>
+        <Header />
+        <main className="flex-1">
+          <div className="container mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold text-center mb-8">Категория не найдена</h1>
+            <div className="text-center">
+              <Button asChild>
+                <Link href="/">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  На главную
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </>
     );
   }
 
   const programs = programsData?.programs || [];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <Button asChild variant="ghost" className="mb-4">
-          <Link href="/">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            На главную
-          </Link>
-        </Button>
-        
-        <h1 className="text-3xl font-bold mb-4">{category.name}</h1>
-        {category.description && (
-          <p className="text-lg text-muted-foreground">{category.description}</p>
-        )}
-      </div>
+    <>
+      <Header />
+      <main className="flex-1">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <Button asChild variant="ghost" className="mb-4">
+              <Link href="/">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                На главную
+              </Link>
+            </Button>
+            
+            <h1 className="text-3xl font-bold mb-4">{category.name}</h1>
+            {category.description && (
+              <p className="text-lg text-muted-foreground">{category.description}</p>
+            )}
+          </div>
 
-      {programs.length === 0 ? (
-        <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-4">Программы не найдены</h2>
-          <p className="text-muted-foreground">
-            В этой категории пока нет программ
-          </p>
+          {programs.length === 0 ? (
+            <div className="text-center py-12">
+              <h2 className="text-xl font-semibold mb-4">Программы не найдены</h2>
+              <p className="text-muted-foreground">
+                В этой категории пока нет программ
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {programs.map((program) => (
+                <ProgramCard key={program.id} program={program} />
+              ))}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {programs.map((program) => (
-            <ProgramCard key={program.id} program={program} />
-          ))}
-        </div>
-      )}
-    </div>
+      </main>
+      <Footer />
+    </>
   );
 }

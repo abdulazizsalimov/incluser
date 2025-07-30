@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Search, Edit, Trash2, Eye, EyeOff, Upload } from "lucide-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { ProgramWithRelations } from "@shared/schema";
@@ -27,6 +28,8 @@ export default function ManagePrograms() {
     categoryId: 0,
     isPublished: true,
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoUploadType, setLogoUploadType] = useState<"url" | "file">("url");
   const { toast } = useToast();
 
   usePageTitle("Управление программами - Админ панель");
@@ -83,6 +86,8 @@ export default function ManagePrograms() {
         categoryId: 0,
         isPublished: true,
       });
+      setLogoFile(null);
+      setLogoUploadType("url");
       toast({
         title: "Программа создана",
         description: "Новая программа была успешно добавлена",
@@ -143,7 +148,7 @@ export default function ManagePrograms() {
   };
 
   // Handle form submission
-  const handleCreateProgram = () => {
+  const handleCreateProgram = async () => {
     if (!newProgram.title || !newProgram.description || !newProgram.developer || !newProgram.categoryId) {
       toast({
         title: "Ошибка",
@@ -152,7 +157,37 @@ export default function ManagePrograms() {
       });
       return;
     }
-    createProgram.mutate(newProgram);
+
+    let programData = { ...newProgram };
+
+    // Handle file upload if a file is selected
+    if (logoUploadType === "file" && logoFile) {
+      try {
+        const formData = new FormData();
+        formData.append('image', logoFile);
+
+        const response = await fetch('/api/admin/upload-image', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const { filePath } = await response.json();
+        programData.logo = filePath;
+      } catch (error) {
+        toast({
+          title: "Ошибка загрузки",
+          description: "Не удалось загрузить изображение",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    createProgram.mutate(programData);
   };
 
   if (isLoading) {
@@ -231,17 +266,54 @@ export default function ManagePrograms() {
                   placeholder="Название разработчика"
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="logo" className="text-right">
+              <div className="grid grid-cols-4 items-start gap-4">
+                <Label className="text-right mt-2">
                   Логотип/Иконка
                 </Label>
-                <Input
-                  id="logo"
-                  value={newProgram.logo}
-                  onChange={(e) => handleNewProgramChange('logo', e.target.value)}
-                  className="col-span-3"
-                  placeholder="URL изображения логотипа"
-                />
+                <div className="col-span-3">
+                  <Tabs value={logoUploadType} onValueChange={(value) => setLogoUploadType(value as "url" | "file")}>
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="url">URL</TabsTrigger>
+                      <TabsTrigger value="file">Файл</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="url" className="mt-2">
+                      <Input
+                        value={newProgram.logo}
+                        onChange={(e) => handleNewProgramChange('logo', e.target.value)}
+                        placeholder="URL изображения логотипа"
+                      />
+                    </TabsContent>
+                    <TabsContent value="file" className="mt-2">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              if (file.size > 5 * 1024 * 1024) {
+                                toast({
+                                  title: "Файл слишком большой",
+                                  description: "Размер файла не должен превышать 5 МБ",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              setLogoFile(file);
+                            }
+                          }}
+                          className="flex-1"
+                        />
+                        <Upload className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                      {logoFile && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Выбран файл: {logoFile.name}
+                        </p>
+                      )}
+                    </TabsContent>
+                  </Tabs>
+                </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="category" className="text-right">
