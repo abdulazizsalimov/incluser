@@ -320,14 +320,41 @@ ${articles.map(article => {
 
       // Search articles by title and content
       const articles = await storage.searchArticles(searchTerm);
-      const articleResults = articles.map(article => ({
-        type: 'article' as const,
-        id: article.id.toString(),
-        title: article.title,
-        description: article.excerpt || article.content?.substring(0, 150) + '...' || '',
-        url: `/articles/${article.slug}`,
-        category: article.category?.name
-      }));
+      const articleResults = articles.map(article => {
+        let description = '';
+        
+        if (article.excerpt) {
+          description = article.excerpt;
+        } else if (article.content) {
+          // Remove HTML tags
+          const cleanContent = article.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+          
+          // Find the search term in content
+          const searchIndex = cleanContent.toLowerCase().indexOf(searchTerm.toLowerCase());
+          
+          if (searchIndex !== -1) {
+            // Extract text around the found term
+            const start = Math.max(0, searchIndex - 75);
+            const end = Math.min(cleanContent.length, searchIndex + searchTerm.length + 75);
+            const excerpt = cleanContent.substring(start, end);
+            
+            // Add ellipsis if we cut text
+            description = (start > 0 ? '...' : '') + excerpt + (end < cleanContent.length ? '...' : '');
+          } else {
+            // Fallback to beginning of content
+            description = cleanContent.substring(0, 150) + (cleanContent.length > 150 ? '...' : '');
+          }
+        }
+        
+        return {
+          type: 'article' as const,
+          id: article.id.toString(),
+          title: article.title,
+          description: description || 'Статья без описания',
+          url: `/articles/${article.slug}`,
+          category: article.category?.name
+        };
+      });
 
       // Search programs by title and description
       const programs = await storage.searchPrograms(searchTerm);
@@ -342,13 +369,38 @@ ${articles.map(article => {
 
       // Search pages by title and content
       const pages = await storage.searchPages(searchTerm);
-      const pageResults = pages.map(page => ({
-        type: 'page' as const,
-        id: page.id.toString(),
-        title: page.title,
-        description: page.content?.substring(0, 150) + '...' || '',
-        url: getPageUrl(page.slug)
-      }));
+      const pageResults = pages.map(page => {
+        let description = '';
+        
+        if (page.content) {
+          // Remove HTML tags
+          const cleanContent = page.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+          
+          // Find the search term in content
+          const searchIndex = cleanContent.toLowerCase().indexOf(searchTerm.toLowerCase());
+          
+          if (searchIndex !== -1) {
+            // Extract text around the found term
+            const start = Math.max(0, searchIndex - 75);
+            const end = Math.min(cleanContent.length, searchIndex + searchTerm.length + 75);
+            const excerpt = cleanContent.substring(start, end);
+            
+            // Add ellipsis if we cut text
+            description = (start > 0 ? '...' : '') + excerpt + (end < cleanContent.length ? '...' : '');
+          } else {
+            // Fallback to beginning of content
+            description = cleanContent.substring(0, 150) + (cleanContent.length > 150 ? '...' : '');
+          }
+        }
+        
+        return {
+          type: 'page' as const,
+          id: page.id.toString(),
+          title: page.title,
+          description: description || 'Страница без описания',
+          url: getPageUrl(page.slug)
+        };
+      });
 
       const totalResults = articleResults.length + programResults.length + pageResults.length;
 
