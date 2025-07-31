@@ -82,29 +82,21 @@ export default function Header() {
               </li>
 
               <li className="flex items-baseline">
-                <Link 
-                  href="/articles"
-                  className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
-                    isActive("/articles")
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-primary"
-                  }`}
-                  aria-current={isActive("/articles") ? "page" : undefined}
-                >
-                  Статьи
-                </Link>
-                
-                {/* Categories dropdown for Articles */}
-                {categories.length > 0 && (
+                {/* Articles dropdown */}
+                {categories.length > 0 ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        size="sm"
-                        className="ml-1 h-6 w-6 p-0 align-baseline"
-                        aria-label="Категории статей"
+                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 h-auto align-baseline hover:bg-transparent ${
+                          isActive("/articles")
+                            ? "text-primary hover:text-primary"
+                            : "text-muted-foreground hover:text-primary"
+                        }`}
+                        aria-label="Статьи"
                       >
-                        <ChevronDown className="h-4 w-4" />
+                        Статьи
+                        <ChevronDown className="h-4 w-4 ml-1" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="min-w-[200px]">
@@ -125,6 +117,18 @@ export default function Header() {
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
+                ) : (
+                  <Link 
+                    href="/articles"
+                    className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
+                      isActive("/articles")
+                        ? "text-primary"
+                        : "text-muted-foreground hover:text-primary"
+                    }`}
+                    aria-current={isActive("/articles") ? "page" : undefined}
+                  >
+                    Статьи
+                  </Link>
                 )}
               </li>
 
