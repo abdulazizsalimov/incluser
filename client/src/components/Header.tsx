@@ -65,7 +65,7 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav id="navigation" role="navigation" aria-label="Основная навигация" className="hidden md:block">
-            <ul className="flex items-center space-x-6">
+            <ul className="flex items-baseline space-x-6">
               {/* Main navigation items */}
               <li>
                 <Link 
@@ -81,7 +81,7 @@ export default function Header() {
                 </Link>
               </li>
 
-              <li className="flex items-center">
+              <li className="flex items-baseline">
                 <Link 
                   href="/articles"
                   className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
@@ -101,7 +101,7 @@ export default function Header() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="ml-1 h-6 w-6 p-0"
+                        className="ml-1 h-6 w-6 p-0 align-baseline"
                         aria-label="Категории статей"
                       >
                         <ChevronDown className="h-4 w-4" />
@@ -128,14 +128,14 @@ export default function Header() {
                 )}
               </li>
 
-              <li className="flex items-center">
+              <li className="flex items-baseline">
                 {/* Program categories dropdown */}
                 {programCategories.length > 0 ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
-                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 h-auto ${
+                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 h-auto align-baseline ${
                           location.startsWith("/programs")
                             ? "text-primary"
                             : "text-muted-foreground hover:text-primary"
