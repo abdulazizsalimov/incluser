@@ -239,9 +239,9 @@ export default function ProgramDetail() {
               
               {/* Action buttons */}
               <div className="mt-4 space-y-3">
-                {/* Горизонтальные кнопки: Официальный сайт и Скачать */}
-                {(program.officialWebsite || program.downloadUrl) && (
-                  <div className="grid grid-cols-2 gap-2">
+                {/* Все ссылки в одну строку */}
+                {(program.officialWebsite || program.downloadUrl || program.googlePlayUrl || program.appStoreUrl) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {program.officialWebsite && (
                       <Button asChild variant="outline" size="sm" className="justify-center">
                         <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer">
@@ -261,28 +261,27 @@ export default function ProgramDetail() {
                         </a>
                       </Button>
                     )}
+
+                    {program.googlePlayUrl && (
+                      <Button asChild variant="outline" size="sm" className="justify-center">
+                        <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer">
+                          <Smartphone className="w-4 h-4 mr-2" />
+                          Google Play
+                          <ExternalLink className="w-3 h-3 ml-1" />
+                        </a>
+                      </Button>
+                    )}
+                    
+                    {program.appStoreUrl && (
+                      <Button asChild variant="outline" size="sm" className="justify-center">
+                        <a href={program.appStoreUrl} target="_blank" rel="noopener noreferrer">
+                          <Smartphone className="w-4 h-4 mr-2" />
+                          App Store
+                          <ExternalLink className="w-3 h-3 ml-1" />
+                        </a>
+                      </Button>
+                    )}
                   </div>
-                )}
-                
-                {/* Вертикальные кнопки: мобильные приложения */}
-                {program.googlePlayUrl && (
-                  <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                    <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer">
-                      <Smartphone className="w-4 h-4 mr-2" />
-                      Google Play
-                      <ExternalLink className="w-4 h-4 ml-auto" />
-                    </a>
-                  </Button>
-                )}
-                
-                {program.appStoreUrl && (
-                  <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                    <a href={program.appStoreUrl} target="_blank" rel="noopener noreferrer">
-                      <Smartphone className="w-4 h-4 mr-2" />
-                      App Store
-                      <ExternalLink className="w-4 h-4 ml-auto" />
-                    </a>
-                  </Button>
                 )}
               </div>
             </div>
