@@ -139,12 +139,26 @@ export default function GlobalSearchWithKeyboard() {
     searchResults.pages.length > 0
   );
 
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'article': return 'Статья';
+      case 'program': return 'Программа';
+      case 'page': return 'Страница';
+      default: return 'Результат';
+    }
+  };
+
   const renderResultItem = (result: SearchResult, globalIndex: number) => {
     const isSelected = selectedIndex === globalIndex;
+    const typeLabel = getTypeLabel(result.type);
     
     return (
       <div 
+        id={`search-result-${globalIndex}`}
         key={`${result.type}-${result.id}`}
+        role="option"
+        aria-selected={isSelected}
+        aria-label={`${typeLabel}: ${result.title}. ${result.description}${result.category ? `. Категория: ${result.category}` : ''}`}
         className={`p-2 rounded cursor-pointer transition-colors ${
           isSelected ? 'bg-accent' : 'hover:bg-accent'
         }`}
@@ -190,6 +204,12 @@ export default function GlobalSearchWithKeyboard() {
                 onKeyDown={handleKeyDown}
                 placeholder="Поиск по сайту... (↑↓ для навигации, Enter для перехода)"
                 className="border-0 bg-transparent p-0 focus-visible:ring-0 flex-1"
+                role="combobox"
+                aria-expanded={isExpanded && hasResults}
+                aria-haspopup="listbox"
+                aria-controls="search-results"
+                aria-activedescendant={selectedIndex >= 0 ? `search-result-${selectedIndex}` : undefined}
+                aria-label="Поиск по сайту"
               />
               <Button
                 variant="ghost"
@@ -204,21 +224,31 @@ export default function GlobalSearchWithKeyboard() {
 
             {/* Search Results */}
             {searchQuery.trim() && (
-              <div className="max-h-96 overflow-y-auto">
+              <div 
+                id="search-results"
+                className="max-h-96 overflow-y-auto"
+                role="listbox"
+                aria-label="Результаты поиска"
+                aria-live="polite"
+                aria-relevant="additions removals"
+              >
                 {isLoading ? (
-                  <div className="p-4 text-center text-muted-foreground">
+                  <div className="p-4 text-center text-muted-foreground" aria-live="polite">
                     Поиск...
                   </div>
                 ) : !hasResults ? (
-                  <div className="p-4 text-center text-muted-foreground">
+                  <div className="p-4 text-center text-muted-foreground" aria-live="polite">
                     {searchQuery.trim() ? 'Ничего не найдено' : 'Введите запрос для поиска'}
                   </div>
                 ) : (
                   <div className="p-2">
                     {/* Articles */}
                     {searchResults.articles.length > 0 && (
-                      <div className="mb-4">
-                        <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground">
+                      <div className="mb-4" role="group" aria-labelledby="articles-heading">
+                        <div 
+                          id="articles-heading"
+                          className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground"
+                        >
                           {getSectionIcon('article')}
                           {getSectionTitle('article')} ({searchResults.articles.length})
                         </div>
@@ -232,8 +262,11 @@ export default function GlobalSearchWithKeyboard() {
 
                     {/* Programs */}
                     {searchResults.programs.length > 0 && (
-                      <div className="mb-4">
-                        <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground">
+                      <div className="mb-4" role="group" aria-labelledby="programs-heading">
+                        <div 
+                          id="programs-heading"
+                          className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground"
+                        >
                           {getSectionIcon('program')}
                           {getSectionTitle('program')} ({searchResults.programs.length})
                         </div>
@@ -247,8 +280,11 @@ export default function GlobalSearchWithKeyboard() {
 
                     {/* Pages */}
                     {searchResults.pages.length > 0 && (
-                      <div>
-                        <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground">
+                      <div role="group" aria-labelledby="pages-heading">
+                        <div 
+                          id="pages-heading"
+                          className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground"
+                        >
                           {getSectionIcon('page')}
                           {getSectionTitle('page')} ({searchResults.pages.length})
                         </div>
