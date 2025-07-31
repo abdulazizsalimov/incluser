@@ -14,10 +14,6 @@ export default function Messages() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const { data: messages = [], isLoading } = useQuery<ContactMessage[]>({
     queryKey: ['/api/admin/messages'],
   });

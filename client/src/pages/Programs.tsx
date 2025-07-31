@@ -173,20 +173,10 @@ export default function Programs() {
 
   usePageTitle(category ? `${category.name} - Программы` : "Программы");
 
-  // Scroll to top on component mount and category change
+  // Scroll to top only on category change or initial load
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [categorySlug]);
-
-  // Scroll to top only when page changes, not search
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
-
-  // Ensure scroll to top on initial load
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
