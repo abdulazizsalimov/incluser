@@ -323,9 +323,8 @@ ${articles.map(article => {
       const articleResults = articles.map(article => {
         let description = '';
         
-        if (article.excerpt) {
-          description = article.excerpt;
-        } else if (article.content) {
+        // Always try to show context around search term, even if excerpt exists
+        if (article.content) {
           // Remove HTML tags
           const cleanContent = article.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
           
@@ -340,10 +339,15 @@ ${articles.map(article => {
             
             // Add ellipsis if we cut text
             description = (start > 0 ? '...' : '') + excerpt + (end < cleanContent.length ? '...' : '');
+          } else if (article.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+            // If found in title, show excerpt or beginning of content
+            description = article.excerpt || cleanContent.substring(0, 150) + (cleanContent.length > 150 ? '...' : '');
           } else {
             // Fallback to beginning of content
             description = cleanContent.substring(0, 150) + (cleanContent.length > 150 ? '...' : '');
           }
+        } else if (article.excerpt) {
+          description = article.excerpt;
         }
         
         return {
