@@ -116,8 +116,8 @@ export default function WcagGuides() {
       <main className="pt-32 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <header className="mb-8 text-center">
-            <h1 className="text-4xl font-bold mb-6">
-              Руководство по обеспечению доступности веб-контента (WCAG) 2.1
+            <h1 className="text-4xl font-bold mb-6 whitespace-nowrap">
+              Руководство по обеспечению доступности веб-контента (WCAG)&nbsp;2.1
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
               Рекомендация W3C от 5 июня 2018 г. - Полный текст руководства на русском языке
