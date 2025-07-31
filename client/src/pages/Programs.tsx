@@ -178,10 +178,10 @@ export default function Programs() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [categorySlug]);
 
-  // Scroll to top when page or search changes
+  // Scroll to top only when page changes, not search
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage, search]);
+  }, [currentPage]);
 
   // Ensure scroll to top on initial load
   useEffect(() => {
