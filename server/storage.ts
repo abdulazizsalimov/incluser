@@ -151,7 +151,13 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(articles.isPublished, published));
     }
     if (search) {
-      conditions.push(like(articles.title, `%${search}%`));
+      conditions.push(
+        or(
+          ilike(articles.title, `%${search}%`),
+          ilike(articles.content, `%${search}%`),
+          ilike(articles.excerpt, `%${search}%`)
+        )
+      );
     }
     if (categoryId) {
       conditions.push(eq(articles.categoryId, categoryId));
@@ -242,7 +248,13 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(articles.isPublished, published));
     }
     if (search) {
-      conditions.push(like(articles.title, `%${search}%`));
+      conditions.push(
+        or(
+          ilike(articles.title, `%${search}%`),
+          ilike(articles.content, `%${search}%`),
+          ilike(articles.excerpt, `%${search}%`)
+        )
+      );
     }
     if (categoryId) {
       conditions.push(eq(articles.categoryId, categoryId));
