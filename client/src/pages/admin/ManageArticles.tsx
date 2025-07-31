@@ -30,7 +30,18 @@ export default function ManageArticles() {
   usePageTitle("Управление статьями - Админ панель");
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [actualSearch, setActualSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+
+  // Debounce search to prevent constant re-renders
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setActualSearch(search);
+      setCurrentPage(1); // Reset to first page when search changes
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
   const [showEditor, setShowEditor] = useState(false);
   const [editingArticle, setEditingArticle] = useState<ArticleWithRelations | null>(null);
   const { toast } = useToast();
@@ -60,14 +71,14 @@ export default function ManageArticles() {
     totalCount: number;
     totalPages: number;
   }>({
-    queryKey: ["/api/admin/articles", { page: currentPage, limit: articlesPerPage, search, categoryId: categoryFilter }],
+    queryKey: ["/api/admin/articles", { page: currentPage, limit: articlesPerPage, search: actualSearch, categoryId: categoryFilter }],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: articlesPerPage.toString(),
       });
       
-      if (search) params.append("search", search);
+      if (actualSearch) params.append("search", actualSearch);
       if (categoryFilter && categoryFilter !== "all") params.append("categoryId", categoryFilter);
       
       const response = await fetch(`/api/admin/articles?${params}`);

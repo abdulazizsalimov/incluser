@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,17 @@ import type { ProgramWithRelations } from "@shared/schema";
 
 export default function ManagePrograms() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [actualSearch, setActualSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+
+  // Debounce search to prevent constant re-renders
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setActualSearch(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProgram, setEditingProgram] = useState<ProgramWithRelations | null>(null);
@@ -57,7 +67,7 @@ export default function ManagePrograms() {
       totalPages: number;
     };
   }>({
-    queryKey: ["/api/admin/programs", { search: searchTerm, categoryId: selectedCategory }],
+    queryKey: ["/api/admin/programs", { search: actualSearch, categoryId: selectedCategory }],
   });
 
   const { data: categories = [] } = useQuery({
