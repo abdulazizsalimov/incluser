@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { Search, X, FileText, Monitor, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
 interface SearchResult {
@@ -22,7 +20,7 @@ interface SearchResponse {
   totalResults: number;
 }
 
-export default function GlobalSearch() {
+export default function GlobalSearchWithKeyboard() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -44,6 +42,13 @@ export default function GlobalSearch() {
     enabled: !!searchQuery.trim(),
   });
 
+  // Get all results in a flat array for navigation
+  const allResults = [
+    ...(searchResults?.articles || []),
+    ...(searchResults?.programs || []),
+    ...(searchResults?.pages || [])
+  ];
+
   // Handle expand/collapse
   const handleExpand = () => {
     setIsExpanded(true);
@@ -57,30 +62,6 @@ export default function GlobalSearch() {
     setSearchQuery("");
     setSelectedIndex(-1);
   };
-
-  // Click outside to close
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        handleCollapse();
-      }
-    };
-
-    if (isExpanded) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isExpanded]);
-
-  // Get all results in a flat array for navigation
-  const allResults = [
-    ...(searchResults?.articles || []),
-    ...(searchResults?.programs || []),
-    ...(searchResults?.pages || [])
-  ];
 
   // Handle keyboard navigation
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -117,16 +98,21 @@ export default function GlobalSearch() {
     setSelectedIndex(-1);
   }, [searchQuery]);
 
-  // Escape key to close
+  // Click outside to close
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isExpanded) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         handleCollapse();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    if (isExpanded) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [isExpanded]);
 
   const getSectionIcon = (type: string) => {
@@ -153,6 +139,31 @@ export default function GlobalSearch() {
     searchResults.pages.length > 0
   );
 
+  const renderResultItem = (result: SearchResult, globalIndex: number) => {
+    const isSelected = selectedIndex === globalIndex;
+    
+    return (
+      <div 
+        key={`${result.type}-${result.id}`}
+        className={`p-2 rounded cursor-pointer transition-colors ${
+          isSelected ? 'bg-accent' : 'hover:bg-accent'
+        }`}
+        onClick={() => {
+          window.location.href = result.url;
+          handleCollapse();
+        }}
+      >
+        <div className="font-medium text-sm">{result.title}</div>
+        <div className="text-xs text-muted-foreground line-clamp-2">
+          {result.description}
+        </div>
+        {result.category && (
+          <div className="text-xs text-blue-600 mt-1">{result.category}</div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div ref={containerRef} className="relative">
       {!isExpanded ? (
@@ -177,7 +188,7 @@ export default function GlobalSearch() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Поиск по сайту..."
+                placeholder="Поиск по сайту... (↑↓ для навигации, Enter для перехода)"
                 className="border-0 bg-transparent p-0 focus-visible:ring-0 flex-1"
               />
               <Button
@@ -204,7 +215,7 @@ export default function GlobalSearch() {
                   </div>
                 ) : (
                   <div className="p-2">
-                    {/* Articles Section */}
+                    {/* Articles */}
                     {searchResults.articles.length > 0 && (
                       <div className="mb-4">
                         <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground">
@@ -212,28 +223,14 @@ export default function GlobalSearch() {
                           {getSectionTitle('article')} ({searchResults.articles.length})
                         </div>
                         <div className="space-y-1">
-                          {searchResults.articles.map((result) => (
-                            <Link
-                              key={`article-${result.id}`}
-                              href={result.url}
-                              onClick={handleCollapse}
-                            >
-                              <div className="p-2 hover:bg-muted rounded-md cursor-pointer">
-                                <div className="font-medium text-sm line-clamp-1">{result.title}</div>
-                                <div className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                  {result.description}
-                                </div>
-                                {result.category && (
-                                  <div className="text-xs text-primary mt-1">{result.category}</div>
-                                )}
-                              </div>
-                            </Link>
-                          ))}
+                          {searchResults.articles.map((result, index) => 
+                            renderResultItem(result, index)
+                          )}
                         </div>
                       </div>
                     )}
 
-                    {/* Programs Section */}
+                    {/* Programs */}
                     {searchResults.programs.length > 0 && (
                       <div className="mb-4">
                         <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground">
@@ -241,49 +238,24 @@ export default function GlobalSearch() {
                           {getSectionTitle('program')} ({searchResults.programs.length})
                         </div>
                         <div className="space-y-1">
-                          {searchResults.programs.map((result) => (
-                            <Link
-                              key={`program-${result.id}`}
-                              href={result.url}
-                              onClick={handleCollapse}
-                            >
-                              <div className="p-2 hover:bg-muted rounded-md cursor-pointer">
-                                <div className="font-medium text-sm line-clamp-1">{result.title}</div>
-                                <div className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                  {result.description}
-                                </div>
-                                {result.category && (
-                                  <div className="text-xs text-primary mt-1">{result.category}</div>
-                                )}
-                              </div>
-                            </Link>
-                          ))}
+                          {searchResults.programs.map((result, index) => 
+                            renderResultItem(result, searchResults.articles.length + index)
+                          )}
                         </div>
                       </div>
                     )}
 
-                    {/* Pages Section */}
+                    {/* Pages */}
                     {searchResults.pages.length > 0 && (
-                      <div className="mb-2">
+                      <div>
                         <div className="flex items-center gap-2 px-2 py-1 text-sm font-medium text-muted-foreground">
                           {getSectionIcon('page')}
                           {getSectionTitle('page')} ({searchResults.pages.length})
                         </div>
                         <div className="space-y-1">
-                          {searchResults.pages.map((result) => (
-                            <Link
-                              key={`page-${result.id}`}
-                              href={result.url}
-                              onClick={handleCollapse}
-                            >
-                              <div className="p-2 hover:bg-muted rounded-md cursor-pointer">
-                                <div className="font-medium text-sm line-clamp-1">{result.title}</div>
-                                <div className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                  {result.description}
-                                </div>
-                              </div>
-                            </Link>
-                          ))}
+                          {searchResults.pages.map((result, index) => 
+                            renderResultItem(result, searchResults.articles.length + searchResults.programs.length + index)
+                          )}
                         </div>
                       </div>
                     )}

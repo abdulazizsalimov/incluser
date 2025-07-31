@@ -12,7 +12,7 @@ import type { Category } from "@shared/schema";
 
 import AccessibilityWidget from "./AccessibilityWidget";
 import SkipLinks from "./SkipLinks";
-import GlobalSearch from "./GlobalSearch";
+import GlobalSearchWithKeyboard from "./GlobalSearchWithKeyboard";
 
 export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -206,7 +206,7 @@ export default function Header() {
           {/* Right Section */}
           <div className="flex items-center space-x-4">
             {/* Global Search */}
-            <GlobalSearch />
+            <GlobalSearchWithKeyboard />
             
             {/* Accessibility Widget */}
             <Button
