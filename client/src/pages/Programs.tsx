@@ -1,6 +1,6 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -141,7 +141,8 @@ export default function Programs() {
     enabled: !!categorySlug,
   });
 
-  const { data: programsData, isLoading: programsLoading } = useQuery<{
+  // Load all programs for the category without search/pagination - do client-side filtering
+  const { data: allProgramsData, isLoading: programsLoading } = useQuery<{
     programs: ProgramWithRelations[];
     pagination: {
       page: number;
@@ -150,17 +151,14 @@ export default function Programs() {
       totalPages: number;
     };
   }>({
-    queryKey: ["/api/programs", { categoryId: category?.id, page: currentPage, search }],
+    queryKey: ["/api/programs", { categoryId: category?.id }],
     queryFn: async () => {
       const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: programsPerPage.toString(),
+        page: "1",
+        limit: "1000", // Load all programs at once
       });
       if (category?.id) {
         params.append('categoryId', category.id.toString());
-      }
-      if (search) {
-        params.append('search', search);
       }
       const response = await fetch(`/api/programs?${params}`);
       if (!response.ok) {
@@ -170,6 +168,39 @@ export default function Programs() {
     },
     enabled: !!category?.id,
   });
+
+  // Client-side filtering and pagination
+  const filteredPrograms = useMemo(() => {
+    if (!allProgramsData?.programs) return [];
+    
+    if (!search.trim()) {
+      return allProgramsData.programs;
+    }
+    
+    const searchLower = search.toLowerCase().trim();
+    return allProgramsData.programs.filter(program => 
+      program.title.toLowerCase().includes(searchLower) ||
+      program.description.toLowerCase().includes(searchLower) ||
+      (program.developer && program.developer.toLowerCase().includes(searchLower))
+    );
+  }, [allProgramsData?.programs, search]);
+
+  // Calculate pagination for filtered results
+  const totalPages = Math.ceil(filteredPrograms.length / programsPerPage);
+  const startIndex = (currentPage - 1) * programsPerPage;
+  const endIndex = startIndex + programsPerPage;
+  const paginatedPrograms = filteredPrograms.slice(startIndex, endIndex);
+
+  // Create programsData object to maintain compatibility
+  const programsData = useMemo(() => ({
+    programs: paginatedPrograms,
+    pagination: {
+      page: currentPage,
+      limit: programsPerPage,
+      total: filteredPrograms.length,
+      totalPages: totalPages
+    }
+  }), [paginatedPrograms, currentPage, programsPerPage, filteredPrograms.length, totalPages]);
 
   usePageTitle(category ? `${category.name} - Программы` : "Программы");
 
@@ -183,7 +214,10 @@ export default function Programs() {
     setCurrentPage(1);
   };
 
-  const totalPages = programsData?.pagination.totalPages || 1;
+  // Reset to first page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   if (!categorySlug) {
     return (
@@ -245,7 +279,7 @@ export default function Programs() {
     );
   }
 
-  const programs = programsData?.programs || [];
+  const programs = paginatedPrograms;
 
   return (
     <div className="min-h-screen bg-background">
