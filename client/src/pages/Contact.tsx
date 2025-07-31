@@ -277,9 +277,21 @@ export default function Contact() {
                           )}
                         </Button>
 
-                        <p className="text-sm text-muted-foreground">
-                          * Обязательные поля. Отвечу в течение 24 часов.
-                        </p>
+                        <div className="space-y-2 text-sm text-muted-foreground">
+                          <p>* Обязательные поля. Отвечу в течение 24 часов.</p>
+                          <p>
+                            Нажимая кнопку "Отправить сообщение", вы соглашаетесь с{" "}
+                            <a 
+                              href="/privacy-policy" 
+                              className="text-primary hover:underline"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              политикой конфиденциальности
+                            </a>
+                            .
+                          </p>
+                        </div>
                       </form>
                     </Form>
                   </CardContent>

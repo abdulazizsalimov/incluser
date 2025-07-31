@@ -171,22 +171,37 @@ export default function ReportProblemDialog({ children }: ReportProblemDialogPro
               )}
             />
 
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={submitMutation.isPending}
-              >
-                Отмена
-              </Button>
-              <Button 
-                type="submit" 
-                disabled={submitMutation.isPending}
-                className="bg-amber-600 hover:bg-amber-700 focus:ring-amber-500"
-              >
-                {submitMutation.isPending ? "Отправка..." : "Отправить"}
-              </Button>
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Отправляя сообщение, вы соглашаетесь с{" "}
+                <a 
+                  href="/privacy-policy" 
+                  className="text-primary hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  политикой конфиденциальности
+                </a>
+                .
+              </p>
+              
+              <div className="flex justify-end gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={submitMutation.isPending}
+                >
+                  Отмена
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={submitMutation.isPending}
+                  className="bg-amber-600 hover:bg-amber-700 focus:ring-amber-500"
+                >
+                  {submitMutation.isPending ? "Отправка..." : "Отправить"}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>

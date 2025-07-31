@@ -27,6 +27,7 @@ import ManageProgramCategories from "@/pages/admin/ManageProgramCategories";
 import ManagePages from "@/pages/admin/ManagePages";
 import Messages from "@/pages/admin/Messages";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/not-found";
 
 // Admin layout
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/resources" component={Resources} />
       <Route path="/programs/:categorySlug/:slug" component={ProgramDetail} />
       <Route path="/programs/:categorySlug" component={Programs} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/login" component={Login} />
 
       {/* Admin routes - only for authenticated users */}
