@@ -65,9 +65,9 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav id="navigation" role="navigation" aria-label="Основная навигация" className="hidden md:block">
-            <ul className="flex space-x-8">
+            <ul className="flex items-center space-x-6">
               {/* Main navigation items */}
-              <li className="flex items-center">
+              <li>
                 <Link 
                   href="/"
                   className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
@@ -133,8 +133,9 @@ export default function Header() {
                 {programCategories.length > 0 ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button
-                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 flex items-center gap-1 bg-transparent border-none cursor-pointer ${
+                      <Button
+                        variant="ghost"
+                        className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 h-auto ${
                           location.startsWith("/programs")
                             ? "text-primary"
                             : "text-muted-foreground hover:text-primary"
@@ -142,8 +143,8 @@ export default function Header() {
                         aria-label="Программы"
                       >
                         Программы
-                        <ChevronDown className="h-4 w-4" />
-                      </button>
+                        <ChevronDown className="h-4 w-4 ml-1" />
+                      </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="min-w-[200px]">
                       {programCategories.map((category: any) => (
@@ -173,7 +174,7 @@ export default function Header() {
                 )}
               </li>
 
-              <li className="flex items-center">
+              <li>
                 <Link 
                   href="/about"
                   className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
@@ -187,7 +188,7 @@ export default function Header() {
                 </Link>
               </li>
 
-              <li className="flex items-center">
+              <li>
                 <Link 
                   href="/contact"
                   className={`font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded px-2 py-1 ${
@@ -204,7 +205,7 @@ export default function Header() {
           </nav>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             {/* Global Search */}
             <GlobalSearchWithKeyboard />
             
