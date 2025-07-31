@@ -23,58 +23,69 @@ function ProgramCard({ program }: { program: ProgramWithRelations }) {
   };
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <div className="flex items-start gap-4">
-          {program.logo && (
+    <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
+      <Link href={`/programs/${program.category?.slug}/${program.slug}`} className="block">
+        {/* Logo Section - Similar to article image */}
+        <div className="relative w-full h-48 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+          {program.logo ? (
             <img
               src={program.logo}
               alt={`${program.title} логотип`}
-              className="w-16 h-16 object-contain"
+              className="max-w-32 max-h-32 object-contain"
             />
+          ) : (
+            <div className="w-24 h-24 bg-primary/10 rounded-lg flex items-center justify-center">
+              <Monitor className="w-12 h-12 text-primary/50" />
+            </div>
           )}
-          <div className="flex-1">
-            <CardTitle className="text-xl">
-              <Link href={`/programs/${program.category?.slug}/${program.slug}`} className="hover:text-primary transition-colors">
-                {program.title}
-                {program.version && <span className="text-base text-muted-foreground ml-2">v{program.version}</span>}
-              </Link>
-            </CardTitle>
-            <CardDescription className="mt-2">
-              {program.developer && (
-                <span className="block text-sm text-muted-foreground">
-                  Разработчик: {program.developer}
-                </span>
-              )}
-              {program.releaseYear && (
-                <span className="block text-sm text-muted-foreground">
-                  Год выпуска: {program.releaseYear}
-                </span>
-              )}
-            </CardDescription>
-          </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground mb-4">
-          {program.description}
-        </p>
         
-        {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-4">
-            {program.platforms.map((platform: string) => (
-              <Badge key={platform} variant="secondary" className="flex items-center gap-1">
-                {platformIcons[platform as keyof typeof platformIcons]}
-                {platform.charAt(0).toUpperCase() + platform.slice(1)}
-              </Badge>
-            ))}
-          </div>
-        )}
+        {/* Content Section */}
+        <CardContent className="p-6">
+          <div className="space-y-3">
+            <div>
+              <h3 className="text-xl font-semibold hover:text-primary transition-colors line-clamp-2">
+                {program.title}
+                {program.version && <span className="text-sm text-muted-foreground ml-2">v{program.version}</span>}
+              </h3>
+              
+              {program.developer && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  Разработчик: {program.developer}
+                </p>
+              )}
+              
+              {program.releaseYear && (
+                <p className="text-sm text-muted-foreground">
+                  Год выпуска: {program.releaseYear}
+                </p>
+              )}
+            </div>
 
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {program.description}
+            </p>
+            
+            {program.platforms && Array.isArray(program.platforms) && program.platforms.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {program.platforms.map((platform: string) => (
+                  <Badge key={platform} variant="secondary" className="flex items-center gap-1 text-xs">
+                    {platformIcons[platform as keyof typeof platformIcons]}
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Link>
+      
+      {/* Action Buttons */}
+      <CardContent className="px-6 pb-6 pt-0">
         <div className="flex flex-wrap gap-2">
           {program.downloadUrl && (
             <Button asChild size="sm">
-              <a href={program.downloadUrl} target="_blank" rel="noopener noreferrer">
+              <a href={program.downloadUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                 <Download className="w-4 h-4 mr-2" />
                 Скачать
               </a>
@@ -83,7 +94,7 @@ function ProgramCard({ program }: { program: ProgramWithRelations }) {
           
           {program.googlePlayUrl && (
             <Button asChild variant="outline" size="sm">
-              <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer">
+              <a href={program.googlePlayUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                 Google Play
               </a>
             </Button>
@@ -91,7 +102,7 @@ function ProgramCard({ program }: { program: ProgramWithRelations }) {
           
           {program.appStoreUrl && (
             <Button asChild variant="outline" size="sm">
-              <a href={program.appStoreUrl} target="_blank" rel="noopener noreferrer">
+              <a href={program.appStoreUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                 App Store
               </a>
             </Button>
@@ -99,7 +110,7 @@ function ProgramCard({ program }: { program: ProgramWithRelations }) {
           
           {program.officialWebsite && (
             <Button asChild variant="outline" size="sm">
-              <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer">
+              <a href={program.officialWebsite} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                 <Globe className="w-4 h-4 mr-2" />
                 Сайт
               </a>
