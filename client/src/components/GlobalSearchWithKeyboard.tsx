@@ -65,16 +65,18 @@ export default function GlobalSearchWithKeyboard() {
 
   // Handle keyboard navigation
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (!isExpanded || !searchResults || allResults.length === 0) return;
+    if (!isExpanded) return;
 
     switch (event.key) {
       case 'ArrowDown':
+        if (allResults.length === 0) return;
         event.preventDefault();
         setSelectedIndex(prev => 
           prev < allResults.length - 1 ? prev + 1 : prev
         );
         break;
       case 'ArrowUp':
+        if (allResults.length === 0) return;
         event.preventDefault();
         setSelectedIndex(prev => prev > -1 ? prev - 1 : -1);
         break;
