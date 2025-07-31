@@ -19,19 +19,8 @@ export default function Articles() {
   const [location] = useLocation();
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [actualSearch, setActualSearch] = useState("");
   const [categoryId, setCategoryId] = useState<string>("all");
   const articlesPerPage = 12;
-
-  // Debounce search to prevent constant API calls
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setActualSearch(search);
-      setCurrentPage(1); // Reset to first page when search changes
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [search]);
 
   // Parse URL parameters for category filtering
   useEffect(() => {
@@ -53,7 +42,7 @@ export default function Articles() {
     totalCount: number;
     totalPages: number;
   }>({
-    queryKey: ["/api/articles", { page: currentPage, limit: articlesPerPage, search: actualSearch, categoryId }],
+    queryKey: ["/api/articles", { page: currentPage, limit: articlesPerPage, search, categoryId }],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),

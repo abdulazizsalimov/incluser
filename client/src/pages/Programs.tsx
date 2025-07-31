@@ -129,17 +129,6 @@ export default function Programs() {
   const [search, setSearch] = useState("");
   const programsPerPage = 12;
 
-  // Use a separate effect for debouncing
-  const [actualSearch, setActualSearch] = useState("");
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setActualSearch(search);
-      setCurrentPage(1); // Reset to first page when search changes
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [search]);
-
   const { data: category, isLoading: categoryLoading } = useQuery<ProgramCategory>({
     queryKey: ["/api/program-categories", categorySlug],
     queryFn: async () => {
@@ -161,7 +150,7 @@ export default function Programs() {
       totalPages: number;
     };
   }>({
-    queryKey: ["/api/programs", { categoryId: category?.id, page: currentPage, search: actualSearch }],
+    queryKey: ["/api/programs", { categoryId: category?.id, page: currentPage, search }],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -170,8 +159,8 @@ export default function Programs() {
       if (category?.id) {
         params.append('categoryId', category.id.toString());
       }
-      if (actualSearch) {
-        params.append('search', actualSearch);
+      if (search) {
+        params.append('search', search);
       }
       const response = await fetch(`/api/programs?${params}`);
       if (!response.ok) {
@@ -191,7 +180,7 @@ export default function Programs() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // No need to reset page here, it's handled in useEffect
+    setCurrentPage(1);
   };
 
   const totalPages = programsData?.pagination.totalPages || 1;
@@ -304,7 +293,7 @@ export default function Programs() {
               <div className="text-center py-12">
                 <h2 className="text-2xl font-semibold mb-4">Программы не найдены</h2>
                 <p className="text-muted-foreground text-lg">
-                  {actualSearch ? `По запросу "${actualSearch}" ничего не найдено` : "В этой категории пока нет программ"}
+                  {search ? `По запросу "${search}" ничего не найдено` : "В этой категории пока нет программ"}
                 </p>
               </div>
             ) : (
@@ -312,7 +301,7 @@ export default function Programs() {
                 <div className="mb-8">
                   <p className="text-sm text-muted-foreground">
                     Найдено программ: {programsData?.pagination.total || 0}
-                    {actualSearch && ` по запросу "${actualSearch}"`}
+                    {search && ` по запросу "${search}"`}
                   </p>
                 </div>
                 
