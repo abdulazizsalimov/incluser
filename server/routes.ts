@@ -302,6 +302,84 @@ ${articles.map(article => {
     }
   });
 
+  // Universal Search API
+  app.get('/api/search', async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      
+      if (!query || query.trim().length < 2) {
+        return res.json({
+          articles: [],
+          programs: [],
+          pages: [],
+          totalResults: 0
+        });
+      }
+
+      const searchTerm = query.trim().toLowerCase();
+
+      // Search articles by title and content
+      const articles = await storage.searchArticles(searchTerm);
+      const articleResults = articles.map(article => ({
+        type: 'article' as const,
+        id: article.id.toString(),
+        title: article.title,
+        description: article.excerpt || article.content?.substring(0, 150) + '...' || '',
+        url: `/articles/${article.slug}`,
+        category: article.category?.name
+      }));
+
+      // Search programs by title and description
+      const programs = await storage.searchPrograms(searchTerm);
+      const programResults = programs.map(program => ({
+        type: 'program' as const,
+        id: program.id.toString(),
+        title: program.title,
+        description: program.description || '',
+        url: `/programs/${program.category?.slug}/${program.slug}`,
+        category: program.category?.name
+      }));
+
+      // Search pages by title and content
+      const pages = await storage.searchPages(searchTerm);
+      const pageResults = pages.map(page => ({
+        type: 'page' as const,
+        id: page.id.toString(),
+        title: page.title,
+        description: page.content?.substring(0, 150) + '...' || '',
+        url: getPageUrl(page.slug)
+      }));
+
+      const totalResults = articleResults.length + programResults.length + pageResults.length;
+
+      res.json({
+        articles: articleResults,
+        programs: programResults,
+        pages: pageResults,
+        totalResults
+      });
+    } catch (error) {
+      console.error('Search error:', error);
+      res.status(500).json({ message: 'Search failed' });
+    }
+  });
+
+  // Helper function to get page URL
+  function getPageUrl(slug: string): string {
+    switch (slug) {
+      case 'about':
+        return '/about';
+      case 'wcag-guides':
+        return '/wcag-guides';
+      case 'testing-tools':
+        return '/testing-tools';
+      case 'resources':
+        return '/resources';
+      default:
+        return `/${slug}`;
+    }
+  }
+
   // Public article routes
   app.get('/api/articles', async (req, res) => {
     try {

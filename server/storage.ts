@@ -93,6 +93,11 @@ export interface IStorage {
   updateProgram(id: number, program: Partial<InsertProgram>): Promise<Program>;
   deleteProgram(id: number): Promise<void>;
   getProgramsCount(options?: { published?: boolean; search?: string; categoryId?: number }): Promise<number>;
+
+  // Search operations
+  searchArticles(searchTerm: string): Promise<ArticleWithRelations[]>;
+  searchPrograms(searchTerm: string): Promise<ProgramWithRelations[]>;
+  searchPages(searchTerm: string): Promise<Page[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -544,6 +549,107 @@ export class DatabaseStorage implements IStorage {
 
     const [result] = await query;
     return result.count;
+  }
+
+  // Search operations
+  async searchArticles(searchTerm: string): Promise<ArticleWithRelations[]> {
+    return await db
+      .select({
+        id: articles.id,
+        title: articles.title,
+        slug: articles.slug,
+        content: articles.content,
+        excerpt: articles.excerpt,
+        featuredImage: articles.featuredImage,
+        metaTitle: articles.metaTitle,
+        metaDescription: articles.metaDescription,
+        published: articles.published,
+        createdAt: articles.createdAt,
+        publishedAt: articles.publishedAt,
+        author: {
+          id: users.id,
+          username: users.username,
+          email: users.email,
+          isAdmin: users.isAdmin,
+        },
+        category: {
+          id: categories.id,
+          name: categories.name,
+          slug: categories.slug,
+          description: categories.description,
+        },
+      })
+      .from(articles)
+      .leftJoin(users, eq(articles.authorId, users.id))
+      .leftJoin(categories, eq(articles.categoryId, categories.id))
+      .where(
+        and(
+          eq(articles.published, true),
+          or(
+            ilike(articles.title, `%${searchTerm}%`),
+            ilike(articles.content, `%${searchTerm}%`),
+            ilike(articles.excerpt, `%${searchTerm}%`)
+          )
+        )
+      )
+      .orderBy(desc(articles.publishedAt))
+      .limit(10);
+  }
+
+  async searchPrograms(searchTerm: string): Promise<ProgramWithRelations[]> {
+    return await db
+      .select({
+        id: programs.id,
+        title: programs.title,
+        slug: programs.slug,
+        description: programs.description,
+        logo: programs.logo,
+        version: programs.version,
+        developer: programs.developer,
+        releaseYear: programs.releaseYear,
+        platforms: programs.platforms,
+        downloadUrl: programs.downloadUrl,
+        officialWebsite: programs.officialWebsite,
+        googlePlayUrl: programs.googlePlayUrl,
+        appStoreUrl: programs.appStoreUrl,
+        pricing: programs.pricing,
+        license: programs.license,
+        published: programs.published,
+        createdAt: programs.createdAt,
+        category: {
+          id: programCategories.id,
+          name: programCategories.name,
+          slug: programCategories.slug,
+          description: programCategories.description,
+        },
+      })
+      .from(programs)
+      .leftJoin(programCategories, eq(programs.categoryId, programCategories.id))
+      .where(
+        and(
+          eq(programs.published, true),
+          or(
+            ilike(programs.title, `%${searchTerm}%`),
+            ilike(programs.description, `%${searchTerm}%`)
+          )
+        )
+      )
+      .orderBy(desc(programs.createdAt))
+      .limit(10);
+  }
+
+  async searchPages(searchTerm: string): Promise<Page[]> {
+    return await db
+      .select()
+      .from(pages)
+      .where(
+        or(
+          ilike(pages.title, `%${searchTerm}%`),
+          ilike(pages.content, `%${searchTerm}%`)
+        )
+      )
+      .orderBy(desc(pages.createdAt))
+      .limit(10);
   }
 }
 
