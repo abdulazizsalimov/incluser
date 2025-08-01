@@ -1,4 +1,4 @@
 Contact: mailto:salimov.abdulaziz.98@gmail.com
 Expires: 2026-08-01T12:00:00.000Z
 Preferred-Languages: ru, en
-Canonical: https://incluser.replit.app/.well-known/security.txt
+Canonical: https://incluser.uz/.well-known/security.txt

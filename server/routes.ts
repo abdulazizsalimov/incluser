@@ -70,9 +70,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dynamic sitemap.xml generation
   app.get('/sitemap.xml', async (req, res) => {
     try {
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://incluser.replit.app'
-        : 'http://localhost:5000';
+      // Auto-detect domain from request headers
+      const protocol = req.get('x-forwarded-proto') || (req.secure ? 'https' : 'http');
+      const host = req.get('host');
+      const baseUrl = `${protocol}://${host}`;
       
       // Get all published articles
       const articles = await storage.getArticles();

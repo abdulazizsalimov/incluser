@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://incluser.replit.app/sitemap.xml
+Sitemap: https://incluser.uz/sitemap.xml
 
 # Prevent indexing of admin pages
 Disallow: /admin/
