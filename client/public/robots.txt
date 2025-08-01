@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://incluser.replit.app/sitemap.xml
+
+# Prevent indexing of admin pages
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /articles/
+Allow: /programs/
+Allow: /contact
+Allow: /about
+Allow: /privacy-policy
+Allow: /wcag-guides
+Allow: /testing-tools
+Allow: /resources

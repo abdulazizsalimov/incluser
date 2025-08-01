@@ -83,6 +83,7 @@ The application is optimized for Replit's development environment with integrate
 
 ```
 Changelog:
+- August 1, 2025. Added complete SEO infrastructure for Google Search Console - created robots.txt file with proper directives, dynamic sitemap.xml generation endpoint including all articles and programs, enhanced HTML meta tags with Open Graph and Twitter cards, added JSON-LD structured data for better search visibility, security.txt files for responsible disclosure, and Google site verification placeholder file
 - July 31, 2025. Created comprehensive Privacy Policy page at /privacy-policy with professional design, accessibility icons, and detailed information about data collection, usage, and user rights; added privacy consent notices to both contact form and "Report a Problem" dialog with links to the privacy policy
 - July 31, 2025. Fixed search functionality completely across all pages - implemented client-side filtering for Programs.tsx to prevent constant API calls and page re-rendering, ensuring search input field maintains focus during typing just like in Articles page
 - July 30, 2025. Fixed About page layout issue completely - replaced flexbox with CSS float layout for proper text wrapping around author photo, updated seed-pages.ts, API endpoint /api/admin/update-about-page, and About.tsx fallback content, created fix-about-page.md with three deployment methods for production servers

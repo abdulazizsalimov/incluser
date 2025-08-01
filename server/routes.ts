@@ -67,6 +67,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     app.use('/assets', express.static(assetsPath));
   }
 
+  // Dynamic sitemap.xml generation
+  app.get('/sitemap.xml', async (req, res) => {
+    try {
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://incluser.replit.app'
+        : 'http://localhost:5000';
+      
+      // Get all published articles
+      const articles = await storage.getArticles();
+      const publishedArticles = articles.filter(article => article.isPublished);
+      
+      // Get all program categories and programs
+      const programCategories = await storage.getProgramCategories();
+      const allPrograms = await storage.getPrograms();
+      
+      // Generate XML sitemap
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main pages -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/articles</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/programs</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/privacy-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Resource pages -->
+  <url>
+    <loc>${baseUrl}/wcag-guides</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/testing-tools</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/resources</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Articles -->
+${publishedArticles.map(article => `  <url>
+    <loc>${baseUrl}/articles/${article.slug}</loc>
+    <lastmod>${new Date(article.updatedAt || article.createdAt).toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`).join('\n')}
+  
+  <!-- Programs -->
+${allPrograms.map(program => `  <url>
+    <loc>${baseUrl}/programs/${program.slug}</loc>
+    <lastmod>${new Date(program.updatedAt || program.createdAt).toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+      res.set('Content-Type', 'application/xml');
+      res.end(sitemap);
+    } catch (error) {
+      console.error('Error generating sitemap:', error);
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
   // Image upload endpoint
   app.post('/api/admin/upload-image', isAdmin, upload.single('image'), (req, res) => {
     try {
