@@ -138,22 +138,14 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     );
   });
 
-  // Глобальная функция показа уведомлений без реакт состояния
-  const showNotification = useCallback((message: { title: string; description: string; variant?: 'default' | 'destructive' }) => {
-    // Создаем событие для показа уведомления в следующем цикле
-    const event = new CustomEvent('showToast', { detail: message });
-    window.dispatchEvent(event);
+  // Простая консольная функция без уведомлений
+  const logMessage = useCallback((message: string, type: 'success' | 'error' = 'success') => {
+    if (type === 'success') {
+      console.log('✅', message);
+    } else {
+      console.error('❌', message);
+    }
   }, []);
-
-  // Слушатель события для показа уведомлений
-  useEffect(() => {
-    const handleToast = (event: any) => {
-      toast(event.detail);
-    };
-    
-    window.addEventListener('showToast', handleToast);
-    return () => window.removeEventListener('showToast', handleToast);
-  }, [toast]);
 
   const CommentForm = memo(({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
     // Create separate state for each form to prevent focus loss
@@ -164,11 +156,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       e.preventDefault();
       
       if (!localContent.trim() || !user) {
-        showNotification({
-          title: "Ошибка",
-          description: "Необходимо заполнить все поля.",
-          variant: "destructive",
-        });
+        logMessage("Необходимо заполнить все поля", "error");
         return;
       }
 
@@ -200,20 +188,13 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           // Обновляем комментарии в фоне
           fetchComments();
           
-          showNotification({
-            title: "Комментарий добавлен",
-            description: "Ваш комментарий был успешно добавлен.",
-          });
+          logMessage("Комментарий успешно добавлен");
         } else {
           throw new Error('Failed to submit comment');
         }
       } catch (error) {
         console.error('Error submitting comment:', error);
-        showNotification({
-          title: "Ошибка",
-          description: "Не удалось отправить комментарий. Попробуйте еще раз.",
-          variant: "destructive",
-        });
+        logMessage("Не удалось отправить комментарий. Попробуйте еще раз.", "error");
       } finally {
         setIsSubmitting(false);
       }
