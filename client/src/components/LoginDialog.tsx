@@ -50,14 +50,25 @@ export function LoginDialog({ children }: LoginDialogProps) {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
-      const response = await apiRequest("/api/login", {
+      const formData = new URLSearchParams();
+      formData.append('username', data.username);
+      formData.append('password', data.password);
+      
+      const response = await fetch("/api/login", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: formData,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
+        credentials: "include",
       });
-      return response;
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: "Login failed" }));
+        throw new Error(errorData.message || "Неверное имя пользователя или пароль");
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       toast({
