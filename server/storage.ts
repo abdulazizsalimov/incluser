@@ -127,6 +127,7 @@ export interface IStorage {
   deleteComment(id: number): Promise<void>;
   approveComment(id: number): Promise<ArticleComment>;
   getUserRecentComment(userId: number, sinceDate: Date): Promise<ArticleComment | undefined>;
+  getUserDailyCommentCount(userId: number): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -788,20 +789,40 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserRecentComment(userId: number, sinceDate: Date): Promise<ArticleComment | undefined> {
-    // Получаем последний комментарий пользователя
-    const [comment] = await db
+    // Получаем все комментарии пользователя за последние 2 минуты (с запасом)
+    const recentComments = await db
       .select()
       .from(articleComments)
       .where(eq(articleComments.userId, userId))
       .orderBy(desc(articleComments.createdAt))
-      .limit(1);
+      .limit(5);
     
-    // Проверяем, был ли он создан после указанной даты
-    if (comment && comment.createdAt && new Date(comment.createdAt) > sinceDate) {
-      return comment;
-    }
+    // Проверяем в JavaScript, есть ли комментарий новее указанной даты
+    const recentComment = recentComments.find(comment => {
+      if (!comment.createdAt) return false;
+      return new Date(comment.createdAt) > sinceDate;
+    });
     
-    return undefined;
+    return recentComment || undefined;
+  }
+
+  async getUserDailyCommentCount(userId: number): Promise<number> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const comments = await db
+      .select()
+      .from(articleComments)
+      .where(eq(articleComments.userId, userId));
+    
+    // Фильтруем комментарии за сегодня в JavaScript
+    const todayComments = comments.filter(comment => {
+      if (!comment.createdAt) return false;
+      const commentDate = new Date(comment.createdAt);
+      return commentDate >= today;
+    });
+    
+    return todayComments.length;
   }
 }
 
