@@ -70,7 +70,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       interval = setInterval(() => {
         const now = Date.now();
         const left = Math.max(0, Math.ceil((cooldownEnd - now) / 1000));
-        const totalCooldown = 60; // 60 секунд
+        const totalCooldown = 15; // 15 секунд
         const elapsed = totalCooldown - left;
         const progress = Math.min(100, (elapsed / totalCooldown) * 100);
         
@@ -127,8 +127,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           setReplyingTo(null);
           if (onCancel) onCancel();
           
-          // Запускаем антиспам таймер на 60 секунд
-          setCooldownEnd(Date.now() + 60000);
+          // Запускаем антиспам таймер на 15 секунд
+          setCooldownEnd(Date.now() + 15000);
           
           await fetchComments();
           toast({
@@ -166,6 +166,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
             placeholder={parentId ? "Напишите ваш ответ..." : "Поделитесь своими мыслями..."}
             rows={4}
             required
+            disabled={submitting}
           />
           <p className="text-xs text-muted-foreground mt-2">
             Пожалуйста, будьте вежливы и соблюдайте правила нашего сообщества при общении.
@@ -177,12 +178,16 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
             <Button 
               type="submit" 
               disabled={submitting || (cooldownEnd !== null && timeLeft > 0)}
-              className="relative overflow-hidden min-w-[200px]"
+              className={`relative overflow-hidden min-w-[200px] transition-colors duration-200 ${
+                cooldownEnd !== null && timeLeft > 0 
+                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700' 
+                  : ''
+              }`}
             >
-              {/* Фон прогресс-бара */}
+              {/* Прогресс-бар с ярким цветом */}
               {cooldownEnd !== null && timeLeft > 0 && (
                 <div 
-                  className="absolute left-0 top-0 h-full bg-purple-400/30 transition-all duration-100 ease-linear"
+                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-100 ease-linear"
                   style={{ width: `${progressWidth}%` }}
                 />
               )}
