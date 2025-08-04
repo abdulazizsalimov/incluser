@@ -151,12 +151,42 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     // Create separate state for each form to prevent focus loss
     const [localContent, setLocalContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' | null }>({ text: '', type: null });
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [savedCursorPosition, setSavedCursorPosition] = useState<number>(0);
+    
+    // Сохраняем позицию курсора
+    const saveCursorPosition = useCallback(() => {
+      if (textareaRef.current) {
+        setSavedCursorPosition(textareaRef.current.selectionStart);
+      }
+    }, []);
+    
+    // Восстанавливаем позицию курсора
+    const restoreCursorPosition = useCallback(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(savedCursorPosition, savedCursorPosition);
+      }
+    }, [savedCursorPosition]);
+    
+    // Показываем статус сообщение на 3 секунды
+    const showStatus = useCallback((text: string, type: 'success' | 'error') => {
+      saveCursorPosition();
+      setStatusMessage({ text, type });
+      setTimeout(() => {
+        setStatusMessage({ text: '', type: null });
+        requestAnimationFrame(() => {
+          restoreCursorPosition();
+        });
+      }, 3000);
+    }, [saveCursorPosition, restoreCursorPosition]);
     
     const handleLocalSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       
       if (!localContent.trim() || !user) {
-        logMessage("Необходимо заполнить все поля", "error");
+        showStatus("Необходимо заполнить все поля", "error");
         return;
       }
 
@@ -188,13 +218,13 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           // Обновляем комментарии в фоне
           fetchComments();
           
-          logMessage("Комментарий успешно добавлен");
+          showStatus("Комментарий успешно добавлен", "success");
         } else {
           throw new Error('Failed to submit comment');
         }
       } catch (error) {
         console.error('Error submitting comment:', error);
-        logMessage("Не удалось отправить комментарий. Попробуйте еще раз.", "error");
+        showStatus("Не удалось отправить комментарий. Попробуйте еще раз.", "error");
       } finally {
         setIsSubmitting(false);
       }
@@ -210,14 +240,27 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         <div>
           <Label htmlFor={`content-${parentId || 'main'}`}>Комментарий *</Label>
           <Textarea
+            ref={textareaRef}
             id={`content-${parentId || 'main'}`}
             value={localContent}
             onChange={(e) => setLocalContent(e.target.value)}
+            onBlur={saveCursorPosition}
+            onKeyUp={saveCursorPosition}
+            onClick={saveCursorPosition}
             placeholder={parentId ? "Напишите ваш ответ..." : "Поделитесь своими мыслями..."}
             rows={4}
             required
             disabled={isSubmitting}
           />
+          {statusMessage.type && (
+            <div className={`text-sm mt-2 p-2 rounded ${
+              statusMessage.type === 'success' 
+                ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' 
+                : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+            }`}>
+              {statusMessage.text}
+            </div>
+          )}
           <p className="text-xs text-muted-foreground mt-2">
             Пожалуйста, будьте вежливы и соблюдайте правила нашего сообщества при общении.
           </p>
