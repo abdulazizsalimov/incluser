@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Send, MessageCircle, Reply, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,10 +24,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   // Form state
   const [content, setContent] = useState('');
   
-  // Антиспам состояние
-  const [cooldownEnd, setCooldownEnd] = useState<number | null>(null);
+  // Антиспам состояние - используем ref чтобы не вызывать перерендер
+  const cooldownEndRef = useRef<number | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [progressWidth, setProgressWidth] = useState(0);
+  const [isInCooldown, setIsInCooldown] = useState(false);
   
   // Show comments for everyone, but only allow commenting for registered users
 
@@ -62,35 +63,31 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     fetchComments();
   }, [articleId]);
 
-  // Таймер для антиспам защиты
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
+  // Функция запуска таймера
+  const startCooldown = useCallback(() => {
+    cooldownEndRef.current = Date.now() + 15000;
+    setIsInCooldown(true);
     
-    if (cooldownEnd) {
-      interval = setInterval(() => {
-        const now = Date.now();
-        const timeRemaining = cooldownEnd - now;
-        const left = Math.max(0, Math.ceil(timeRemaining / 1000));
-        const totalCooldown = 15; // 15 секунд
-        const totalMs = 15000; // 15000 миллисекунд
-        const elapsed = totalMs - timeRemaining;
-        const progress = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
-        
-        setTimeLeft(left);
-        setProgressWidth(progress);
-        
-        if (timeRemaining <= 0) {
-          setCooldownEnd(null);
-          setTimeLeft(0);
-          setProgressWidth(0);
-        }
-      }, 50);
-    }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [cooldownEnd]);
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const timeRemaining = cooldownEndRef.current! - now;
+      const left = Math.max(0, Math.ceil(timeRemaining / 1000));
+      const totalMs = 15000;
+      const elapsed = totalMs - timeRemaining;
+      const progress = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
+      
+      setTimeLeft(left);
+      setProgressWidth(progress);
+      
+      if (timeRemaining <= 0) {
+        cooldownEndRef.current = null;
+        setTimeLeft(0);
+        setProgressWidth(0);
+        setIsInCooldown(false);
+        clearInterval(interval);
+      }
+    }, 50);
+  }, []);
 
   const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
     // Create separate state for each form to prevent focus loss
@@ -130,7 +127,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           if (onCancel) onCancel();
           
           // Запускаем антиспам таймер на 15 секунд
-          setCooldownEnd(Date.now() + 15000);
+          startCooldown();
           
           await fetchComments();
           toast({
@@ -179,15 +176,15 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           <div className="relative">
             <Button 
               type="submit" 
-              disabled={submitting || (cooldownEnd !== null && timeLeft > 0)}
+              disabled={submitting || isInCooldown}
               className={`relative overflow-hidden min-w-[200px] transition-colors duration-200 ${
-                cooldownEnd !== null && timeLeft > 0 
+                isInCooldown 
                   ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700' 
                   : ''
               }`}
             >
               {/* Прогресс-бар с ярким цветом */}
-              {cooldownEnd !== null && timeLeft > 0 && (
+              {isInCooldown && (
                 <div 
                   className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-75 ease-out"
                   style={{ 
@@ -202,7 +199,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
                 <Send className="h-4 w-4 mr-2" />
                 {submitting 
                   ? 'Отправка...' 
-                  : cooldownEnd !== null && timeLeft > 0
+                  : isInCooldown
                     ? `Следующая отправка через ${timeLeft}с`
                     : (parentId ? 'Ответить' : 'Отправить комментарий')
                 }
