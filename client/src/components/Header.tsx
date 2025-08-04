@@ -224,7 +224,7 @@ export default function Header() {
               className="hidden sm:flex"
             >
               <Accessibility className="h-4 w-4" />
-              <span className="ml-2">Доступность</span>
+              <span className="ml-2">Специальные возможности</span>
             </Button>
 
             {/* Auth Section */}
