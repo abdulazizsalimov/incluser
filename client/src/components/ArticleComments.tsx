@@ -129,6 +129,9 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
             rows={4}
             required
           />
+          <p className="text-xs text-muted-foreground mt-2">
+            Пожалуйста, будьте вежливы и соблюдайте правила нашего сообщества при общении.
+          </p>
         </div>
         
         <div className="flex gap-2">
@@ -223,7 +226,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       {/* Comment Form - only for registered users */}
       {user ? (
         <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8">
-          <h4 className="text-lg font-medium mb-4">Оставить комментарий</h4>
+          <h4 className="text-lg font-medium mb-2">Оставить комментарий</h4>
+          <p className="text-sm text-muted-foreground mb-4 p-3 bg-blue-50 dark:bg-blue-950/20 rounded border-l-4 border-blue-500">
+            <strong>Правила сообщества:</strong> Мы ценим уважительное общение. 
+            Пожалуйста, будьте вежливы, конструктивны и помогайте создавать дружелюбную атмосферу для всех участников.
+          </p>
           <CommentForm />
         </div>
       ) : (
