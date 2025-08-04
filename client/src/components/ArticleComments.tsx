@@ -147,10 +147,13 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       e.preventDefault();
       
       if (!localContent.trim() || !user) {
-        toast({
-          title: "Ошибка",
-          description: "Необходимо заполнить все поля.",
-          variant: "destructive",
+        // Показываем ошибку валидации в отдельном потоке
+        requestAnimationFrame(() => {
+          toast({
+            title: "Ошибка",
+            description: "Необходимо заполнить все поля.",
+            variant: "destructive",
+          });
         });
         return;
       }
@@ -173,7 +176,6 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
 
         if (response.ok) {
           // Очищаем поле ввода только после успешной отправки
-          const currentContent = localContent;
           setLocalContent('');
           setReplyingTo(null);
           if (onCancel) onCancel();
@@ -184,22 +186,25 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           // Обновляем комментарии в фоне
           fetchComments();
           
-          // Показываем уведомление независимо от состояния формы
-          setTimeout(() => {
+          // Показываем уведомление в отдельном потоке без влияния на React
+          requestAnimationFrame(() => {
             toast({
               title: "Комментарий добавлен",
               description: "Ваш комментарий был успешно добавлен.",
             });
-          }, 100);
+          });
         } else {
           throw new Error('Failed to submit comment');
         }
       } catch (error) {
         console.error('Error submitting comment:', error);
-        toast({
-          title: "Ошибка",
-          description: "Не удалось отправить комментарий. Попробуйте еще раз.",
-          variant: "destructive",
+        // Показываем ошибку в отдельном потоке
+        requestAnimationFrame(() => {
+          toast({
+            title: "Ошибка",
+            description: "Не удалось отправить комментарий. Попробуйте еще раз.",
+            variant: "destructive",
+          });
         });
       } finally {
         setIsSubmitting(false);
