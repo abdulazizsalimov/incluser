@@ -688,22 +688,7 @@ ${articles.map(article => {
     }
   });
 
-  app.post('/api/admin/articles', async (req: any, res) => {
-    console.log('POST /api/admin/articles - Request received');
-    console.log('Headers:', req.headers);
-    console.log('User:', req.user);
-    console.log('Body:', req.body);
-    
-    // Check authentication manually for debugging
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      console.log('User not authenticated');
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-    
-    if (!req.user?.isAdmin) {
-      console.log('User not admin:', req.user);
-      return res.status(403).json({ message: 'Forbidden - Admin access required' });
-    }
+  app.post('/api/admin/articles', isAdmin, async (req: any, res) => {
     try {
       console.log('Creating article with data:', {
         body: req.body,

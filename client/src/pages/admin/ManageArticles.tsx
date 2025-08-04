@@ -89,7 +89,7 @@ export default function ManageArticles() {
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
-      await apiRequest("POST", "/api/admin/articles", data);
+      await apiRequest("/api/admin/articles", "POST", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/articles"] });
@@ -122,7 +122,7 @@ export default function ManageArticles() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
-      await apiRequest("PUT", `/api/admin/articles/${id}`, data);
+      await apiRequest(`/api/admin/articles/${id}`, "PUT", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/articles"] });
@@ -155,7 +155,7 @@ export default function ManageArticles() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/admin/articles/${id}`);
+      await apiRequest(`/api/admin/articles/${id}`, "DELETE");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/articles"] });
