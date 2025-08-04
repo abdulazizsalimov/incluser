@@ -794,7 +794,7 @@ export class DatabaseStorage implements IStorage {
       .where(
         and(
           eq(articleComments.userId, userId),
-          gt(articleComments.createdAt, sinceDate)
+          sql`${articleComments.createdAt} > ${sinceDate.toISOString()}`
         )
       )
       .orderBy(desc(articleComments.createdAt))
