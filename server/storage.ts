@@ -788,19 +788,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserRecentComment(userId: number, sinceDate: Date): Promise<ArticleComment | undefined> {
+    // Получаем последний комментарий пользователя
     const [comment] = await db
       .select()
       .from(articleComments)
-      .where(
-        and(
-          eq(articleComments.userId, userId),
-          sql`${articleComments.createdAt} > ${sinceDate.toISOString()}`
-        )
-      )
+      .where(eq(articleComments.userId, userId))
       .orderBy(desc(articleComments.createdAt))
       .limit(1);
     
-    return comment;
+    // Проверяем, был ли он создан после указанной даты
+    if (comment && comment.createdAt && new Date(comment.createdAt) > sinceDate) {
+      return comment;
+    }
+    
+    return undefined;
   }
 }
 
