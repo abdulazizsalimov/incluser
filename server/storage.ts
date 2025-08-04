@@ -34,7 +34,7 @@ import {
   type CommentWithAuthor,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, like, count, or, ilike } from "drizzle-orm";
+import { eq, desc, and, like, count, or, ilike, gt, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -126,6 +126,7 @@ export interface IStorage {
   updateComment(id: number, comment: Partial<InsertArticleComment>): Promise<ArticleComment>;
   deleteComment(id: number): Promise<void>;
   approveComment(id: number): Promise<ArticleComment>;
+  getUserRecentComment(userId: number, sinceDate: Date): Promise<ArticleComment | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -784,6 +785,22 @@ export class DatabaseStorage implements IStorage {
       .where(eq(articleComments.id, id))
       .returning();
     return approvedComment;
+  }
+
+  async getUserRecentComment(userId: number, sinceDate: Date): Promise<ArticleComment | undefined> {
+    const [comment] = await db
+      .select()
+      .from(articleComments)
+      .where(
+        and(
+          eq(articleComments.userId, userId),
+          gt(articleComments.createdAt, sinceDate)
+        )
+      )
+      .orderBy(desc(articleComments.createdAt))
+      .limit(1);
+    
+    return comment;
   }
 }
 
