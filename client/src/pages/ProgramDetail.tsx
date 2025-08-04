@@ -8,6 +8,7 @@ import { ArrowLeft, Download, Globe, Smartphone, Monitor, ExternalLink } from "l
 import { usePageTitle } from "@/hooks/usePageTitle";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MetaTags from "@/components/MetaTags";
 import type { ProgramWithRelations } from "@shared/schema";
 
 export default function ProgramDetail() {
@@ -90,6 +91,17 @@ export default function ProgramDetail() {
 
   return (
     <>
+      {program && (
+        <MetaTags
+          title={`${program.title} - Программы | Incluser`}
+          description={program.description || `${program.title} - программа для повышения доступности`}
+          image={program.logo || "/favicon.png"}
+          url={`${window.location.origin}/programs/${program.category?.slug}/${program.slug}`}
+          canonical={`${window.location.origin}/programs/${program.category?.slug}/${program.slug}`}
+          type="website"
+          keywords={[program.title, program.category?.name || '', program.developer || '', 'программа', 'доступность'].filter(Boolean).join(', ')}
+        />
+      )}
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">

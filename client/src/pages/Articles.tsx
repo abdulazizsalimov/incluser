@@ -99,6 +99,8 @@ export default function Articles() {
           : "Полная коллекция статей о цифровой доступности, инклюзивном дизайне и веб-разработке"
         }
         url={window.location.href}
+        canonical={`${window.location.origin}/articles`}
+        keywords="статьи, доступность, инклюзивность, веб-разработка, WCAG"
       />
       <Header />
       

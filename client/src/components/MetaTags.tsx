@@ -7,6 +7,12 @@ interface MetaTagsProps {
   url?: string;
   type?: string;
   siteName?: string;
+  keywords?: string;
+  canonical?: string;
+  publishedTime?: string | null;
+  modifiedTime?: string | null;
+  section?: string;
+  author?: string;
 }
 
 export default function MetaTags({
@@ -15,7 +21,13 @@ export default function MetaTags({
   image = "/favicon.png",
   url = window.location.href,
   type = "website",
-  siteName = "Incluser"
+  siteName = "Incluser",
+  keywords,
+  canonical,
+  publishedTime,
+  modifiedTime,
+  section,
+  author
 }: MetaTagsProps) {
   
   useEffect(() => {
@@ -43,13 +55,35 @@ export default function MetaTags({
     // Update basic meta tags
     updateMetaTag('description', description);
     
+    // Keywords meta tag
+    if (keywords) {
+      updateMetaTag('keywords', keywords);
+    }
+    
     // Update Open Graph tags
     updateMetaTag('og:title', title, true);
     updateMetaTag('og:description', description, true);
     updateMetaTag('og:image', image.startsWith('http') ? image : `${window.location.origin}${image}`, true);
-    updateMetaTag('og:url', url, true);
+    updateMetaTag('og:url', canonical || url, true);
     updateMetaTag('og:type', type, true);
     updateMetaTag('og:site_name', siteName, true);
+    updateMetaTag('og:locale', 'ru_RU', true);
+    
+    // Article specific Open Graph tags
+    if (type === 'article') {
+      if (publishedTime) {
+        updateMetaTag('article:published_time', new Date(publishedTime).toISOString(), true);
+      }
+      if (modifiedTime) {
+        updateMetaTag('article:modified_time', new Date(modifiedTime).toISOString(), true);
+      }
+      if (section) {
+        updateMetaTag('article:section', section, true);
+      }
+      if (author) {
+        updateMetaTag('article:author', author, true);
+      }
+    }
     
     // Update Twitter tags
     updateMetaTag('twitter:card', 'summary_large_image', true);
@@ -64,9 +98,9 @@ export default function MetaTags({
       canonicalLink.setAttribute('rel', 'canonical');
       document.head.appendChild(canonicalLink);
     }
-    canonicalLink.setAttribute('href', url);
+    canonicalLink.setAttribute('href', canonical || url);
 
-  }, [title, description, image, url, type, siteName]);
+  }, [title, description, image, url, type, siteName, keywords, canonical, publishedTime, modifiedTime, section, author]);
 
   return null; // This component doesn't render anything visible
 }

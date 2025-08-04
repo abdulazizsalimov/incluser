@@ -124,7 +124,13 @@ export default function ArticleDetail() {
           description={article.excerpt || article.title}
           image={article.featuredImage || "/favicon.png"}
           url={`${window.location.origin}/articles/${article.slug}`}
+          canonical={`${window.location.origin}/articles/${article.slug}`}
           type="article"
+          keywords={[article.title, article.category?.name || '', 'доступность', 'инклюзивность', 'веб-разработка'].filter(Boolean).join(', ')}
+          publishedTime={article.publishedAt}
+          modifiedTime={article.updatedAt}
+          section={article.category?.name}
+          author={`${article.author?.firstName || ''} ${article.author?.lastName || ''}`.trim()}
         />
       )}
       <Header />

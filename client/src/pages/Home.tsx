@@ -36,6 +36,8 @@ export default function Home() {
         description="Личный блог, посвященный цифровой доступности, инклюзивному дизайну и созданию веб-решений, которыми могут пользоваться все люди, независимо от их способностей."
         image={`${window.location.origin}${heroPhoto}`}
         url={window.location.href}
+        canonical={`${window.location.origin}/`}
+        keywords="доступность, инклюзивность, веб-разработка, WCAG, универсальный дизайн"
       />
       <Header />
       

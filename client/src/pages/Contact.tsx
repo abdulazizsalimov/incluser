@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import MetaTags from "@/components/MetaTags";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 const contactSchema = z.object({
@@ -80,6 +81,12 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-background">
+      <MetaTags
+        title="Контакты - Incluser"
+        description="Свяжитесь с экспертом по цифровой доступности Абдулазизом Салимовым по вопросам сотрудничества и консультаций"
+        canonical={`${window.location.origin}/contact`}
+        keywords="контакты, связаться, консультация доступности, эксперт доступности"
+      />
       <Header />
       
       <main id="main-content" role="main">

@@ -61,6 +61,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Body parser middleware
   app.use(express.json());
 
+  // Middleware для нормализации URL (удаление trailing slash)
+  app.use((req, res, next) => {
+    if (req.path !== '/' && req.path.endsWith('/')) {
+      const redirectUrl = req.path.slice(0, -1) + (req.url.includes('?') ? req.url.substring(req.path.length) : '');
+      return res.redirect(301, redirectUrl);
+    }
+    next();
+  });
+
   // Serve uploaded images
   app.use('/uploads', express.static('uploads'));
   
@@ -77,6 +86,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     app.use('/assets', express.static(assetsPath));
   }
 
+  // Bot meta tags for programs - for SEO optimization
+  app.get('/programs/:categorySlug/:slug', async (req, res, next) => {
+    const userAgent = req.get('User-Agent') || '';
+    const isBot = /bot|crawler|spider|crawling|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegram/i.test(userAgent);
+    
+    if (!isBot) {
+      return next(); // Let frontend handle regular users
+    }
+
+    try {
+      const program = await storage.getProgramBySlug(req.params.slug);
+      if (!program || !program.isPublished) {
+        return next(); // Program not found, let frontend handle 404
+      }
+
+      const escapeHtml = (text: string) => {
+        return text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#x27;');
+      };
+
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const programUrl = `${baseUrl}/programs/${program.category?.slug}/${program.slug}`;
+      const imageUrl = program.logo 
+        ? (program.logo.startsWith('http') ? program.logo : `${baseUrl}${program.logo}`)
+        : `${baseUrl}/favicon.png`;
+
+      const title = escapeHtml(program.title);
+      const description = escapeHtml(program.description || program.title);
+      const categoryName = program.category ? escapeHtml(program.category.name) : '';
+      const developer = program.developer ? escapeHtml(program.developer) : '';
+
+      const html = `<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${title} - Программы | Incluser</title>
+    <meta name="description" content="${description}" />
+    <meta name="keywords" content="${title}, ${categoryName}, ${developer}, программа, доступность" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="${title} - Программы" />
+    <meta property="og:description" content="${description}" />
+    <meta property="og:image" content="${imageUrl}?v=${Date.now()}" />
+    <meta property="og:url" content="${programUrl}" />
+    <meta property="og:site_name" content="Incluser" />
+    <meta property="og:locale" content="ru_RU" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="${title} - Программы" />
+    <meta property="twitter:description" content="${description}" />
+    <meta property="twitter:image" content="${imageUrl}" />
+    
+    <link rel="canonical" href="${programUrl}" />
+    <meta http-equiv="refresh" content="0; url=${programUrl}" />
+  </head>
+  <body>
+    <h1>${title}</h1>
+    <p>${description}</p>
+    <a href="${programUrl}">Смотреть программу полностью</a>
+    <script>window.location.href = "${programUrl}";</script>
+  </body>
+</html>`;
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.send(html);
+    } catch (error) {
+      console.error("Error generating meta tags for program:", error);
+      next(); // Let frontend handle on error
+    }
+  });
+
   // Dynamic sitemap.xml generation
   app.get('/sitemap.xml', async (req, res) => {
     try {
@@ -91,7 +181,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get all program categories and programs
       const programCategories = await storage.getProgramCategories();
-      const allPrograms = await storage.getPrograms();
+      const allPrograms = await storage.getPrograms({ published: true });
       
       // Generate XML sitemap
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -154,12 +244,15 @@ ${publishedArticles.map(article => `  <url>
   </url>`).join('\n')}
   
   <!-- Programs -->
-${allPrograms.map(program => `  <url>
-    <loc>${baseUrl}/programs/${program.slug}</loc>
+${allPrograms.map(program => {
+  const categorySlug = program.category?.slug || 'uncategorized';
+  return `  <url>
+    <loc>${baseUrl}/programs/${categorySlug}/${program.slug}</loc>
     <lastmod>${new Date(program.updatedAt || program.createdAt).toISOString().split('T')[0]}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>`).join('\n')}
+  </url>`;
+}).join('\n')}
 </urlset>`;
 
       res.set('Content-Type', 'application/xml');
@@ -168,6 +261,42 @@ ${allPrograms.map(program => `  <url>
       console.error('Error generating sitemap:', error);
       res.status(500).send('Error generating sitemap');
     }
+  });
+
+  // Robots.txt generation for SEO
+  app.get('/robots.txt', (req, res) => {
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const robotsTxt = `User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: ${baseUrl}/sitemap.xml
+
+# Important pages for crawlers
+Allow: /articles/
+Allow: /programs/
+Allow: /about
+Allow: /contact
+Allow: /privacy-policy
+Allow: /wcag-guides
+Allow: /testing-tools
+Allow: /resources
+
+# Admin pages (no crawling)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+
+# Static assets
+Allow: /uploads/
+Allow: /assets/
+Allow: /_next/static/
+
+# Crawl delay for polite crawling
+Crawl-delay: 1`;
+
+    res.setHeader('Content-Type', 'text/plain');
+    res.send(robotsTxt);
   });
 
   // Image upload endpoint
