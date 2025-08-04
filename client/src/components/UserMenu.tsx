@@ -24,9 +24,14 @@ export function UserMenu({ user }: UserMenuProps) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("/api/logout", {
+      const response = await fetch("/api/logout", {
         method: "POST",
+        credentials: "include",
       });
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -34,6 +39,8 @@ export function UserMenu({ user }: UserMenuProps) {
         description: "Вы успешно вышли из системы",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      // Redirect to home page after logout
+      window.location.href = "/";
     },
     onError: (error: any) => {
       toast({
@@ -41,6 +48,8 @@ export function UserMenu({ user }: UserMenuProps) {
         description: error.message || "Не удалось выйти из системы",
         variant: "destructive",
       });
+      // Even if logout fails, redirect to home page
+      window.location.href = "/";
     },
   });
 
