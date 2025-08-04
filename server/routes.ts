@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { insertArticleSchema, insertCategorySchema, insertPageSchema, insertContactMessageSchema, insertProgramSchema, insertProgramCategorySchema } from "@shared/schema";
+import { insertArticleSchema, insertCategorySchema, insertPageSchema, insertContactMessageSchema, insertProgramSchema, insertProgramCategorySchema, insertArticleReactionSchema, insertArticleCommentSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Configure multer for file uploads
@@ -1212,6 +1212,142 @@ ${articles.map(article => {
     } catch (error) {
       console.error("Error deleting program:", error);
       res.status(500).json({ message: "Failed to delete program" });
+    }
+  });
+
+  // Article Reactions API
+  app.post('/api/articles/:id/reactions', async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      const { reactionType, userEmail } = req.body;
+      
+      if (!reactionType || !['like', 'dislike'].includes(reactionType)) {
+        return res.status(400).json({ message: "Invalid reaction type" });
+      }
+
+      const userId = req.user?.id;
+      if (!userId && !userEmail) {
+        return res.status(400).json({ message: "User ID or email required" });
+      }
+
+      const reactionData = insertArticleReactionSchema.parse({
+        articleId,
+        userId,
+        userEmail,
+        reactionType
+      });
+
+      const reaction = await storage.addReaction(reactionData);
+      res.status(201).json(reaction);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error adding reaction:", error);
+      res.status(500).json({ message: "Failed to add reaction" });
+    }
+  });
+
+  app.delete('/api/articles/:id/reactions', async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      const { userEmail } = req.body;
+      const userId = req.user?.id;
+
+      if (!userId && !userEmail) {
+        return res.status(400).json({ message: "User ID or email required" });
+      }
+
+      await storage.removeReaction(articleId, userId, userEmail);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error removing reaction:", error);
+      res.status(500).json({ message: "Failed to remove reaction" });
+    }
+  });
+
+  app.get('/api/articles/:id/reactions', async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      const { userEmail } = req.query;
+      const userId = req.user?.id;
+
+      const reactions = await storage.getArticleReactions(articleId);
+      const userReaction = await storage.getUserReaction(articleId, userId, userEmail as string);
+
+      const counts = {
+        likes: reactions.filter(r => r.reactionType === 'like').length,
+        dislikes: reactions.filter(r => r.reactionType === 'dislike').length
+      };
+
+      res.json({
+        counts,
+        userReaction: userReaction?.reactionType || null
+      });
+    } catch (error) {
+      console.error("Error fetching reactions:", error);
+      res.status(500).json({ message: "Failed to fetch reactions" });
+    }
+  });
+
+  // Article Comments API
+  app.get('/api/articles/:id/comments', async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      const comments = await storage.getArticleComments(articleId);
+      res.json(comments);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      res.status(500).json({ message: "Failed to fetch comments" });
+    }
+  });
+
+  app.post('/api/articles/:id/comments', async (req, res) => {
+    try {
+      const articleId = parseInt(req.params.id);
+      const { authorName, authorEmail, content, parentId } = req.body;
+      const userId = req.user?.id;
+
+      const commentData = insertArticleCommentSchema.parse({
+        articleId,
+        userId,
+        authorName,
+        authorEmail,
+        content,
+        parentId
+      });
+
+      const comment = await storage.addComment(commentData);
+      res.status(201).json(comment);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Validation error", errors: error.errors });
+      }
+      console.error("Error adding comment:", error);
+      res.status(500).json({ message: "Failed to add comment" });
+    }
+  });
+
+  // Admin comment management
+  app.patch('/api/admin/comments/:id/approve', isAdmin, async (req, res) => {
+    try {
+      const commentId = parseInt(req.params.id);
+      const comment = await storage.approveComment(commentId);
+      res.json(comment);
+    } catch (error) {
+      console.error("Error approving comment:", error);
+      res.status(500).json({ message: "Failed to approve comment" });
+    }
+  });
+
+  app.delete('/api/admin/comments/:id', isAdmin, async (req, res) => {
+    try {
+      const commentId = parseInt(req.params.id);
+      await storage.deleteComment(commentId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      res.status(500).json({ message: "Failed to delete comment" });
     }
   });
 

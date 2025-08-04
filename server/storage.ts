@@ -6,6 +6,8 @@ import {
   contactMessages,
   programs,
   programCategories,
+  articleReactions,
+  articleComments,
   type User,
   type InsertUser,
   type LoginData,
@@ -25,6 +27,11 @@ import {
   type ProgramCategory,
   type InsertProgramCategory,
   type UpdateUserRoleData,
+  type ArticleReaction,
+  type InsertArticleReaction,
+  type ArticleComment,
+  type InsertArticleComment,
+  type CommentWithAuthor,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, like, count, or, ilike } from "drizzle-orm";
@@ -106,6 +113,19 @@ export interface IStorage {
   searchArticles(searchTerm: string): Promise<ArticleWithRelations[]>;
   searchPrograms(searchTerm: string): Promise<ProgramWithRelations[]>;
   searchPages(searchTerm: string): Promise<Page[]>;
+
+  // Article reaction operations
+  addReaction(reaction: InsertArticleReaction): Promise<ArticleReaction>;
+  removeReaction(articleId: number, userId?: number, userEmail?: string): Promise<void>;
+  getArticleReactions(articleId: number): Promise<ArticleReaction[]>;
+  getUserReaction(articleId: number, userId?: number, userEmail?: string): Promise<ArticleReaction | undefined>;
+
+  // Article comment operations
+  getArticleComments(articleId: number): Promise<CommentWithAuthor[]>;
+  addComment(comment: InsertArticleComment): Promise<ArticleComment>;
+  updateComment(id: number, comment: Partial<InsertArticleComment>): Promise<ArticleComment>;
+  deleteComment(id: number): Promise<void>;
+  approveComment(id: number): Promise<ArticleComment>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -666,6 +686,127 @@ export class DatabaseStorage implements IStorage {
       )
       .orderBy(desc(pages.updatedAt))
       .limit(10);
+  }
+
+  // Article reaction operations
+  async addReaction(reactionData: InsertArticleReaction): Promise<ArticleReaction> {
+    // Remove existing reaction if any
+    if (reactionData.userId) {
+      await db.delete(articleReactions)
+        .where(and(
+          eq(articleReactions.articleId, reactionData.articleId),
+          eq(articleReactions.userId, reactionData.userId)
+        ));
+    } else if (reactionData.userEmail) {
+      await db.delete(articleReactions)
+        .where(and(
+          eq(articleReactions.articleId, reactionData.articleId),
+          eq(articleReactions.userEmail, reactionData.userEmail)
+        ));
+    }
+
+    const [reaction] = await db.insert(articleReactions).values(reactionData).returning();
+    return reaction;
+  }
+
+  async removeReaction(articleId: number, userId?: number, userEmail?: string): Promise<void> {
+    if (userId) {
+      await db.delete(articleReactions)
+        .where(and(
+          eq(articleReactions.articleId, articleId),
+          eq(articleReactions.userId, userId)
+        ));
+    } else if (userEmail) {
+      await db.delete(articleReactions)
+        .where(and(
+          eq(articleReactions.articleId, articleId),
+          eq(articleReactions.userEmail, userEmail)
+        ));
+    }
+  }
+
+  async getArticleReactions(articleId: number): Promise<ArticleReaction[]> {
+    return await db.select().from(articleReactions).where(eq(articleReactions.articleId, articleId));
+  }
+
+  async getUserReaction(articleId: number, userId?: number, userEmail?: string): Promise<ArticleReaction | undefined> {
+    if (userId) {
+      const [reaction] = await db.select().from(articleReactions)
+        .where(and(
+          eq(articleReactions.articleId, articleId),
+          eq(articleReactions.userId, userId)
+        ));
+      return reaction;
+    } else if (userEmail) {
+      const [reaction] = await db.select().from(articleReactions)
+        .where(and(
+          eq(articleReactions.articleId, articleId),
+          eq(articleReactions.userEmail, userEmail)
+        ));
+      return reaction;
+    }
+    return undefined;
+  }
+
+  // Article comment operations
+  async getArticleComments(articleId: number): Promise<CommentWithAuthor[]> {
+    const comments = await db
+      .select({
+        id: articleComments.id,
+        articleId: articleComments.articleId,
+        userId: articleComments.userId,
+        authorName: articleComments.authorName,
+        authorEmail: articleComments.authorEmail,
+        content: articleComments.content,
+        isApproved: articleComments.isApproved,
+        parentId: articleComments.parentId,
+        createdAt: articleComments.createdAt,
+        updatedAt: articleComments.updatedAt,
+        author: users,
+      })
+      .from(articleComments)
+      .leftJoin(users, eq(articleComments.userId, users.id))
+      .where(and(
+        eq(articleComments.articleId, articleId),
+        eq(articleComments.isApproved, true)
+      ))
+      .orderBy(desc(articleComments.createdAt));
+
+    // Group comments into threads (parent comments with replies)
+    const parentComments = comments.filter(c => !c.parentId);
+    const replies = comments.filter(c => c.parentId);
+
+    return parentComments.map(parent => ({
+      ...parent,
+      replies: replies.filter(reply => reply.parentId === parent.id)
+    }));
+  }
+
+  async addComment(commentData: InsertArticleComment): Promise<ArticleComment> {
+    const [comment] = await db.insert(articleComments).values(commentData).returning();
+    return comment;
+  }
+
+  async updateComment(id: number, commentData: Partial<InsertArticleComment>): Promise<ArticleComment> {
+    const [updatedComment] = await db
+      .update(articleComments)
+      .set({ ...commentData, updatedAt: new Date() })
+      .where(eq(articleComments.id, id))
+      .returning();
+    return updatedComment;
+  }
+
+  async deleteComment(id: number): Promise<void> {
+    await db.delete(articleComments).where(eq(articleComments.id, id));
+  }
+
+  async approveComment(id: number): Promise<ArticleComment> {
+    const [approvedComment] = await db
+      .update(articleComments)
+      .set({ isApproved: true, updatedAt: new Date() })
+      .where(eq(articleComments.id, id))
+      .returning();
+    return approvedComment;
   }
 }
 

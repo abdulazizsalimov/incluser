@@ -126,16 +126,42 @@ export const programs = pgTable("programs", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Article reactions table (likes/dislikes)
+export const articleReactions = pgTable("article_reactions", {
+  id: serial("id").primaryKey(),
+  articleId: integer("article_id").notNull(),
+  userId: integer("user_id"), // null for anonymous users
+  userEmail: varchar("user_email"), // for tracking anonymous users
+  reactionType: varchar("reaction_type", { length: 10 }).notNull(), // 'like' or 'dislike'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Article comments table
+export const articleComments = pgTable("article_comments", {
+  id: serial("id").primaryKey(),
+  articleId: integer("article_id").notNull(),
+  userId: integer("user_id"), // null for anonymous users
+  authorName: varchar("author_name", { length: 100 }).notNull(),
+  authorEmail: varchar("author_email", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  isApproved: boolean("is_approved").default(false), // moderation
+  parentId: integer("parent_id"), // for replies
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   articles: many(articles),
+  articleReactions: many(articleReactions),
+  articleComments: many(articleComments),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
   articles: many(articles),
 }));
 
-export const articlesRelations = relations(articles, ({ one }) => ({
+export const articlesRelations = relations(articles, ({ one, many }) => ({
   author: one(users, {
     fields: [articles.authorId],
     references: [users.id],
@@ -144,6 +170,35 @@ export const articlesRelations = relations(articles, ({ one }) => ({
     fields: [articles.categoryId],
     references: [categories.id],
   }),
+  reactions: many(articleReactions),
+  comments: many(articleComments),
+}));
+
+export const articleReactionsRelations = relations(articleReactions, ({ one }) => ({
+  article: one(articles, {
+    fields: [articleReactions.articleId],
+    references: [articles.id],
+  }),
+  user: one(users, {
+    fields: [articleReactions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const articleCommentsRelations = relations(articleComments, ({ one, many }) => ({
+  article: one(articles, {
+    fields: [articleComments.articleId],
+    references: [articles.id],
+  }),
+  author: one(users, {
+    fields: [articleComments.userId],
+    references: [users.id],
+  }),
+  parent: one(articleComments, {
+    fields: [articleComments.parentId],
+    references: [articleComments.id],
+  }),
+  replies: many(articleComments),
 }));
 
 export const programCategoriesRelations = relations(programCategories, ({ many }) => ({
@@ -191,6 +246,18 @@ export const insertProgramSchema = createInsertSchema(programs).omit({
   updatedAt: true,
 });
 
+export const insertArticleReactionSchema = createInsertSchema(articleReactions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertArticleCommentSchema = createInsertSchema(articleComments).omit({
+  id: true,
+  isApproved: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Login schema
 export const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -223,9 +290,28 @@ export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Category = typeof categories.$inferSelect;
 export type InsertArticle = z.infer<typeof insertArticleSchema>;
 export type Article = typeof articles.$inferSelect;
+
+export type InsertArticleReaction = z.infer<typeof insertArticleReactionSchema>;
+export type ArticleReaction = typeof articleReactions.$inferSelect;
+export type InsertArticleComment = z.infer<typeof insertArticleCommentSchema>;
+export type ArticleComment = typeof articleComments.$inferSelect;
+
+// Complex types with relations
 export type ArticleWithRelations = Article & {
   author: User;
   category: Category | null;
+  reactions?: ArticleReaction[];
+  comments?: CommentWithAuthor[];
+  _count?: {
+    likes: number;
+    dislikes: number;
+    comments: number;
+  };
+};
+
+export type CommentWithAuthor = ArticleComment & {
+  author?: User;
+  replies?: CommentWithAuthor[];
 };
 export type InsertPage = z.infer<typeof insertPageSchema>;
 export type Page = typeof pages.$inferSelect;

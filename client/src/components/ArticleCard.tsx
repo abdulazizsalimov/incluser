@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock, User } from "lucide-react";
 import ShareButton from "@/components/ShareButton";
+import { ArticleCardReactions } from "@/components/ArticleCardReactions";
 import type { ArticleWithRelations } from "@shared/schema";
 
 interface ArticleCardProps {
@@ -85,6 +86,11 @@ export default function ArticleCard({ article }: ArticleCardProps) {
             size="sm"
             variant="ghost"
           />
+        </div>
+        
+        {/* Article Reactions */}
+        <div className="mt-3 pt-3 border-t border-border">
+          <ArticleCardReactions articleId={article.id} />
         </div>
       </CardContent>
     </article>

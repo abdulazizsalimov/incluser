@@ -11,6 +11,8 @@ import MetaTags from "@/components/MetaTags";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import type { ArticleWithRelations } from "@shared/schema";
+import { ArticleReactions } from "@/components/ArticleReactions";
+import { ArticleComments } from "@/components/ArticleComments";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -354,6 +356,12 @@ export default function ArticleDetail() {
                   className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-foreground prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-li:text-foreground [&_em]:!text-muted-foreground"
                   dangerouslySetInnerHTML={{ __html: formatContent(article.content) }}
                 />
+                
+                {/* Article Reactions */}
+                <ArticleReactions articleId={article.id} />
+                
+                {/* Article Comments */}
+                <ArticleComments articleId={article.id} />
               </div>
             </article>
           </>
