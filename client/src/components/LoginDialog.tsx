@@ -106,7 +106,7 @@ export function LoginDialog({ children }: LoginDialogProps) {
         <DialogHeader>
           <DialogTitle>Вход в систему</DialogTitle>
           <DialogDescription>
-            Войдите в свой аккаунт, чтобы получить доступ к функциям администратора
+            Войдите в свой аккаунт, чтобы оставлять комментарии и реакции на статьи
           </DialogDescription>
         </DialogHeader>
 
