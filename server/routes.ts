@@ -690,15 +690,28 @@ ${articles.map(article => {
 
   app.post('/api/admin/articles', isAdmin, async (req: any, res) => {
     try {
-      const validatedData = insertArticleSchema.parse({
+      console.log('Creating article with data:', {
+        body: req.body,
+        userId: req.user.id,
+        userEmail: req.user.email
+      });
+      
+      const dataToValidate = {
         ...req.body,
         authorId: req.user.id,
-      });
+      };
+      
+      console.log('Data to validate:', dataToValidate);
+      
+      const validatedData = insertArticleSchema.parse(dataToValidate);
+      
+      console.log('Validated data:', validatedData);
       
       const article = await storage.createArticle(validatedData);
       res.status(201).json(article);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error("Validation error details:", error.errors);
         return res.status(400).json({ message: "Validation error", errors: error.errors });
       }
       console.error("Error creating article:", error);
