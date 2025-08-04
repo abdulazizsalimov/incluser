@@ -207,7 +207,12 @@ export default function ArticleDetail() {
                         {article.author && (
                           <div className="flex items-center justify-center gap-2">
                             <User className="h-4 w-4" aria-hidden="true" />
-                            <span>{article.author?.username || 'Автор'}</span>
+                            <span>
+                              {article.author.firstName && article.author.lastName ? 
+                                `${article.author.firstName} ${article.author.lastName}` : 
+                                article.author.username || article.author.email || 'Автор'
+                              }
+                            </span>
                           </div>
                         )}
                         
@@ -291,7 +296,12 @@ export default function ArticleDetail() {
                           {article.author && (
                             <div className="flex items-center gap-2">
                               <User className="h-5 w-5" aria-hidden="true" />
-                              <span>{article.author?.username || 'Автор'}</span>
+                              <span>
+                                {article.author.firstName && article.author.lastName ? 
+                                  `${article.author.firstName} ${article.author.lastName}` : 
+                                  article.author.username || article.author.email || 'Автор'
+                                }
+                              </span>
                             </div>
                           )}
                           

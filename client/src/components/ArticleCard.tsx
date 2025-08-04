@@ -69,7 +69,14 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           {article.author && (
             <div className="flex items-center gap-1">
               <User className="h-4 w-4" aria-hidden="true" />
-              <span>{article.author?.username || 'Автор'}</span>
+              <span>
+                {article.author ? 
+                  (article.author.firstName && article.author.lastName ? 
+                    `${article.author.firstName} ${article.author.lastName}` : 
+                    article.author.username || article.author.email) : 
+                  'Автор'
+                }
+              </span>
             </div>
           )}
         </div>
