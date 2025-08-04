@@ -24,6 +24,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   // Form state
   const [content, setContent] = useState('');
   
+  // Антиспам состояние
+  const [cooldownEnd, setCooldownEnd] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [progressWidth, setProgressWidth] = useState(0);
+  
   // Show comments for everyone, but only allow commenting for registered users
 
   const fetchComments = async () => {
@@ -56,6 +61,34 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   useEffect(() => {
     fetchComments();
   }, [articleId]);
+
+  // Таймер для антиспам защиты
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (cooldownEnd) {
+      interval = setInterval(() => {
+        const now = Date.now();
+        const left = Math.max(0, Math.ceil((cooldownEnd - now) / 1000));
+        const totalCooldown = 60; // 60 секунд
+        const elapsed = totalCooldown - left;
+        const progress = Math.min(100, (elapsed / totalCooldown) * 100);
+        
+        setTimeLeft(left);
+        setProgressWidth(progress);
+        
+        if (left <= 0) {
+          setCooldownEnd(null);
+          setTimeLeft(0);
+          setProgressWidth(0);
+        }
+      }, 100);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [cooldownEnd]);
 
   const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
     // Create separate state for each form to prevent focus loss
@@ -92,6 +125,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         if (response.ok) {
           setLocalContent('');
           setReplyingTo(null);
+          if (onCancel) onCancel();
+          
+          // Запускаем антиспам таймер на 60 секунд
+          setCooldownEnd(Date.now() + 60000);
+          
           await fetchComments();
           toast({
             title: "Комментарий добавлен",
@@ -135,10 +173,32 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         </div>
         
         <div className="flex gap-2">
-          <Button type="submit" disabled={submitting}>
-            <Send className="h-4 w-4 mr-2" />
-            {submitting ? 'Отправка...' : (parentId ? 'Ответить' : 'Отправить комментарий')}
-          </Button>
+          <div className="relative">
+            <Button 
+              type="submit" 
+              disabled={submitting || (cooldownEnd !== null && timeLeft > 0)}
+              className="relative overflow-hidden min-w-[200px]"
+            >
+              {/* Фон прогресс-бара */}
+              {cooldownEnd !== null && timeLeft > 0 && (
+                <div 
+                  className="absolute left-0 top-0 h-full bg-purple-400/30 transition-all duration-100 ease-linear"
+                  style={{ width: `${progressWidth}%` }}
+                />
+              )}
+              
+              {/* Контент кнопки */}
+              <div className="relative z-10 flex items-center">
+                <Send className="h-4 w-4 mr-2" />
+                {submitting 
+                  ? 'Отправка...' 
+                  : cooldownEnd !== null && timeLeft > 0
+                    ? `Следующая отправка через ${timeLeft}с`
+                    : (parentId ? 'Ответить' : 'Отправить комментарий')
+                }
+              </div>
+            </Button>
+          </div>
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
               Отмена

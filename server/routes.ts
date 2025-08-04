@@ -1343,29 +1343,7 @@ ${articles.map(article => {
       const { authorName, authorEmail, content, parentId } = req.body;
       const userId = req.user?.id;
 
-      // Антиспам защита для зарегистрированных пользователей
-      if (userId) {
-        // Проверка 1: не более одного комментария в минуту
-        const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
-        const recentComment = await storage.getUserRecentComment(userId, oneMinuteAgo);
-        
-        if (recentComment) {
-          const timeLeft = Math.ceil((new Date(recentComment.createdAt!).getTime() + 60000 - Date.now()) / 1000);
-          return res.status(429).json({ 
-            message: `Слишком часто! Подождите еще ${timeLeft} секунд перед добавлением следующего комментария.`,
-            retryAfter: timeLeft
-          });
-        }
-
-        // Проверка 2: не более 50 комментариев в день
-        const dailyCount = await storage.getUserDailyCommentCount(userId);
-        if (dailyCount >= 50) {
-          return res.status(429).json({ 
-            message: "Превышен дневной лимит комментариев (50 в день). Попробуйте завтра.",
-            retryAfter: 86400 // 24 часа
-          });
-        }
-      }
+      // Клиентская антиспам защита реализована на фронтенде
 
       const commentData = insertArticleCommentSchema.parse({
         articleId,
