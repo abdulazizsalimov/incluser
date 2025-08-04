@@ -138,9 +138,10 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     );
   });
 
-  const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
+  const CommentForm = memo(({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
     // Create separate state for each form to prevent focus loss
     const [localContent, setLocalContent] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
     const handleLocalSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -154,7 +155,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         return;
       }
 
-      setSubmitting(true);
+      setIsSubmitting(true);
       
       try {
         const response = await fetch(`/api/articles/${articleId}/comments`, {
@@ -171,6 +172,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         });
 
         if (response.ok) {
+          // Очищаем поле ввода только после успешной отправки
+          const currentContent = localContent;
           setLocalContent('');
           setReplyingTo(null);
           if (onCancel) onCancel();
@@ -178,11 +181,16 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           // Запускаем антиспам таймер на 15 секунд
           setGlobalCooldownEnd(Date.now() + 15000);
           
-          await fetchComments();
-          toast({
-            title: "Комментарий добавлен",
-            description: "Ваш комментарий был успешно добавлен.",
-          });
+          // Обновляем комментарии в фоне
+          fetchComments();
+          
+          // Показываем уведомление независимо от состояния формы
+          setTimeout(() => {
+            toast({
+              title: "Комментарий добавлен",
+              description: "Ваш комментарий был успешно добавлен.",
+            });
+          }, 100);
         } else {
           throw new Error('Failed to submit comment');
         }
@@ -194,7 +202,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           variant: "destructive",
         });
       } finally {
-        setSubmitting(false);
+        setIsSubmitting(false);
       }
     };
 
@@ -214,7 +222,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
             placeholder={parentId ? "Напишите ваш ответ..." : "Поделитесь своими мыслями..."}
             rows={4}
             required
-            disabled={submitting}
+            disabled={isSubmitting}
           />
           <p className="text-xs text-muted-foreground mt-2">
             Пожалуйста, будьте вежливы и соблюдайте правила нашего сообщества при общении.
@@ -223,8 +231,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         
         <div className="flex gap-2">
           <CooldownButton 
-            disabled={submitting}
-            submitting={submitting}
+            disabled={isSubmitting}
+            submitting={isSubmitting}
             isReply={!!parentId}
             cooldownEnd={globalCooldownEnd}
           />
@@ -236,7 +244,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         </div>
       </form>
     );
-  };
+  });
 
   const CommentItem = ({ comment }: { comment: CommentWithAuthor }) => (
     <div className="space-y-4">
