@@ -746,10 +746,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(articleComments)
       .leftJoin(users, eq(articleComments.authorEmail, users.email))
-      .where(and(
-        eq(articleComments.articleId, articleId),
-        eq(articleComments.isApproved, true)
-      ))
+      .where(eq(articleComments.articleId, articleId))
       .orderBy(desc(articleComments.createdAt));
 
     // Group comments into threads (parent comments with replies)

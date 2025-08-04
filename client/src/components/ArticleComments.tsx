@@ -115,8 +115,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           setReplyingTo(null);
           await fetchComments();
           toast({
-            title: "Комментарий отправлен",
-            description: "Ваш комментарий был отправлен на модерацию.",
+            title: "Комментарий добавлен",
+            description: "Ваш комментарий был успешно добавлен.",
           });
         } else {
           throw new Error('Failed to submit comment');
@@ -188,7 +188,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
             onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
           >
             <Reply className="h-4 w-4 mr-1" />
-            Reply
+            Ответить
           </Button>
         </div>
         
@@ -222,7 +222,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       <div className="py-8">
         <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
           <MessageCircle className="h-5 w-5" />
-          Comments
+          Комментарии
         </h3>
         <div className="animate-pulse space-y-4">
           <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
@@ -236,12 +236,12 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     <div className="py-8">
       <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
         <MessageCircle className="h-5 w-5" />
-        Comments ({comments.length})
+        Комментарии ({comments.length})
       </h3>
       
       {/* Comment Form */}
       <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8">
-        <h4 className="text-lg font-medium mb-4">Leave a Comment</h4>
+        <h4 className="text-lg font-medium mb-4">Оставить комментарий</h4>
         <CommentForm />
       </div>
       
@@ -256,7 +256,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         <div className="text-center py-8">
           <MessageCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
           <p className="text-gray-500 dark:text-gray-400">
-            No comments yet. Be the first to share your thoughts!
+            Пока нет комментариев. Станьте первым, кто поделится мыслями!
           </p>
         </div>
       )}

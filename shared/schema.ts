@@ -144,7 +144,7 @@ export const articleComments = pgTable("article_comments", {
   authorName: varchar("author_name", { length: 255 }).notNull(),
   authorEmail: varchar("author_email", { length: 255 }).notNull(),
   content: text("content").notNull(),
-  isApproved: boolean("is_approved").default(false).notNull(),
+  isApproved: boolean("is_approved").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
