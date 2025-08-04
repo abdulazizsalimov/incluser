@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Send, MessageCircle, Reply } from 'lucide-react';
+import { Send, MessageCircle, Reply, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -21,9 +21,31 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   const { user } = useAuth();
 
   // Form state
-  const [authorName, setAuthorName] = useState(user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '');
-  const [authorEmail, setAuthorEmail] = useState(user?.email || '');
   const [content, setContent] = useState('');
+  
+  // Only allow comments for registered users
+  if (!user) {
+    return (
+      <div className="py-8">
+        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+          <MessageCircle className="h-5 w-5" />
+          Comments
+        </h3>
+        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 text-center">
+          <MessageCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Для добавления комментариев необходимо войти в систему
+          </p>
+          <a 
+            href="/api/login" 
+            className="inline-block bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Войти
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   const fetchComments = async () => {
     try {
@@ -43,10 +65,10 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   const handleSubmit = async (e: React.FormEvent, parentId?: number) => {
     e.preventDefault();
     
-    if (!content.trim() || !authorName.trim() || !authorEmail.trim()) {
+    if (!content.trim() || !user) {
       toast({
-        title: "Missing information",
-        description: "Please fill in all required fields.",
+        title: "Ошибка",
+        description: "Необходимо заполнить все поля.",
         variant: "destructive",
       });
       return;
@@ -61,8 +83,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          authorName: authorName.trim(),
-          authorEmail: authorEmail.trim(),
+          authorName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+          authorEmail: user.email,
           content: content.trim(),
           parentId: parentId || null,
         }),
@@ -73,8 +95,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         setReplyingTo(null);
         await fetchComments();
         toast({
-          title: "Comment submitted",
-          description: "Your comment has been submitted for review.",
+          title: "Комментарий отправлен",
+          description: "Ваш комментарий был отправлен на модерацию.",
         });
       } else {
         throw new Error('Failed to submit comment');
@@ -82,8 +104,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     } catch (error) {
       console.error('Error submitting comment:', error);
       toast({
-        title: "Error",
-        description: "Failed to submit comment. Please try again.",
+        title: "Ошибка",
+        description: "Не удалось отправить комментарий. Попробуйте еще раз.",
         variant: "destructive",
       });
     } finally {
@@ -107,37 +129,18 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
 
   const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => (
     <form onSubmit={(e) => handleSubmit(e, parentId)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor={`name-${parentId || 'main'}`}>Name *</Label>
-          <Input
-            id={`name-${parentId || 'main'}`}
-            value={authorName}
-            onChange={(e) => setAuthorName(e.target.value)}
-            placeholder="Your name"
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor={`email-${parentId || 'main'}`}>Email *</Label>
-          <Input
-            id={`email-${parentId || 'main'}`}
-            type="email"
-            value={authorEmail}
-            onChange={(e) => setAuthorEmail(e.target.value)}
-            placeholder="your@email.com"
-            required
-          />
-        </div>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+        <User className="h-4 w-4" />
+        <span>Комментирует: {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}</span>
       </div>
       
       <div>
-        <Label htmlFor={`content-${parentId || 'main'}`}>Comment *</Label>
+        <Label htmlFor={`content-${parentId || 'main'}`}>Комментарий *</Label>
         <Textarea
           id={`content-${parentId || 'main'}`}
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder={parentId ? "Write your reply..." : "Share your thoughts..."}
+          placeholder={parentId ? "Напишите ваш ответ..." : "Поделитесь своими мыслями..."}
           rows={4}
           required
         />
@@ -146,11 +149,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       <div className="flex gap-2">
         <Button type="submit" disabled={submitting}>
           <Send className="h-4 w-4 mr-2" />
-          {submitting ? 'Submitting...' : (parentId ? 'Reply' : 'Submit Comment')}
+          {submitting ? 'Отправка...' : (parentId ? 'Ответить' : 'Отправить комментарий')}
         </Button>
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            Отмена
           </Button>
         )}
       </div>

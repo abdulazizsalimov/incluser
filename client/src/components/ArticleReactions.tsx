@@ -24,22 +24,22 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  // Get user email for anonymous reactions
-  const getUserEmail = () => {
-    if (user?.email) return user.email;
-    
-    // For anonymous users, use localStorage to track their email
-    let anonymousEmail = localStorage.getItem('anonymousUserEmail');
-    if (!anonymousEmail) {
-      anonymousEmail = `anonymous_${Date.now()}@example.com`;
-      localStorage.setItem('anonymousUserEmail', anonymousEmail);
-    }
-    return anonymousEmail;
-  };
+  // Only allow reactions for registered users
+  if (!user?.email) {
+    return (
+      <div className="flex items-center gap-4 py-4 border-y border-gray-200 dark:border-gray-700">
+        <div className="text-muted-foreground text-sm">
+          Войдите в систему, чтобы оставлять реакции на статьи
+        </div>
+      </div>
+    );
+  }
 
   const fetchReactions = async () => {
     try {
-      const userEmail = getUserEmail();
+      const userEmail = user?.email;
+      if (!userEmail) return;
+      
       const response = await fetch(`/api/articles/${articleId}/reactions?userEmail=${encodeURIComponent(userEmail)}`);
       
       if (response.ok) {
@@ -55,7 +55,8 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
 
   const handleReaction = async (type: 'like' | 'dislike') => {
     try {
-      const userEmail = getUserEmail();
+      const userEmail = user?.email;
+      if (!userEmail) return;
       
       // If user clicked the same reaction, remove it
       if (reactions.userReaction === type) {
@@ -70,8 +71,8 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
         if (response.ok) {
           await fetchReactions();
           toast({
-            title: "Reaction removed",
-            description: "Your reaction has been removed.",
+            title: "Реакция удалена",
+            description: "Ваша реакция была удалена.",
           });
         }
       } else {
@@ -90,16 +91,16 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
         if (response.ok) {
           await fetchReactions();
           toast({
-            title: "Reaction added",
-            description: `You ${type}d this article.`,
+            title: "Реакция добавлена",
+            description: `Вы поставили ${type === 'like' ? 'лайк' : 'дизлайк'} этой статье.`,
           });
         }
       }
     } catch (error) {
       console.error('Error handling reaction:', error);
       toast({
-        title: "Error",
-        description: "Failed to update reaction. Please try again.",
+        title: "Ошибка",
+        description: "Не удалось обновить реакцию. Попробуйте еще раз.",
         variant: "destructive",
       });
     }
