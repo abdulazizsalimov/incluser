@@ -32,14 +32,24 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024 // 5MB limit
   },
   fileFilter: function (req, file, cb) {
+    console.log('File upload attempt:', {
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      fieldname: file.fieldname
+    });
+    
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const allowedMimeTypes = /image\/(jpeg|jpg|png|gif|webp)/;
+    
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    const mimetype = allowedMimeTypes.test(file.mimetype.toLowerCase());
     
     if (mimetype && extname) {
+      console.log('File upload accepted');
       return cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'));
+      console.log('File upload rejected:', { extname, mimetype, originalMimeType: file.mimetype });
+      cb(new Error(`Only image files are allowed. Received: ${file.mimetype}`));
     }
   }
 });
@@ -161,22 +171,30 @@ ${allPrograms.map(program => `  <url>
   });
 
   // Image upload endpoint
-  app.post('/api/admin/upload-image', isAdmin, upload.single('image'), (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded' });
+  app.post('/api/admin/upload-image', isAdmin, (req, res) => {
+    upload.single('image')(req, res, (err) => {
+      if (err) {
+        console.error('Multer error:', err);
+        return res.status(400).json({ message: err.message });
       }
+      
+      try {
+        if (!req.file) {
+          return res.status(400).json({ message: 'No file uploaded' });
+        }
 
-      const imageUrl = `/uploads/images/${req.file.filename}`;
-      res.json({ 
-        message: 'Image uploaded successfully',
-        imageUrl: imageUrl,
-        filename: req.file.filename 
-      });
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      res.status(500).json({ message: 'Failed to upload image' });
-    }
+        const imageUrl = `/uploads/images/${req.file.filename}`;
+        console.log('Image uploaded successfully:', imageUrl);
+        res.json({ 
+          message: 'Image uploaded successfully',
+          imageUrl: imageUrl,
+          filename: req.file.filename 
+        });
+      } catch (error) {
+        console.error('Error processing uploaded image:', error);
+        res.status(500).json({ message: 'Failed to process uploaded image' });
+      }
+    });
   });
 
   // Admin password change
