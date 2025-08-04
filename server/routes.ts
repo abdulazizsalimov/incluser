@@ -719,10 +719,14 @@ ${articles.map(article => {
     }
   });
 
-  app.put('/api/admin/articles/:id', isAdmin, async (req, res) => {
+  app.put('/api/admin/articles/:id', isAdmin, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
-      const validatedData = insertArticleSchema.partial().parse(req.body);
+      // При редактировании статьи, автором становится текущий пользователь (последний редактор)
+      const validatedData = insertArticleSchema.partial().parse({
+        ...req.body,
+        authorId: req.user.id
+      });
       
       const article = await storage.updateArticle(id, validatedData);
       res.json(article);
