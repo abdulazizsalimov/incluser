@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { Send, MessageCircle, Reply, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -24,11 +24,8 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   // Form state
   const [content, setContent] = useState('');
   
-  // Антиспам состояние - используем ref чтобы не вызывать перерендер
-  const cooldownEndRef = useRef<number | null>(null);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [progressWidth, setProgressWidth] = useState(0);
-  const [isInCooldown, setIsInCooldown] = useState(false);
+  // Антиспам состояние - глобальное для всех форм
+  const [globalCooldownEnd, setGlobalCooldownEnd] = useState<number | null>(null);
   
   // Show comments for everyone, but only allow commenting for registered users
 
@@ -63,31 +60,83 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     fetchComments();
   }, [articleId]);
 
-  // Функция запуска таймера
-  const startCooldown = useCallback(() => {
-    cooldownEndRef.current = Date.now() + 15000;
-    setIsInCooldown(true);
-    
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const timeRemaining = cooldownEndRef.current! - now;
-      const left = Math.max(0, Math.ceil(timeRemaining / 1000));
-      const totalMs = 15000;
-      const elapsed = totalMs - timeRemaining;
-      const progress = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
-      
-      setTimeLeft(left);
-      setProgressWidth(progress);
-      
-      if (timeRemaining <= 0) {
-        cooldownEndRef.current = null;
+  // Компонент кнопки с изолированной анимацией
+  const CooldownButton = memo(({ 
+    disabled, 
+    submitting, 
+    isReply, 
+    cooldownEnd 
+  }: { 
+    disabled: boolean; 
+    submitting: boolean; 
+    isReply: boolean;
+    cooldownEnd: number | null;
+  }) => {
+    const [timeLeft, setTimeLeft] = useState(0);
+    const [progressWidth, setProgressWidth] = useState(0);
+    const isInCooldown = cooldownEnd !== null && Date.now() < cooldownEnd;
+
+    useEffect(() => {
+      if (!cooldownEnd) {
         setTimeLeft(0);
         setProgressWidth(0);
-        setIsInCooldown(false);
-        clearInterval(interval);
+        return;
       }
-    }, 50);
-  }, []);
+
+      const interval = setInterval(() => {
+        const now = Date.now();
+        const timeRemaining = cooldownEnd - now;
+        const left = Math.max(0, Math.ceil(timeRemaining / 1000));
+        const totalMs = 15000;
+        const elapsed = totalMs - timeRemaining;
+        const progress = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
+        
+        setTimeLeft(left);
+        setProgressWidth(progress);
+        
+        if (timeRemaining <= 0) {
+          setTimeLeft(0);
+          setProgressWidth(0);
+        }
+      }, 50);
+
+      return () => clearInterval(interval);
+    }, [cooldownEnd]);
+
+    return (
+      <Button 
+        type="submit" 
+        disabled={disabled || isInCooldown}
+        className={`relative overflow-hidden min-w-[200px] transition-colors duration-200 ${
+          isInCooldown 
+            ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700' 
+            : ''
+        }`}
+      >
+        {/* Прогресс-бар с ярким цветом */}
+        {isInCooldown && (
+          <div 
+            className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-75 ease-out"
+            style={{ 
+              width: `${progressWidth}%`,
+              transform: 'translateZ(0)',
+            }}
+          />
+        )}
+        
+        {/* Контент кнопки */}
+        <div className="relative z-10 flex items-center">
+          <Send className="h-4 w-4 mr-2" />
+          {submitting 
+            ? 'Отправка...' 
+            : isInCooldown
+              ? `Следующая отправка через ${timeLeft}с`
+              : (isReply ? 'Ответить' : 'Отправить комментарий')
+          }
+        </div>
+      </Button>
+    );
+  });
 
   const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
     // Create separate state for each form to prevent focus loss
@@ -127,7 +176,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           if (onCancel) onCancel();
           
           // Запускаем антиспам таймер на 15 секунд
-          startCooldown();
+          setGlobalCooldownEnd(Date.now() + 15000);
           
           await fetchComments();
           toast({
@@ -173,39 +222,12 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         </div>
         
         <div className="flex gap-2">
-          <div className="relative">
-            <Button 
-              type="submit" 
-              disabled={submitting || isInCooldown}
-              className={`relative overflow-hidden min-w-[200px] transition-colors duration-200 ${
-                isInCooldown 
-                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700' 
-                  : ''
-              }`}
-            >
-              {/* Прогресс-бар с ярким цветом */}
-              {isInCooldown && (
-                <div 
-                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-75 ease-out"
-                  style={{ 
-                    width: `${progressWidth}%`,
-                    transform: 'translateZ(0)', // Аппаратное ускорение
-                  }}
-                />
-              )}
-              
-              {/* Контент кнопки */}
-              <div className="relative z-10 flex items-center">
-                <Send className="h-4 w-4 mr-2" />
-                {submitting 
-                  ? 'Отправка...' 
-                  : isInCooldown
-                    ? `Следующая отправка через ${timeLeft}с`
-                    : (parentId ? 'Ответить' : 'Отправить комментарий')
-                }
-              </div>
-            </Button>
-          </div>
+          <CooldownButton 
+            disabled={submitting}
+            submitting={submitting}
+            isReply={!!parentId}
+            cooldownEnd={globalCooldownEnd}
+          />
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
               Отмена
