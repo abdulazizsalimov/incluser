@@ -27,12 +27,14 @@ export const sessions = pgTable(
 // User storage table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: varchar("username").unique().notNull(),
+  username: varchar("username").unique(),
   email: varchar("email").unique(),
-  password: varchar("password").notNull(),
+  password: varchar("password"), // Optional for Google OAuth users
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  googleId: varchar("google_id").unique(), // For Google OAuth
+  authProvider: varchar("auth_provider").default("local"), // 'local' or 'google'
   isAdmin: boolean("is_admin").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

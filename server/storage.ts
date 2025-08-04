@@ -32,7 +32,11 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  createGoogleUser(user: Partial<InsertUser> & { googleId: string }): Promise<User>;
+  linkGoogleAccount(userId: number, googleId: string): Promise<User>;
   updateUserPassword(id: number, newPassword: string): Promise<User>;
 
   // Article operations
@@ -112,8 +116,39 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
+    return user;
+  }
+
   async createUser(userData: InsertUser): Promise<User> {
     const [user] = await db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  async createGoogleUser(userData: Partial<InsertUser> & { googleId: string }): Promise<User> {
+    const [user] = await db.insert(users).values({
+      ...userData,
+      authProvider: 'google',
+    }).returning();
+    return user;
+  }
+
+  async linkGoogleAccount(userId: number, googleId: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ 
+        googleId,
+        authProvider: 'google',
+        updatedAt: new Date() 
+      })
+      .where(eq(users.id, userId))
+      .returning();
     return user;
   }
 

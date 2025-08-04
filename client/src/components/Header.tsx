@@ -13,6 +13,8 @@ import type { Category } from "@shared/schema";
 import AccessibilityWidget from "./AccessibilityWidget";
 import SkipLinks from "./SkipLinks";
 import GlobalSearchWithKeyboard from "./GlobalSearchWithKeyboard";
+import { LoginDialog } from "./LoginDialog";
+import { UserMenu } from "./UserMenu";
 
 export default function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -25,7 +27,7 @@ export default function Header() {
   });
 
   // Fetch program categories for dropdown
-  const { data: programCategories = [] } = useQuery({
+  const { data: programCategories = [] } = useQuery<any[]>({
     queryKey: ['/api/program-categories'],
   });
 
@@ -225,43 +227,19 @@ export default function Header() {
               <span className="ml-2">Доступность</span>
             </Button>
 
-            {/* Auth Buttons */}
+            {/* Auth Section */}
             {!isLoading && (
               <div className="flex items-center space-x-2">
-                {isAuthenticated ? (
-                  <div className="flex items-center space-x-2">
-                    {user?.isAdmin && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => window.location.href = "/admin"}
-                      >
-                        Админ-панель
-                      </Button>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={async () => {
-                        try {
-                          await fetch("/api/logout", { method: "POST" });
-                          window.location.href = "/";
-                        } catch (error) {
-                          window.location.href = "/";
-                        }
-                      }}
-                    >
-                      Выход
-                    </Button>
-                  </div>
+                {isAuthenticated && user ? (
+                  <UserMenu user={user} />
                 ) : (
                   <div className="hidden sm:flex space-x-2">
-                    <Button
-                      size="sm"
-                      onClick={() => window.location.href = "/login"}
-                    >
-                      Вход
-                    </Button>
+                    <LoginDialog>
+                      <Button size="sm" variant="outline">
+                        <LogIn className="h-4 w-4 mr-2" />
+                        Вход
+                      </Button>
+                    </LoginDialog>
                   </div>
                 )}
               </div>
@@ -416,48 +394,27 @@ export default function Header() {
                   
                   {!isLoading && (
                     <>
-                      {isAuthenticated ? (
-                        <div className="space-y-2">
-                          {user?.isAdmin && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => window.location.href = "/admin"}
-                              className="w-full justify-center xs:justify-start"
-                              title="Админ-панель"
-                            >
-                              <Settings className="h-4 w-4" />
-                              <span className="hidden xs:inline xs:ml-2">Админ-панель</span>
-                            </Button>
-                          )}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={async () => {
-                              try {
-                                await fetch("/api/logout", { method: "POST" });
-                                window.location.href = "/";
-                              } catch (error) {
-                                window.location.href = "/";
-                              }
-                            }}
-                            className="w-full justify-center xs:justify-start"
-                            title="Выход"
-                          >
-                            <LogOut className="h-4 w-4" />
-                            <span className="hidden xs:inline xs:ml-2">Выход</span>
-                          </Button>
+                      {isAuthenticated && user ? (
+                        <div className="flex items-center justify-between p-2 bg-muted rounded-lg">
+                          <UserMenu user={user} />
+                          <span className="text-sm font-medium">
+                            {user.firstName && user.lastName 
+                              ? `${user.firstName} ${user.lastName}`
+                              : user.username || user.email
+                            }
+                          </span>
                         </div>
                       ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => window.location.href = "/login"}
-                          className="w-full justify-center xs:justify-start"
-                          title="Вход"
-                        >
-                          <LogIn className="h-4 w-4" />
-                          <span className="hidden xs:inline xs:ml-2">Вход</span>
-                        </Button>
+                        <LoginDialog>
+                          <Button
+                            size="sm"
+                            className="w-full justify-center xs:justify-start"
+                            title="Вход"
+                          >
+                            <LogIn className="h-4 w-4" />
+                            <span className="hidden xs:inline xs:ml-2">Вход</span>
+                          </Button>
+                        </LoginDialog>
                       )}
                     </>
                   )}
