@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginDialog } from '@/components/LoginDialog';
+import { showGlobalToast, setGlobalToastCallback } from '@/lib/globalToast';
 import type { CommentWithAuthor } from '@shared/schema';
 
 interface ArticleCommentsProps {
@@ -20,6 +21,12 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+
+  // Регистрируем глобальный колбек для тостов один раз
+  useEffect(() => {
+    setGlobalToastCallback(toast);
+    return () => setGlobalToastCallback(() => {});
+  }, [toast]);
 
   // Form state
   const [content, setContent] = useState('');
@@ -151,7 +158,6 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     // Create separate state for each form to prevent focus loss
     const [localContent, setLocalContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [statusMessage, setStatusMessage] = useState<{ text: string; type: 'success' | 'error' | null }>({ text: '', type: null });
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [savedCursorPosition, setSavedCursorPosition] = useState<number>(0);
     
@@ -162,31 +168,25 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
       }
     }, []);
     
-    // Восстанавливаем позицию курсора
+    // Восстанавливаем позицию курсора после операций
     const restoreCursorPosition = useCallback(() => {
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-        textareaRef.current.setSelectionRange(savedCursorPosition, savedCursorPosition);
-      }
-    }, [savedCursorPosition]);
-    
-    // Показываем статус сообщение на 3 секунды
-    const showStatus = useCallback((text: string, type: 'success' | 'error') => {
-      saveCursorPosition();
-      setStatusMessage({ text, type });
       setTimeout(() => {
-        setStatusMessage({ text: '', type: null });
-        requestAnimationFrame(() => {
-          restoreCursorPosition();
-        });
-      }, 3000);
-    }, [saveCursorPosition, restoreCursorPosition]);
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+          textareaRef.current.setSelectionRange(savedCursorPosition, savedCursorPosition);
+        }
+      }, 50);
+    }, [savedCursorPosition]);
     
     const handleLocalSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       
       if (!localContent.trim() || !user) {
-        showStatus("Необходимо заполнить все поля", "error");
+        showGlobalToast({
+          title: "Ошибка",
+          description: "Необходимо заполнить все поля.",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -207,6 +207,9 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         });
 
         if (response.ok) {
+          // Сохраняем позицию перед операциями
+          saveCursorPosition();
+          
           // Очищаем поле ввода только после успешной отправки
           setLocalContent('');
           setReplyingTo(null);
@@ -218,13 +221,20 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           // Обновляем комментарии в фоне
           fetchComments();
           
-          showStatus("Комментарий успешно добавлен", "success");
+          showGlobalToast({
+            title: "Комментарий добавлен",
+            description: "Ваш комментарий был успешно добавлен.",
+          });
         } else {
           throw new Error('Failed to submit comment');
         }
       } catch (error) {
         console.error('Error submitting comment:', error);
-        showStatus("Не удалось отправить комментарий. Попробуйте еще раз.", "error");
+        showGlobalToast({
+          title: "Ошибка",
+          description: "Не удалось отправить комментарий. Попробуйте еще раз.",
+          variant: "destructive",
+        });
       } finally {
         setIsSubmitting(false);
       }
@@ -252,15 +262,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
             required
             disabled={isSubmitting}
           />
-          {statusMessage.type && (
-            <div className={`text-sm mt-2 p-2 rounded ${
-              statusMessage.type === 'success' 
-                ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' 
-                : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-            }`}>
-              {statusMessage.text}
-            </div>
-          )}
+
           <p className="text-xs text-muted-foreground mt-2">
             Пожалуйста, будьте вежливы и соблюдайте правила нашего сообщества при общении.
           </p>
