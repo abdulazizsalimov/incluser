@@ -24,16 +24,7 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  // Only allow reactions for registered users
-  if (!user?.email) {
-    return (
-      <div className="flex items-center gap-4 py-4 border-y border-gray-200 dark:border-gray-700">
-        <div className="text-muted-foreground text-sm">
-          Войдите в систему, чтобы оставлять реакции на статьи
-        </div>
-      </div>
-    );
-  }
+  // Show reactions for everyone, but only allow clicking for registered users
 
   const fetchReactions = async () => {
     try {
@@ -125,6 +116,27 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
     );
   }
 
+  if (!user?.email) {
+    // Show reactions without interaction for non-logged users
+    return (
+      <div className="flex items-center gap-4 py-4 border-y border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400">
+          <ThumbsUp className="h-5 w-5" />
+          <span className="font-medium">{reactions.counts.likes}</span>
+        </div>
+        
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400">
+          <ThumbsDown className="h-5 w-5" />
+          <span className="font-medium">{reactions.counts.dislikes}</span>
+        </div>
+        
+        <div className="text-muted-foreground text-sm ml-4">
+          Войдите в систему, чтобы оставлять реакции на статьи
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-4 py-4 border-y border-gray-200 dark:border-gray-700">
       <button
@@ -134,7 +146,7 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
             ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
             : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
         }`}
-        aria-label={`Like this article. Current likes: ${reactions.counts.likes}`}
+        aria-label={`Понравилась эта статья. Лайков: ${reactions.counts.likes}`}
       >
         <ThumbsUp className="h-5 w-5" />
         <span className="font-medium">{reactions.counts.likes}</span>
@@ -147,7 +159,7 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
             ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
             : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
         }`}
-        aria-label={`Dislike this article. Current dislikes: ${reactions.counts.dislikes}`}
+        aria-label={`Не понравилась эта статья. Дизлайков: ${reactions.counts.dislikes}`}
       >
         <ThumbsDown className="h-5 w-5" />
         <span className="font-medium">{reactions.counts.dislikes}</span>

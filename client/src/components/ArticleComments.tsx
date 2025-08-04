@@ -23,29 +23,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
   // Form state
   const [content, setContent] = useState('');
   
-  // Only allow comments for registered users
-  if (!user) {
-    return (
-      <div className="py-8">
-        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
-          Comments
-        </h3>
-        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 text-center">
-          <MessageCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Для добавления комментариев необходимо войти в систему
-          </p>
-          <a 
-            href="/api/login" 
-            className="inline-block bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Войти
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // Show comments for everyone, but only allow commenting for registered users
 
   const fetchComments = async () => {
     try {
@@ -182,21 +160,23 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
               {formatDate(comment.createdAt?.toString() || new Date().toString())}
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-          >
-            <Reply className="h-4 w-4 mr-1" />
-            Ответить
-          </Button>
+          {user && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+            >
+              <Reply className="h-4 w-4 mr-1" />
+              Ответить
+            </Button>
+          )}
         </div>
         
         <div className="prose prose-sm dark:prose-invert max-w-none">
           <p className="whitespace-pre-wrap">{comment.content}</p>
         </div>
         
-        {replyingTo === comment.id && (
+        {user && replyingTo === comment.id && (
           <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <CommentForm 
               parentId={comment.id} 
@@ -239,11 +219,26 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
         Комментарии ({comments.length})
       </h3>
       
-      {/* Comment Form */}
-      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8">
-        <h4 className="text-lg font-medium mb-4">Оставить комментарий</h4>
-        <CommentForm />
-      </div>
+      {/* Comment Form - only for registered users */}
+      {user ? (
+        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8">
+          <h4 className="text-lg font-medium mb-4">Оставить комментарий</h4>
+          <CommentForm />
+        </div>
+      ) : (
+        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8 text-center">
+          <MessageCircle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Для добавления комментариев необходимо войти в систему
+          </p>
+          <a 
+            href="/api/login" 
+            className="inline-block bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Войти
+          </a>
+        </div>
+      )}
       
       {/* Comments List */}
       {comments.length > 0 ? (
