@@ -8,6 +8,7 @@ import {
   serial,
   boolean,
   integer,
+  unique,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
@@ -129,32 +130,28 @@ export const programs = pgTable("programs", {
 // Article reactions table (likes/dislikes)
 export const articleReactions = pgTable("article_reactions", {
   id: serial("id").primaryKey(),
-  articleId: integer("article_id").notNull(),
-  userId: integer("user_id"), // null for anonymous users
-  userEmail: varchar("user_email"), // for tracking anonymous users
-  reactionType: varchar("reaction_type", { length: 10 }).notNull(), // 'like' or 'dislike'
-  createdAt: timestamp("created_at").defaultNow(),
+  articleId: integer("article_id").notNull().references(() => articles.id, { onDelete: "cascade" }),
+  userEmail: varchar("user_email", { length: 255 }).notNull(),
+  reactionType: varchar("reaction_type", { length: 20 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Article comments table
 export const articleComments = pgTable("article_comments", {
   id: serial("id").primaryKey(),
-  articleId: integer("article_id").notNull(),
-  userId: integer("user_id"), // null for anonymous users
-  authorName: varchar("author_name", { length: 100 }).notNull(),
+  articleId: integer("article_id").notNull().references(() => articles.id, { onDelete: "cascade" }),
+  parentId: integer("parent_id"),
+  authorName: varchar("author_name", { length: 255 }).notNull(),
   authorEmail: varchar("author_email", { length: 255 }).notNull(),
   content: text("content").notNull(),
-  isApproved: boolean("is_approved").default(false), // moderation
-  parentId: integer("parent_id"), // for replies
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  isApproved: boolean("is_approved").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   articles: many(articles),
-  articleReactions: many(articleReactions),
-  articleComments: many(articleComments),
 }));
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
@@ -179,20 +176,12 @@ export const articleReactionsRelations = relations(articleReactions, ({ one }) =
     fields: [articleReactions.articleId],
     references: [articles.id],
   }),
-  user: one(users, {
-    fields: [articleReactions.userId],
-    references: [users.id],
-  }),
 }));
 
 export const articleCommentsRelations = relations(articleComments, ({ one, many }) => ({
   article: one(articles, {
     fields: [articleComments.articleId],
     references: [articles.id],
-  }),
-  author: one(users, {
-    fields: [articleComments.userId],
-    references: [users.id],
   }),
   parent: one(articleComments, {
     fields: [articleComments.parentId],
