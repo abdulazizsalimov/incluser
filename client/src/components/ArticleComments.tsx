@@ -69,20 +69,22 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     if (cooldownEnd) {
       interval = setInterval(() => {
         const now = Date.now();
-        const left = Math.max(0, Math.ceil((cooldownEnd - now) / 1000));
+        const timeRemaining = cooldownEnd - now;
+        const left = Math.max(0, Math.ceil(timeRemaining / 1000));
         const totalCooldown = 15; // 15 секунд
-        const elapsed = totalCooldown - left;
-        const progress = Math.min(100, (elapsed / totalCooldown) * 100);
+        const totalMs = 15000; // 15000 миллисекунд
+        const elapsed = totalMs - timeRemaining;
+        const progress = Math.min(100, Math.max(0, (elapsed / totalMs) * 100));
         
         setTimeLeft(left);
         setProgressWidth(progress);
         
-        if (left <= 0) {
+        if (timeRemaining <= 0) {
           setCooldownEnd(null);
           setTimeLeft(0);
           setProgressWidth(0);
         }
-      }, 100);
+      }, 50);
     }
     
     return () => {
@@ -187,8 +189,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
               {/* Прогресс-бар с ярким цветом */}
               {cooldownEnd !== null && timeLeft > 0 && (
                 <div 
-                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-100 ease-linear"
-                  style={{ width: `${progressWidth}%` }}
+                  className="absolute left-0 top-0 h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-75 ease-out"
+                  style={{ 
+                    width: `${progressWidth}%`,
+                    transform: 'translateZ(0)', // Аппаратное ускорение
+                  }}
                 />
               )}
               
