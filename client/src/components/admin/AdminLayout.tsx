@@ -12,7 +12,8 @@ import {
   ArrowLeft,
   Mail,
   Smartphone,
-  FolderOpen
+  FolderOpen,
+  Users
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -58,6 +59,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: "/admin/program-categories", label: "Категории программ", icon: FolderOpen },
     { href: "/admin/pages", label: "Страницы", icon: FileText },
     { href: "/admin/messages", label: "Сообщения", icon: Mail },
+    { href: "/admin/users", label: "Пользователи", icon: Users },
     { href: "/admin/settings", label: "Настройки", icon: Settings },
   ];
 

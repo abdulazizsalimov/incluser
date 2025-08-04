@@ -24,6 +24,7 @@ import {
   type ProgramWithRelations,
   type ProgramCategory,
   type InsertProgramCategory,
+  type UpdateUserRoleData,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, like, count, or, ilike } from "drizzle-orm";
@@ -38,6 +39,9 @@ export interface IStorage {
   createGoogleUser(user: Partial<InsertUser> & { googleId: string }): Promise<User>;
   linkGoogleAccount(userId: number, googleId: string): Promise<User>;
   updateUserPassword(id: number, newPassword: string): Promise<User>;
+  getAllGoogleUsers(): Promise<User[]>;
+  updateUserRole(id: number, roleData: UpdateUserRoleData): Promise<User>;
+  updateUserLastLogin(id: number): Promise<User>;
 
   // Article operations
   getArticles(options?: {
@@ -159,6 +163,39 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .update(users)
       .set({ password: hashedPassword, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async getAllGoogleUsers(): Promise<User[]> {
+    const googleUsers = await db
+      .select()
+      .from(users)
+      .where(eq(users.authProvider, 'google'))
+      .orderBy(desc(users.lastLoginAt));
+    return googleUsers;
+  }
+
+  async updateUserRole(id: number, roleData: UpdateUserRoleData): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ 
+        isAdmin: roleData.isAdmin,
+        updatedAt: new Date() 
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async updateUserLastLogin(id: number): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ 
+        lastLoginAt: new Date(),
+        updatedAt: new Date() 
+      })
       .where(eq(users.id, id))
       .returning();
     return user;

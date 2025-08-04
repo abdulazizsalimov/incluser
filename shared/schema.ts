@@ -36,6 +36,7 @@ export const users = pgTable("users", {
   googleId: varchar("google_id").unique(), // For Google OAuth
   authProvider: varchar("auth_provider").default("local"), // 'local' or 'google'
   isAdmin: boolean("is_admin").default(false),
+  lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -211,6 +212,13 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type LoginData = z.infer<typeof loginSchema>;
 export type ChangePasswordData = z.infer<typeof changePasswordSchema>;
+
+// User role update schema
+export const updateUserRoleSchema = z.object({
+  isAdmin: z.boolean(),
+});
+
+export type UpdateUserRoleData = z.infer<typeof updateUserRoleSchema>;
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Category = typeof categories.$inferSelect;
 export type InsertArticle = z.infer<typeof insertArticleSchema>;

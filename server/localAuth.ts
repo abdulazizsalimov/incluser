@@ -75,6 +75,8 @@ export async function setupAuth(app: Express) {
         const existingUser = await storage.getUserByGoogleId(profile.id);
         
         if (existingUser) {
+          // Update last login time
+          await storage.updateUserLastLogin(existingUser.id);
           return done(null, existingUser);
         }
 
@@ -97,7 +99,8 @@ export async function setupAuth(app: Express) {
           lastName: profile.name?.familyName || null,
           profileImageUrl: profile.photos?.[0]?.value || null,
           username: profile.emails?.[0]?.value || `google_${profile.id}`,
-          authProvider: 'google'
+          authProvider: 'google',
+          lastLoginAt: new Date()
         });
 
         return done(null, newUser);

@@ -3,7 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated, isAdmin } from "./localAuth";
-import { loginSchema, changePasswordSchema } from "@shared/schema";
+import { loginSchema, changePasswordSchema, updateUserRoleSchema } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import multer from "multer";
 import path from "path";
@@ -392,6 +392,34 @@ ${articles.map(article => {
     } catch (error) {
       console.error("Error changing password:", error);
       res.status(500).json({ message: "Failed to change password" });
+    }
+  });
+
+  // User Management Routes (Admin only)
+  app.get('/api/admin/users', isAdmin, async (req, res) => {
+    try {
+      const googleUsers = await storage.getAllGoogleUsers();
+      res.json(googleUsers);
+    } catch (error) {
+      console.error("Error fetching Google users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.patch('/api/admin/users/:id/role', isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const result = updateUserRoleSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid data", errors: result.error.issues });
+      }
+
+      const updatedUser = await storage.updateUserRole(userId, result.data);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
     }
   });
 

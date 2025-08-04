@@ -27,6 +27,7 @@ import ManageProgramCategories from "@/pages/admin/ManageProgramCategories";
 import ManagePages from "@/pages/admin/ManagePages";
 import Messages from "@/pages/admin/Messages";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import UserManagement from "@/pages/admin/UserManagement";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/not-found";
 
@@ -62,6 +63,7 @@ function Router() {
           <Route path="/admin/program-categories" component={() => <AdminLayout><ManageProgramCategories /></AdminLayout>} />
           <Route path="/admin/pages" component={() => <AdminLayout><ManagePages /></AdminLayout>} />
           <Route path="/admin/messages" component={() => <AdminLayout><Messages /></AdminLayout>} />
+          <Route path="/admin/users" component={() => <AdminLayout><UserManagement /></AdminLayout>} />
           <Route path="/admin/settings" component={() => <AdminLayout><AdminSettings /></AdminLayout>} />
         </>
       )}

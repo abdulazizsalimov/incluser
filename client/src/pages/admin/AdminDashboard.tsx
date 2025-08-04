@@ -207,6 +207,31 @@ export default function AdminDashboard() {
             </div>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Управление пользователями
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Управляйте пользователями, которые входили через Google OAuth
+            </p>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                className="flex-1"
+                onClick={() => window.location.href = "/admin/users"}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Управлять
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Recent Articles */}
