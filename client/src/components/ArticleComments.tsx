@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { LoginDialog } from '@/components/LoginDialog';
 import type { CommentWithAuthor } from '@shared/schema';
 
 interface ArticleCommentsProps {
@@ -231,12 +232,11 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
           <p className="text-gray-600 dark:text-gray-400 mb-4">
             Для добавления комментариев необходимо войти в систему
           </p>
-          <a 
-            href="/api/login" 
-            className="inline-block bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Войти
-          </a>
+          <LoginDialog>
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              Войти
+            </Button>
+          </LoginDialog>
         </div>
       )}
       

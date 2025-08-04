@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { LoginDialog } from '@/components/LoginDialog';
+import { Button } from '@/components/ui/button';
 
 interface ArticleReactionsProps {
   articleId: number;
@@ -130,8 +132,13 @@ export function ArticleReactions({ articleId }: ArticleReactionsProps) {
           <span className="font-medium">{reactions.counts.dislikes}</span>
         </div>
         
-        <div className="text-muted-foreground text-sm ml-4">
-          Войдите в систему, чтобы оставлять реакции на статьи
+        <div className="text-muted-foreground text-sm ml-4 flex items-center gap-2">
+          <span>Войдите в систему, чтобы оставлять реакции на статьи</span>
+          <LoginDialog>
+            <Button size="sm" variant="outline">
+              Войти
+            </Button>
+          </LoginDialog>
         </div>
       </div>
     );
