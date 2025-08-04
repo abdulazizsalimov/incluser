@@ -691,13 +691,7 @@ export class DatabaseStorage implements IStorage {
   // Article reaction operations
   async addReaction(reactionData: InsertArticleReaction): Promise<ArticleReaction> {
     // Remove existing reaction if any
-    if (reactionData.userId) {
-      await db.delete(articleReactions)
-        .where(and(
-          eq(articleReactions.articleId, reactionData.articleId),
-          eq(articleReactions.userId, reactionData.userId)
-        ));
-    } else if (reactionData.userEmail) {
+    if (reactionData.userEmail) {
       await db.delete(articleReactions)
         .where(and(
           eq(articleReactions.articleId, reactionData.articleId),
@@ -710,13 +704,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async removeReaction(articleId: number, userId?: number, userEmail?: string): Promise<void> {
-    if (userId) {
-      await db.delete(articleReactions)
-        .where(and(
-          eq(articleReactions.articleId, articleId),
-          eq(articleReactions.userId, userId)
-        ));
-    } else if (userEmail) {
+    if (userEmail) {
       await db.delete(articleReactions)
         .where(and(
           eq(articleReactions.articleId, articleId),
@@ -730,14 +718,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserReaction(articleId: number, userId?: number, userEmail?: string): Promise<ArticleReaction | undefined> {
-    if (userId) {
-      const [reaction] = await db.select().from(articleReactions)
-        .where(and(
-          eq(articleReactions.articleId, articleId),
-          eq(articleReactions.userId, userId)
-        ));
-      return reaction;
-    } else if (userEmail) {
+    if (userEmail) {
       const [reaction] = await db.select().from(articleReactions)
         .where(and(
           eq(articleReactions.articleId, articleId),
@@ -754,7 +735,6 @@ export class DatabaseStorage implements IStorage {
       .select({
         id: articleComments.id,
         articleId: articleComments.articleId,
-        userId: articleComments.userId,
         authorName: articleComments.authorName,
         authorEmail: articleComments.authorEmail,
         content: articleComments.content,
@@ -765,7 +745,7 @@ export class DatabaseStorage implements IStorage {
         author: users,
       })
       .from(articleComments)
-      .leftJoin(users, eq(articleComments.userId, users.id))
+      .leftJoin(users, eq(articleComments.authorEmail, users.email))
       .where(and(
         eq(articleComments.articleId, articleId),
         eq(articleComments.isApproved, true)

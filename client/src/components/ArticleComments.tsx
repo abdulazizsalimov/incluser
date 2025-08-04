@@ -62,56 +62,7 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent, parentId?: number) => {
-    e.preventDefault();
-    
-    if (!content.trim() || !user) {
-      toast({
-        title: "Ошибка",
-        description: "Необходимо заполнить все поля.",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    setSubmitting(true);
-    
-    try {
-      const response = await fetch(`/api/articles/${articleId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          authorName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-          authorEmail: user.email,
-          content: content.trim(),
-          parentId: parentId || null,
-        }),
-      });
-
-      if (response.ok) {
-        setContent('');
-        setReplyingTo(null);
-        await fetchComments();
-        toast({
-          title: "Комментарий отправлен",
-          description: "Ваш комментарий был отправлен на модерацию.",
-        });
-      } else {
-        throw new Error('Failed to submit comment');
-      }
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-      toast({
-        title: "Ошибка",
-        description: "Не удалось отправить комментарий. Попробуйте еще раз.",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('ru-RU', {
@@ -127,38 +78,94 @@ export function ArticleComments({ articleId }: ArticleCommentsProps) {
     fetchComments();
   }, [articleId]);
 
-  const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => (
-    <form onSubmit={(e) => handleSubmit(e, parentId)} className="space-y-4">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-        <User className="h-4 w-4" />
-        <span>Комментирует: {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}</span>
-      </div>
+  const CommentForm = ({ parentId, onCancel }: { parentId?: number; onCancel?: () => void }) => {
+    // Create separate state for each form to prevent focus loss
+    const [localContent, setLocalContent] = useState('');
+    
+    const handleLocalSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
       
-      <div>
-        <Label htmlFor={`content-${parentId || 'main'}`}>Комментарий *</Label>
-        <Textarea
-          id={`content-${parentId || 'main'}`}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder={parentId ? "Напишите ваш ответ..." : "Поделитесь своими мыслями..."}
-          rows={4}
-          required
-        />
-      </div>
+      if (!localContent.trim() || !user) {
+        toast({
+          title: "Ошибка",
+          description: "Необходимо заполнить все поля.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSubmitting(true);
       
-      <div className="flex gap-2">
-        <Button type="submit" disabled={submitting}>
-          <Send className="h-4 w-4 mr-2" />
-          {submitting ? 'Отправка...' : (parentId ? 'Ответить' : 'Отправить комментарий')}
-        </Button>
-        {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Отмена
+      try {
+        const response = await fetch(`/api/articles/${articleId}/comments`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            authorName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+            authorEmail: user.email,
+            content: localContent.trim(),
+            parentId: parentId || null,
+          }),
+        });
+
+        if (response.ok) {
+          setLocalContent('');
+          setReplyingTo(null);
+          await fetchComments();
+          toast({
+            title: "Комментарий отправлен",
+            description: "Ваш комментарий был отправлен на модерацию.",
+          });
+        } else {
+          throw new Error('Failed to submit comment');
+        }
+      } catch (error) {
+        console.error('Error submitting comment:', error);
+        toast({
+          title: "Ошибка",
+          description: "Не удалось отправить комментарий. Попробуйте еще раз.",
+          variant: "destructive",
+        });
+      } finally {
+        setSubmitting(false);
+      }
+    };
+
+    return (
+      <form onSubmit={handleLocalSubmit} className="space-y-4">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+          <User className="h-4 w-4" />
+          <span>Комментирует: {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}</span>
+        </div>
+        
+        <div>
+          <Label htmlFor={`content-${parentId || 'main'}`}>Комментарий *</Label>
+          <Textarea
+            id={`content-${parentId || 'main'}`}
+            value={localContent}
+            onChange={(e) => setLocalContent(e.target.value)}
+            placeholder={parentId ? "Напишите ваш ответ..." : "Поделитесь своими мыслями..."}
+            rows={4}
+            required
+          />
+        </div>
+        
+        <div className="flex gap-2">
+          <Button type="submit" disabled={submitting}>
+            <Send className="h-4 w-4 mr-2" />
+            {submitting ? 'Отправка...' : (parentId ? 'Ответить' : 'Отправить комментарий')}
           </Button>
-        )}
-      </div>
-    </form>
-  );
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Отмена
+            </Button>
+          )}
+        </div>
+      </form>
+    );
+  };
 
   const CommentItem = ({ comment }: { comment: CommentWithAuthor }) => (
     <div className="space-y-4">
