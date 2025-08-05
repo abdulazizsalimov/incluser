@@ -48,8 +48,10 @@ function Router() {
       <Route path="/wcag-guides" component={WcagGuides} />
       <Route path="/testing-tools" component={TestingTools} />
       <Route path="/resources" component={Resources} />
+      <Route path="/program/:slug" component={ProgramDetail} />
       <Route path="/programs/:categorySlug/:slug" component={ProgramDetail} />
       <Route path="/programs/:categorySlug" component={Programs} />
+      <Route path="/programs" component={Programs} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/login" component={Login} />
 
