@@ -57,32 +57,57 @@ export function useSpeechSynthesis() {
   // Function to speak with RHVoice
   const speakWithRHVoice = useCallback(async (text: string): Promise<void> => {
     try {
-      const requestBody = {
-        text: text,
-        voice: globalRHVoiceSettings.voice,
-        format: 'mp3',
-        rate: globalRHVoiceSettings.rate,
-        pitch: globalRHVoiceSettings.pitch,
-        volume: globalRHVoiceSettings.volume
-      };
-
-      console.log('RHVoice request body:', requestBody);
+      console.log('RHVoice text length:', text.length);
       console.log('RHVoice settings:', globalRHVoiceSettings);
       
-      // Quick availability check with shorter timeout
+      // Use GET for short texts, POST for long texts (to avoid URL length limits)
+      const usePost = text.length > 1000;
+      
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1500);
+      const timeoutId = setTimeout(() => controller.abort(), usePost ? 10000 : 5000);
       
       let audioResponse;
       try {
-        audioResponse = await fetch('/api/rhvoice/say', { 
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestBody),
-          signal: controller.signal
-        });
+        if (usePost) {
+          // POST request for long texts
+          console.log('Using POST request for long text');
+          const requestBody = {
+            text: text,
+            voice: globalRHVoiceSettings.voice,
+            format: 'mp3',
+            rate: globalRHVoiceSettings.rate,
+            pitch: globalRHVoiceSettings.pitch,
+            volume: globalRHVoiceSettings.volume
+          };
+
+          audioResponse = await fetch('/api/rhvoice/say', { 
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+            signal: controller.signal
+          });
+        } else {
+          // GET request for short texts (more compatible)
+          console.log('Using GET request for short text');
+          const params = new URLSearchParams({
+            text: text,
+            voice: globalRHVoiceSettings.voice,
+            format: 'mp3',
+            rate: globalRHVoiceSettings.rate.toString(),
+            pitch: globalRHVoiceSettings.pitch.toString(),
+            volume: globalRHVoiceSettings.volume.toString()
+          });
+
+          const url = `/api/rhvoice/say?${params.toString()}`;
+          console.log('RHVoice GET URL:', url);
+
+          audioResponse = await fetch(url, { 
+            method: 'GET',
+            signal: controller.signal
+          });
+        }
         
         clearTimeout(timeoutId);
         
