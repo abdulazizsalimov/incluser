@@ -232,6 +232,22 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     return saved ? [parseFloat(saved)] : [1.0];
   });
 
+  // RHVoice specific settings
+  const [rhvoiceRate, setRhvoiceRate] = useState(() => {
+    const saved = localStorage.getItem('accessibility-rhvoice-rate');
+    return saved ? [parseInt(saved)] : [50];
+  });
+
+  const [rhvoicePitch, setRhvoicePitch] = useState(() => {
+    const saved = localStorage.getItem('accessibility-rhvoice-pitch');
+    return saved ? [parseInt(saved)] : [50];
+  });
+
+  const [rhvoiceVolume, setRhvoiceVolume] = useState(() => {
+    const saved = localStorage.getItem('accessibility-rhvoice-volume');
+    return saved ? [parseInt(saved)] : [100];
+  });
+
   const { isPlaying, speakText, stopSpeech: globalStopSpeech } = useSpeechSynthesis();
   const [showSpeechSettings, setShowSpeechSettings] = useState(false);
 
@@ -340,6 +356,21 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.setItem('accessibility-speech-speed', speed[0].toString());
   };
 
+  const updateRhvoiceRate = (rate: number[]) => {
+    setRhvoiceRate(rate);
+    localStorage.setItem('accessibility-rhvoice-rate', rate[0].toString());
+  };
+
+  const updateRhvoicePitch = (pitch: number[]) => {
+    setRhvoicePitch(pitch);
+    localStorage.setItem('accessibility-rhvoice-pitch', pitch[0].toString());
+  };
+
+  const updateRhvoiceVolume = (volume: number[]) => {
+    setRhvoiceVolume(volume);
+    localStorage.setItem('accessibility-rhvoice-volume', volume[0].toString());
+  };
+
   // Speech synthesis functions using centralized hook
   const handleSpeakText = async (text: string) => {
     if (!text.trim()) return;
@@ -357,38 +388,28 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const speakWithRHVoice = async (text: string): Promise<void> => {
     try {
-      // RHVoice API endpoint (you'll need to set up your own server or use existing one)
-      const response = await fetch('/api/rhvoice/speak', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-          voice: 'anna', // Default Russian voice
-          rate: speechSpeed[0],
-          format: 'wav'
-        }),
+      // Build RHVoice URL with parameters
+      const params = new URLSearchParams({
+        text: text,
+        voice: 'elena',
+        format: 'mp3',
+        rate: rhvoiceRate[0].toString(),
+        pitch: rhvoicePitch[0].toString(),
+        volume: rhvoiceVolume[0].toString()
       });
 
-      if (!response.ok) {
-        throw new Error('RHVoice service unavailable');
-      }
-
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
+      const url = `http://localhost:8081/say?${params.toString()}`;
+      
+      const audio = new Audio(url);
       
       return new Promise((resolve, reject) => {
         audio.onended = () => {
-          URL.revokeObjectURL(audioUrl);
           resolve();
         };
         audio.onerror = () => {
-          URL.revokeObjectURL(audioUrl);
-          reject(new Error('Audio playback error'));
+          reject(new Error('RHVoice audio playback error'));
         };
-        audio.play();
+        audio.play().catch(reject);
       });
     } catch (error) {
       // Fallback to browser speech if RHVoice fails
@@ -1375,20 +1396,69 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   </p>
                 </div>
 
-                <div>
-                  <Label id="speech-speed-label">Скорость речи: {speechSpeed[0].toFixed(1)}x</Label>
-                  <AccessibleSlider
-                    id="speech-speed"
-                    value={speechSpeed}
-                    onValueChange={updateSpeechSpeed}
-                    min={0.5}
-                    max={2.0}
-                    step={0.1}
-                    label="Скорость речи"
-                    unit="x"
-                    className="mt-2"
-                  />
-                </div>
+                {speechVoice === 'browser' ? (
+                  <div>
+                    <Label id="speech-speed-label">Скорость речи: {speechSpeed[0].toFixed(1)}x</Label>
+                    <AccessibleSlider
+                      id="speech-speed"
+                      value={speechSpeed}
+                      onValueChange={updateSpeechSpeed}
+                      min={0.5}
+                      max={2.0}
+                      step={0.1}
+                      label="Скорость речи"
+                      unit="x"
+                      className="mt-2"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div>
+                      <Label id="rhvoice-rate-label">Скорость: {rhvoiceRate[0]}%</Label>
+                      <AccessibleSlider
+                        id="rhvoice-rate"
+                        value={rhvoiceRate}
+                        onValueChange={updateRhvoiceRate}
+                        min={10}
+                        max={100}
+                        step={5}
+                        label="Скорость RHVoice"
+                        unit="%"
+                        className="mt-2"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label id="rhvoice-pitch-label">Высота: {rhvoicePitch[0]}%</Label>
+                      <AccessibleSlider
+                        id="rhvoice-pitch"
+                        value={rhvoicePitch}
+                        onValueChange={updateRhvoicePitch}
+                        min={10}
+                        max={100}
+                        step={5}
+                        label="Высота голоса RHVoice"
+                        unit="%"
+                        className="mt-2"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label id="rhvoice-volume-label">Громкость: {rhvoiceVolume[0]}%</Label>
+                      <AccessibleSlider
+                        id="rhvoice-volume"
+                        value={rhvoiceVolume}
+                        onValueChange={updateRhvoiceVolume}
+                        min={10}
+                        max={100}
+                        step={5}
+                        label="Громкость RHVoice"
+                        unit="%"
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
