@@ -1218,7 +1218,7 @@ ${articles.map(article => {
       const newsLimit = parseInt(limit as string);
       
       // Get latest articles and programs
-      const articlesData = await storage.getArticles({
+      const articles = await storage.getArticles({
         published: true,
         limit: Math.ceil(newsLimit / 2),
         offset: 0,
@@ -1232,10 +1232,10 @@ ${articles.map(article => {
       
       // Combine and sort by creation date
       const newsItems = [
-        ...(articlesData.articles || []).map((article: any) => ({
+        ...(articles || []).map((article: any) => ({
           type: 'article' as const,
           data: article,
-          createdAt: article.createdAt ? new Date(article.createdAt) : new Date(),
+          createdAt: article.publishedAt ? new Date(article.publishedAt) : (article.createdAt ? new Date(article.createdAt) : new Date()),
         })),
         ...(programs || []).map((program: any) => ({
           type: 'program' as const,

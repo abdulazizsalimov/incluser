@@ -191,19 +191,12 @@ export default function Home() {
                   ))}
                 </div>
                 
-                <div className="text-center mt-12 flex gap-4 justify-center">
+                <div className="text-center mt-12">
                   <Button 
                     size="lg"
                     onClick={() => window.location.href = "/articles"}
                   >
                     Все статьи
-                  </Button>
-                  <Button 
-                    size="lg"
-                    variant="outline"
-                    onClick={() => window.location.href = "/programs"}
-                  >
-                    Все программы
                   </Button>
                 </div>
               </>

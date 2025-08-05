@@ -44,7 +44,7 @@ export default function ProgramCard({ program }: ProgramCardProps) {
               </div>
               <h3 className="text-lg font-semibold mb-2">
                 <Link 
-                  href={`/programs/${program.slug}`}
+                  href={`/program/${program.slug}`}
                   className="text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-accent rounded"
                 >
                   {program.title}
