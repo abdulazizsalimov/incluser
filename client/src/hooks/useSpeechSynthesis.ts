@@ -57,40 +57,47 @@ export function useSpeechSynthesis() {
   // Function to speak with RHVoice
   const speakWithRHVoice = useCallback(async (text: string): Promise<void> => {
     try {
-      const params = new URLSearchParams({
+      const requestBody = {
         text: text,
         voice: globalRHVoiceSettings.voice,
         format: 'mp3',
-        rate: globalRHVoiceSettings.rate.toString(),
-        pitch: globalRHVoiceSettings.pitch.toString(),
-        volume: globalRHVoiceSettings.volume.toString()
-      });
+        rate: globalRHVoiceSettings.rate,
+        pitch: globalRHVoiceSettings.pitch,
+        volume: globalRHVoiceSettings.volume
+      };
 
-      const url = `/api/rhvoice/say?${params.toString()}`;
-      console.log('RHVoice request URL:', url);
+      console.log('RHVoice request body:', requestBody);
       console.log('RHVoice settings:', globalRHVoiceSettings);
       
       // Quick availability check with shorter timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 1500);
       
+      let audioResponse;
       try {
-        const testResponse = await fetch(url, { 
-          method: 'HEAD',
+        audioResponse = await fetch('/api/rhvoice/say', { 
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
           signal: controller.signal
         });
         
         clearTimeout(timeoutId);
         
-        if (!testResponse.ok) {
-          throw new Error(`RHVoice server unavailable (${testResponse.status})`);
+        if (!audioResponse.ok) {
+          throw new Error(`RHVoice server unavailable (${audioResponse.status})`);
         }
       } catch (fetchError: any) {
         clearTimeout(timeoutId);
         throw new Error(`RHVoice server unavailable: ${fetchError.message}`);
       }
       
-      const audio = new Audio(url);
+      // Get audio blob and create object URL
+      const audioBlob = await audioResponse.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
       
       updateGlobalState({
         isPlaying: true,
@@ -112,6 +119,7 @@ export function useSpeechSynthesis() {
 
         audio.onended = () => {
           clearTimeout(timeout);
+          URL.revokeObjectURL(audioUrl);
           updateGlobalState({
             isPlaying: false,
             isPaused: false,
@@ -122,6 +130,7 @@ export function useSpeechSynthesis() {
         };
         audio.onerror = () => {
           clearTimeout(timeout);
+          URL.revokeObjectURL(audioUrl);
           updateGlobalState({
             isPlaying: false,
             isPaused: false,

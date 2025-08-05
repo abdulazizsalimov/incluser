@@ -1612,6 +1612,89 @@ ${articles.map(article => {
     }
   });
 
+  // RHVoice TTS proxy endpoint (POST for large texts)
+  app.post('/api/rhvoice/say', async (req, res) => {
+    try {
+      const { text, voice = 'elena', format = 'mp3', rate = 50, pitch = 50, volume = 100 } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ error: 'Text parameter is required' });
+      }
+
+      console.log('RHVoice POST request:', { 
+        textLength: text.length, 
+        voice, 
+        format, 
+        rate, 
+        pitch, 
+        volume 
+      });
+
+      // Forward request to RHVoice server using POST
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // Longer timeout for large texts
+      
+      const response = await fetch('http://localhost:8081/say', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          text: text,
+          voice: voice,
+          format: format,
+          rate: rate.toString(),
+          pitch: pitch.toString(),
+          volume: volume.toString()
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      console.log('RHVoice POST response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        console.error('RHVoice POST error response:', errorText);
+        return res.status(response.status).json({ 
+          error: `RHVoice server error: ${response.status}`,
+          details: errorText
+        });
+      }
+
+      // Set appropriate headers
+      const contentType = response.headers.get('content-type') || 'audio/mpeg';
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      
+      // Get audio buffer and send it
+      const audioBuffer = await response.arrayBuffer();
+      res.send(Buffer.from(audioBuffer));
+      
+    } catch (error: any) {
+      console.error('RHVoice POST proxy error:', error);
+      
+      let statusCode = 500;
+      let errorMessage = 'RHVoice service unavailable';
+      
+      if (error.name === 'AbortError') {
+        statusCode = 504;
+        errorMessage = 'RHVoice server timeout';
+      } else if (error.code === 'ECONNREFUSED') {
+        statusCode = 503;
+        errorMessage = 'RHVoice server not running';
+      }
+
+      res.status(statusCode).json({ 
+        error: errorMessage,
+        message: error.message || 'Unknown error',
+        details: 'Make sure RHVoice server is running on localhost:8081'
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
