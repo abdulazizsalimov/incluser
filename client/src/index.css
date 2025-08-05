@@ -493,13 +493,14 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Accessibility panel animation */
+/* Accessibility panel animation - FORCED */
 .accessibility-panel {
-  z-index: 99999;
-  isolation: isolate;
-  filter: none;
-  transform: translateX(100%);
+  z-index: 99999 !important;
+  isolation: isolate !important;
+  filter: none !important;
+  transform: translateX(100%) !important;
   transition: transform 0.3s ease-in-out !important;
+  will-change: transform !important;
 }
 
 .accessibility-panel.open {
