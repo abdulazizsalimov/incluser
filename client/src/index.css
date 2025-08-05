@@ -117,14 +117,7 @@
   100% { opacity: 0.8; }
 }
 
-/* Fix Select dropdowns in accessibility panel */
-.accessibility-panel {
-  overflow: visible !important;
-}
-
-.accessibility-panel > div {
-  overflow: visible !important;
-}
+/* Fix Select dropdowns in accessibility panel - only affect content container */
 
 .accessibility-panel [data-radix-select-content] {
   z-index: 999999 !important;
