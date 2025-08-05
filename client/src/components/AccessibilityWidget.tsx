@@ -388,14 +388,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const speakWithRHVoice = async (text: string): Promise<void> => {
     try {
-      // Check if we're on HTTPS and trying to access HTTP localhost
-      const isHttps = window.location.protocol === 'https:';
-      if (isHttps) {
-        console.warn('Cannot access HTTP RHVoice server from HTTPS page. Using browser speech.');
-        throw new Error('Mixed content policy prevents HTTP access from HTTPS');
-      }
-
-      // Build RHVoice URL with parameters
+      // Build RHVoice API URL through our proxy
       const params = new URLSearchParams({
         text: text,
         voice: 'elena',
@@ -405,22 +398,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         volume: rhvoiceVolume[0].toString()
       });
 
-      const url = `http://localhost:8081/say?${params.toString()}`;
+      const url = `/api/rhvoice/say?${params.toString()}`;
       
-      // Test if RHVoice server is accessible with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      // Test if RHVoice server is accessible through proxy
+      const testResponse = await fetch(url, { 
+        method: 'HEAD'
+      });
       
-      try {
-        await fetch(url, { 
-          method: 'HEAD',
-          mode: 'no-cors',
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-      } catch (error) {
-        clearTimeout(timeoutId);
-        throw new Error('RHVoice server not accessible');
+      if (!testResponse.ok) {
+        throw new Error('RHVoice service unavailable through proxy');
       }
       
       const audio = new Audio(url);
@@ -1426,9 +1412,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   </Select>
                   <p className="text-sm text-muted-foreground mt-1">
                     {speechVoice === 'rhvoice' 
-                      ? window.location.protocol === 'https:' 
-                        ? '⚠️ RHVoice недоступен через HTTPS. Будет использован браузерный синтезатор.'
-                        : 'Профессиональный русский синтезатор речи (localhost:8081)'
+                      ? 'Профессиональный русский синтезатор речи (через прокси сервер)'
                       : 'Встроенный синтезатор браузера'
                     }
                   </p>

@@ -1544,6 +1544,51 @@ ${articles.map(article => {
     }
   });
 
+  // RHVoice proxy endpoint
+  app.get('/api/rhvoice/say', async (req, res) => {
+    try {
+      const { text, voice = 'elena', format = 'mp3', rate = '50', pitch = '50', volume = '100' } = req.query;
+      
+      if (!text) {
+        return res.status(400).json({ error: 'Text parameter is required' });
+      }
+
+      // Build RHVoice URL
+      const params = new URLSearchParams({
+        text: text as string,
+        voice: voice as string,
+        format: format as string,
+        rate: rate as string,
+        pitch: pitch as string,
+        volume: volume as string
+      });
+
+      const rhvoiceUrl = `http://localhost:8081/say?${params.toString()}`;
+      
+      // Forward request to RHVoice server
+      const response = await fetch(rhvoiceUrl);
+      
+      if (!response.ok) {
+        throw new Error(`RHVoice server error: ${response.status}`);
+      }
+
+      // Set appropriate headers
+      const contentType = response.headers.get('content-type') || 'audio/mpeg';
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Cache-Control', 'no-cache');
+      
+      // Stream the audio response
+      response.body?.pipe(res);
+      
+    } catch (error) {
+      console.error('RHVoice proxy error:', error);
+      res.status(500).json({ 
+        error: 'RHVoice service unavailable',
+        message: error.message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
