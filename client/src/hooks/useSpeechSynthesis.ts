@@ -170,7 +170,8 @@ export function useSpeechSynthesis() {
             };
             
             audio.onerror = (event: any) => {
-              console.error(`Queue audio error for sentence ${currentAudioIndex + 1}:`, event);
+              console.error(`Queue audio error for sentence ${currentAudioIndex + 1}:`, event, 'URL:', audio.src);
+              // Пропускаем проблемное предложение и переходим к следующему
               currentAudioIndex++;
               setTimeout(() => playNext(), 100); // Continue with next sentence
             };
@@ -185,8 +186,10 @@ export function useSpeechSynthesis() {
             
             try {
               await audio.play();
+              console.log(`Successfully started playing sentence ${currentAudioIndex + 1}`);
             } catch (e) {
-              console.error(`Queue audio play error for sentence ${currentAudioIndex + 1}:`, e);
+              console.error(`Queue audio play error for sentence ${currentAudioIndex + 1}:`, e, 'URL:', audio.src);
+              // Пропускаем проблемное предложение и переходим к следующему
               currentAudioIndex++;
               setTimeout(() => playNext(), 100); // Continue with next sentence
             }
@@ -219,7 +222,12 @@ export function useSpeechSynthesis() {
         });
         
         return new Promise((resolve, reject) => {
+          // Увеличенный timeout для длинных текстов
+          const timeoutDuration = Math.max(30000, text.length * 100); // минимум 30сек или 100мс на символ
+          console.log(`RHVoice timeout set to ${timeoutDuration}ms for text length ${text.length}`);
+          
           const timeout = setTimeout(() => {
+            console.error('RHVoice timeout reached');
             updateGlobalState({
               isPlaying: false,
               isPaused: false,
@@ -227,7 +235,7 @@ export function useSpeechSynthesis() {
               currentUtterance: null,
             });
             reject(new Error('RHVoice audio timeout'));
-          }, 10000);
+          }, timeoutDuration);
 
           audio.onended = () => {
             clearTimeout(timeout);
@@ -240,16 +248,16 @@ export function useSpeechSynthesis() {
             resolve();
           };
           
-          audio.onerror = (event) => {
+          audio.onerror = (event: any) => {
             clearTimeout(timeout);
-            console.error('Audio playback error:', event);
+            console.error('Audio playback error:', event, 'URL:', audio.src);
             updateGlobalState({
               isPlaying: false,
               isPaused: false,
               currentText: "",
               currentUtterance: null,
             });
-            reject(new Error(`RHVoice audio playback failed`));
+            reject(new Error(`RHVoice audio playback failed: ${event.type}`));
           };
           
           audio.play().catch((e) => {
@@ -313,10 +321,15 @@ export function useSpeechSynthesis() {
         console.log('RHVoice playback completed successfully');
         return;
       } catch (error) {
-        console.warn('RHVoice failed, falling back to browser:', error);
-        // ВАЖНО: Еще раз убеждаемся что браузерный синтезатор остановлен перед fallback
-        window.speechSynthesis.cancel();
-        await new Promise(resolve => setTimeout(resolve, 100));
+        console.error('RHVoice failed completely, NOT falling back to prevent double speech:', error);
+        // КРИТИЧЕСКИ ВАЖНО: НЕ переходим на браузерный синтезатор для избежания двойной речи
+        updateGlobalState({
+          isPlaying: false,
+          isPaused: false,
+          currentText: "",
+          currentUtterance: null,
+        });
+        throw error; // Прерываем выполнение вместо fallback
       }
     }
 
