@@ -235,17 +235,17 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   // RHVoice specific settings
   const [rhvoiceRate, setRhvoiceRate] = useState(() => {
     const saved = localStorage.getItem('accessibility-rhvoice-rate');
-    return saved ? [parseInt(saved)] : [50];
+    return saved || '50'; // Normal speed by default
   });
 
-  const [rhvoicePitch, setRhvoicePitch] = useState(() => {
-    const saved = localStorage.getItem('accessibility-rhvoice-pitch');
-    return saved ? [parseInt(saved)] : [50];
+  const [rhvoiceVoice, setRhvoiceVoice] = useState(() => {
+    const saved = localStorage.getItem('accessibility-rhvoice-voice');
+    return saved || 'elena'; // Elena voice by default
   });
 
   const [rhvoiceVolume, setRhvoiceVolume] = useState(() => {
     const saved = localStorage.getItem('accessibility-rhvoice-volume');
-    return saved ? [parseInt(saved)] : [100];
+    return saved || '100'; // Full volume by default
   });
 
   const { isPlaying, speakText, stopSpeech: globalStopSpeech, setSpeechEngine, setRHVoiceSettings, currentEngine } = useSpeechSynthesis();
@@ -356,19 +356,19 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     localStorage.setItem('accessibility-speech-speed', speed[0].toString());
   };
 
-  const updateRhvoiceRate = (rate: number[]) => {
+  const updateRhvoiceRate = (rate: string) => {
     setRhvoiceRate(rate);
-    localStorage.setItem('accessibility-rhvoice-rate', rate[0].toString());
+    localStorage.setItem('accessibility-rhvoice-rate', rate);
   };
 
-  const updateRhvoicePitch = (pitch: number[]) => {
-    setRhvoicePitch(pitch);
-    localStorage.setItem('accessibility-rhvoice-pitch', pitch[0].toString());
+  const updateRhvoiceVoice = (voice: string) => {
+    setRhvoiceVoice(voice);
+    localStorage.setItem('accessibility-rhvoice-voice', voice);
   };
 
-  const updateRhvoiceVolume = (volume: number[]) => {
+  const updateRhvoiceVolume = (volume: string) => {
     setRhvoiceVolume(volume);
-    localStorage.setItem('accessibility-rhvoice-volume', volume[0].toString());
+    localStorage.setItem('accessibility-rhvoice-volume', volume);
   };
 
   // Speech synthesis functions using centralized hook
@@ -392,14 +392,12 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   // Update RHVoice settings when they change
   useEffect(() => {
     setRHVoiceSettings({
-      rate: rhvoiceRate[0],
-      pitch: rhvoicePitch[0],
-      volume: rhvoiceVolume[0]
+      rate: parseInt(rhvoiceRate),
+      pitch: 50, // Fixed pitch
+      volume: parseInt(rhvoiceVolume),
+      voice: rhvoiceVoice
     });
-    localStorage.setItem('accessibility-rhvoice-rate', rhvoiceRate[0].toString());
-    localStorage.setItem('accessibility-rhvoice-pitch', rhvoicePitch[0].toString());
-    localStorage.setItem('accessibility-rhvoice-volume', rhvoiceVolume[0].toString());
-  }, [rhvoiceRate, rhvoicePitch, rhvoiceVolume, setRHVoiceSettings]);
+  }, [rhvoiceRate, rhvoiceVoice, rhvoiceVolume, setRHVoiceSettings]);
 
   const speakSelectedText = () => {
     const selection = window.getSelection();
@@ -1397,48 +1395,48 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                 ) : (
                   <div className="space-y-4">
                     <div>
-                      <Label id="rhvoice-rate-label">Скорость: {rhvoiceRate[0]}%</Label>
-                      <AccessibleSlider
-                        id="rhvoice-rate"
-                        value={rhvoiceRate}
-                        onValueChange={updateRhvoiceRate}
-                        min={10}
-                        max={100}
-                        step={5}
-                        label="Скорость RHVoice"
-                        unit="%"
-                        className="mt-2"
-                      />
+                      <Label className="text-sm font-medium">Голос</Label>
+                      <Select value={rhvoiceVoice} onValueChange={updateRhvoiceVoice}>
+                        <SelectTrigger className="mt-2">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="elena">Елена</SelectItem>
+                          <SelectItem value="irina">Ирина</SelectItem>
+                          <SelectItem value="anna">Анна</SelectItem>
+                          <SelectItem value="tatyana">Татьяна</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div>
-                      <Label id="rhvoice-pitch-label">Высота: {rhvoicePitch[0]}%</Label>
-                      <AccessibleSlider
-                        id="rhvoice-pitch"
-                        value={rhvoicePitch}
-                        onValueChange={updateRhvoicePitch}
-                        min={10}
-                        max={100}
-                        step={5}
-                        label="Высота голоса RHVoice"
-                        unit="%"
-                        className="mt-2"
-                      />
+                      <Label className="text-sm font-medium">Скорость</Label>
+                      <Select value={rhvoiceRate} onValueChange={updateRhvoiceRate}>
+                        <SelectTrigger className="mt-2">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="30">Медленно (30%)</SelectItem>
+                          <SelectItem value="50">Нормально (50%)</SelectItem>
+                          <SelectItem value="70">Быстро (70%)</SelectItem>
+                          <SelectItem value="90">Очень быстро (90%)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div>
-                      <Label id="rhvoice-volume-label">Громкость: {rhvoiceVolume[0]}%</Label>
-                      <AccessibleSlider
-                        id="rhvoice-volume"
-                        value={rhvoiceVolume}
-                        onValueChange={updateRhvoiceVolume}
-                        min={10}
-                        max={100}
-                        step={5}
-                        label="Громкость RHVoice"
-                        unit="%"
-                        className="mt-2"
-                      />
+                      <Label className="text-sm font-medium">Громкость</Label>
+                      <Select value={rhvoiceVolume} onValueChange={updateRhvoiceVolume}>
+                        <SelectTrigger className="mt-2">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="25">Тихо (25%)</SelectItem>
+                          <SelectItem value="50">Средне (50%)</SelectItem>
+                          <SelectItem value="75">Громко (75%)</SelectItem>
+                          <SelectItem value="100">Очень громко (100%)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 )}

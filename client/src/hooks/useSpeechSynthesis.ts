@@ -5,7 +5,8 @@ let globalSpeechEngine: 'browser' | 'rhvoice' = 'rhvoice'; // Default to RHVoice
 let globalRHVoiceSettings = {
   rate: 50,
   pitch: 50,
-  volume: 100
+  volume: 100,
+  voice: 'elena'
 };
 
 interface SpeechSynthesisState {
@@ -58,7 +59,7 @@ export function useSpeechSynthesis() {
     try {
       const params = new URLSearchParams({
         text: text,
-        voice: 'elena',
+        voice: globalRHVoiceSettings.voice,
         format: 'mp3',
         rate: globalRHVoiceSettings.rate.toString(),
         pitch: globalRHVoiceSettings.pitch.toString(),
@@ -275,7 +276,7 @@ export function useSpeechSynthesis() {
     globalSpeechEngine = engine;
   }, []);
 
-  const setRHVoiceSettings = useCallback((settings: { rate: number; pitch: number; volume: number }) => {
+  const setRHVoiceSettings = useCallback((settings: { rate: number; pitch: number; volume: number; voice: string }) => {
     globalRHVoiceSettings = settings;
   }, []);
 
