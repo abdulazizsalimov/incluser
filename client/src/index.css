@@ -493,6 +493,25 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
+/* Accessibility panel animation */
+.accessibility-panel {
+  z-index: 99999;
+  isolation: isolate;
+  filter: none;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out !important;
+}
+
+.accessibility-panel.open {
+  transform: translateX(0) !important;
+}
+
+body.panel-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
 /* Grayscale mode - apply to body, but accessibility panel is rendered outside */
 .grayscale body {
   filter: grayscale(100%);

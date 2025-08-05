@@ -771,14 +771,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       {/* Side Panel */}
       <div 
         ref={panelRef}
-        className="accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col"
+        className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col ${open ? 'open' : ''}`}
         style={{
           display: isVisible ? 'flex' : 'none',
-          // Force hardware acceleration and better rendering
-          willChange: 'transform',
-          backfaceVisibility: 'hidden',
-          transform: open ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.3s ease-in-out',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
           filter: 'none',
