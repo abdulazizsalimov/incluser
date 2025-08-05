@@ -45,7 +45,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         setIsVisible(false);
       }, 300);
     }
-  }, [open]);
+  }, [open, isVisible]);
 
   // Cleanup on component unmount
   useEffect(() => {
