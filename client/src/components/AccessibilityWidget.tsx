@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CustomSelect } from "@/components/CustomSelect";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Type, Eye, Palette, Volume2, Moon, Sun, Monitor, ZoomIn, ChevronDown, ChevronRight, Settings, VolumeX, Play, Square, X } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
@@ -1364,15 +1364,16 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
               <div className="space-y-4 pl-4 border-l-2 border-muted">
                 <div>
                   <Label htmlFor="speech-voice">Голос</Label>
-                  <Select value={speechVoice} onValueChange={updateSpeechVoice}>
-                    <SelectTrigger id="speech-voice" className="mt-2">
-                      <SelectValue placeholder="Выберите голос" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="browser">Браузерный синтезатор</SelectItem>
-                      <SelectItem value="rhvoice">RHVoice (высокое качество)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <CustomSelect
+                    value={speechVoice}
+                    onChange={updateSpeechVoice}
+                    options={[
+                      { value: "browser", label: "Браузерный синтезатор" },
+                      { value: "rhvoice", label: "RHVoice (высокое качество)" }
+                    ]}
+                    placeholder="Выберите голос"
+                    className="mt-2"
+                  />
                   <p className="text-sm text-muted-foreground mt-1">
                     {speechVoice === 'rhvoice' 
                       ? 'Профессиональный русский синтезатор речи (с автоматическим fallback)'
@@ -1400,47 +1401,47 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   <div className="space-y-4">
                     <div>
                       <Label className="text-sm font-medium">Голос</Label>
-                      <Select value={rhvoiceVoice} onValueChange={updateRhvoiceVoice}>
-                        <SelectTrigger className="mt-2">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="elena">Елена</SelectItem>
-                          <SelectItem value="irina">Ирина</SelectItem>
-                          <SelectItem value="anna">Анна</SelectItem>
-                          <SelectItem value="tatyana">Татьяна</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <CustomSelect
+                        value={rhvoiceVoice}
+                        onChange={updateRhvoiceVoice}
+                        options={[
+                          { value: "elena", label: "Елена" },
+                          { value: "irina", label: "Ирина" },
+                          { value: "anna", label: "Анна" },
+                          { value: "tatyana", label: "Татьяна" }
+                        ]}
+                        className="mt-2"
+                      />
                     </div>
                     
                     <div>
                       <Label className="text-sm font-medium">Скорость</Label>
-                      <Select value={rhvoiceRate} onValueChange={updateRhvoiceRate}>
-                        <SelectTrigger className="mt-2">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="30">Медленно (30%)</SelectItem>
-                          <SelectItem value="50">Нормально (50%)</SelectItem>
-                          <SelectItem value="70">Быстро (70%)</SelectItem>
-                          <SelectItem value="90">Очень быстро (90%)</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <CustomSelect
+                        value={rhvoiceRate}
+                        onChange={updateRhvoiceRate}
+                        options={[
+                          { value: "30", label: "Медленно (30%)" },
+                          { value: "50", label: "Нормально (50%)" },
+                          { value: "70", label: "Быстро (70%)" },
+                          { value: "90", label: "Очень быстро (90%)" }
+                        ]}
+                        className="mt-2"
+                      />
                     </div>
                     
                     <div>
                       <Label className="text-sm font-medium">Громкость</Label>
-                      <Select value={rhvoiceVolume} onValueChange={updateRhvoiceVolume}>
-                        <SelectTrigger className="mt-2">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="25">Тихо (25%)</SelectItem>
-                          <SelectItem value="50">Средне (50%)</SelectItem>
-                          <SelectItem value="75">Громко (75%)</SelectItem>
-                          <SelectItem value="100">Очень громко (100%)</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <CustomSelect
+                        value={rhvoiceVolume}
+                        onChange={updateRhvoiceVolume}
+                        options={[
+                          { value: "25", label: "Тихо (25%)" },
+                          { value: "50", label: "Средне (50%)" },
+                          { value: "75", label: "Громко (75%)" },
+                          { value: "100", label: "Очень громко (100%)" }
+                        ]}
+                        className="mt-2"
+                      />
                     </div>
                   </div>
                 )}
