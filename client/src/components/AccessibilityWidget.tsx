@@ -388,6 +388,13 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const speakWithRHVoice = async (text: string): Promise<void> => {
     try {
+      // Check if we're on HTTPS and trying to access HTTP localhost
+      const isHttps = window.location.protocol === 'https:';
+      if (isHttps) {
+        console.warn('Cannot access HTTP RHVoice server from HTTPS page. Using browser speech.');
+        throw new Error('Mixed content policy prevents HTTP access from HTTPS');
+      }
+
       // Build RHVoice URL with parameters
       const params = new URLSearchParams({
         text: text,
@@ -400,20 +407,49 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
       const url = `http://localhost:8081/say?${params.toString()}`;
       
+      // Test if RHVoice server is accessible with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      
+      try {
+        await fetch(url, { 
+          method: 'HEAD',
+          mode: 'no-cors',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+      } catch (error) {
+        clearTimeout(timeoutId);
+        throw new Error('RHVoice server not accessible');
+      }
+      
       const audio = new Audio(url);
       
       return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('RHVoice audio timeout'));
+        }, 10000); // 10 second timeout
+
         audio.onended = () => {
+          clearTimeout(timeout);
           resolve();
         };
-        audio.onerror = () => {
+        audio.onerror = (e) => {
+          clearTimeout(timeout);
           reject(new Error('RHVoice audio playback error'));
         };
-        audio.play().catch(reject);
+        audio.onloadstart = () => {
+          console.log('RHVoice audio loading...');
+        };
+        
+        audio.play().catch((e) => {
+          clearTimeout(timeout);
+          reject(e);
+        });
       });
     } catch (error) {
       // Fallback to browser speech if RHVoice fails
-      console.warn('RHVoice failed, falling back to browser speech:', error);
+      console.warn('RHVoice unavailable, using browser speech:', error.message);
       return speakText(text, { rate: speechSpeed[0] });
     }
   };
@@ -1390,7 +1426,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   </Select>
                   <p className="text-sm text-muted-foreground mt-1">
                     {speechVoice === 'rhvoice' 
-                      ? 'Профессиональный русский синтезатор речи'
+                      ? window.location.protocol === 'https:' 
+                        ? '⚠️ RHVoice недоступен через HTTPS. Будет использован браузерный синтезатор.'
+                        : 'Профессиональный русский синтезатор речи (localhost:8081)'
                       : 'Встроенный синтезатор браузера'
                     }
                   </p>
