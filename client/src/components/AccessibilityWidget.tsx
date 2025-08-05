@@ -242,7 +242,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     
     // If user hasn't set a scheme, use theme-based default
     if (!saved || !userSet) {
-      return actualTheme === 'dark' ? 'white-black' : 'black-white';
+      // Get current theme properly during initialization
+      const currentTheme = localStorage.getItem('theme') || 'system';
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDarkTheme = currentTheme === 'dark' || (currentTheme === 'system' && systemPrefersDark);
+      return isDarkTheme ? 'white-black' : 'black-white';
     }
     return saved;
   });
@@ -454,7 +458,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
     
     if (!userSet) {
-      const defaultScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
+      // Get current theme properly
+      const currentTheme = localStorage.getItem('theme') || 'system';
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDarkTheme = currentTheme === 'dark' || (currentTheme === 'system' && systemPrefersDark);
+      const defaultScheme = isDarkTheme ? 'white-black' : 'black-white';
       setMagnifierColorScheme(defaultScheme);
       localStorage.setItem('accessibility-magnifier-color-scheme', defaultScheme);
     }
@@ -465,16 +473,21 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     const savedTheme = localStorage.getItem('accessibility-last-theme');
     const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
     
+    // Get current theme properly
+    const currentTheme = theme;
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDarkTheme = currentTheme === 'dark' || (currentTheme === 'system' && systemPrefersDark);
+    
     // If theme changed and user hasn't manually set a scheme, apply new default
     if (savedTheme && savedTheme !== theme && !userSet) {
-      const newScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
+      const newScheme = isDarkTheme ? 'white-black' : 'black-white';
       setMagnifierColorScheme(newScheme);
       localStorage.setItem('accessibility-magnifier-color-scheme', newScheme);
     }
     
     // If theme changed and user had set a scheme, reset their choice to get new default
     if (savedTheme && savedTheme !== theme && userSet) {
-      const newScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
+      const newScheme = isDarkTheme ? 'white-black' : 'black-white';
       setMagnifierColorScheme(newScheme);
       setHasUserSetMagnifierScheme(false);
       localStorage.setItem('accessibility-magnifier-color-scheme', newScheme);
@@ -483,7 +496,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     
     // Save current theme
     localStorage.setItem('accessibility-last-theme', theme);
-  }, [theme, actualTheme]);
+  }, [theme]);
 
   // Text magnifier functionality
   useEffect(() => {
