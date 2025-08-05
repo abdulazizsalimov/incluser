@@ -22,33 +22,16 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const panelRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [hasBeenOpened, setHasBeenOpened] = useState(false);
 
-  // Handle panel visibility and animation
+  // Handle panel visibility and scroll lock
   useEffect(() => {
     if (open) {
-      // Opening: show panel first, then animate
       setIsVisible(true);
-      setHasBeenOpened(true);
       // Block background scroll and preserve position
       const scrollY = window.scrollY;
       document.body.style.top = `-${scrollY}px`;
       document.body.classList.add('panel-open');
-      
-      // Force layout calculation before animation
-      if (panelRef.current) {
-        panelRef.current.offsetHeight; // Trigger layout
-      }
-      // Use requestAnimationFrame for smoother animation timing
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setIsAnimating(true);
-        });
-      });
     } else if (isVisible) {
-      // Closing: animate out first, then hide
-      setIsAnimating(false);
       // Restore background scroll and position
       const scrollY = document.body.style.top;
       document.body.classList.remove('panel-open');
@@ -60,9 +43,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       // Hide panel after animation completes
       setTimeout(() => {
         setIsVisible(false);
-      }, 350); // Slightly longer to ensure animation completes
+      }, 300);
     }
-  }, [open, isVisible]);
+  }, [open]);
 
   // Cleanup on component unmount
   useEffect(() => {
@@ -794,8 +777,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           // Force hardware acceleration and better rendering
           willChange: 'transform',
           backfaceVisibility: 'hidden',
-          transform: isAnimating ? 'translateX(0) translateZ(0)' : 'translateX(100%) translateZ(0)',
-          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transform: open ? 'translateX(0)' : 'translateX(100%)',
+          transition: 'transform 0.3s ease-in-out',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
           filter: 'none',
