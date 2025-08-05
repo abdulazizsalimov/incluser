@@ -770,31 +770,30 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const panelContent = (
     <TooltipProvider>
       {/* Backdrop */}
-      {open && (
-        <div 
-          className="fixed inset-0 bg-black/50 transition-opacity duration-300 accessibility-backdrop"
-          style={{
-            zIndex: 99998,
-            filter: 'none',
-            isolation: 'isolate',
-            pointerEvents: 'auto'
-          }}
-          onClick={() => onOpenChange(false)}
-        />
-      )}
+      <div 
+        className="fixed inset-0 bg-black/50 transition-opacity duration-300 accessibility-backdrop"
+        style={{
+          zIndex: 99998,
+          filter: 'none',
+          isolation: 'isolate',
+          pointerEvents: 'auto',
+          opacity: open ? 0.5 : 0,
+          visibility: open || hasBeenOpened ? 'visible' : 'hidden'
+        }}
+        onClick={() => onOpenChange(false)}
+      />
 
       {/* Side Panel */}
       <div 
         ref={panelRef}
-        className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out ${
-          isAnimating ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className="accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col"
         style={{
-          display: isVisible ? 'flex' : 'none',
+          display: open || hasBeenOpened ? 'flex' : 'none',
           // Force hardware acceleration and better rendering
           willChange: 'transform',
           backfaceVisibility: 'hidden',
-          transform: isAnimating ? 'translateX(0) translateZ(0)' : 'translateX(100%) translateZ(0)',
+          transform: open ? 'translateX(0) translateZ(0)' : 'translateX(100%) translateZ(0)',
+          transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
           filter: 'none',
