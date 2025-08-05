@@ -1553,38 +1553,43 @@ ${articles.map(article => {
         return res.status(400).json({ error: 'Text parameter is required' });
       }
 
-      // Build RHVoice URL
-      const params = new URLSearchParams({
-        text: text as string,
-        voice: voice as string,
-        format: format as string,
-        rate: rate as string,
-        pitch: pitch as string,
-        volume: volume as string
-      });
-
-      const rhvoiceUrl = `http://localhost:8081/say?${params.toString()}`;
+      // Encode text properly for URL
+      const rhvoiceUrl = `http://localhost:8081/say?text=${encodeURIComponent(text as string)}&voice=${voice}&format=${format}&rate=${rate}&pitch=${pitch}&volume=${volume}`;
+      
+      console.log('RHVoice URL:', rhvoiceUrl);
       
       // Forward request to RHVoice server
-      const response = await fetch(rhvoiceUrl);
+      const response = await fetch(rhvoiceUrl, {
+        method: 'GET'
+      });
+      
+      console.log('RHVoice response status:', response.status);
       
       if (!response.ok) {
-        throw new Error(`RHVoice server error: ${response.status}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        console.error('RHVoice error response:', errorText);
+        return res.status(response.status).json({ 
+          error: `RHVoice server error: ${response.status}`,
+          details: errorText
+        });
       }
 
       // Set appropriate headers
       const contentType = response.headers.get('content-type') || 'audio/mpeg';
       res.setHeader('Content-Type', contentType);
       res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Access-Control-Allow-Origin', '*');
       
-      // Stream the audio response
-      response.body?.pipe(res);
+      // Get audio buffer and send it
+      const audioBuffer = await response.arrayBuffer();
+      res.send(Buffer.from(audioBuffer));
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('RHVoice proxy error:', error);
       res.status(500).json({ 
         error: 'RHVoice service unavailable',
-        message: error.message 
+        message: error.message || 'Unknown error',
+        details: 'Make sure RHVoice server is running on localhost:8081'
       });
     }
   });
