@@ -98,7 +98,7 @@ export function useSpeechSynthesis() {
         audioQueue.length = 0;
         currentAudioIndex = 0;
         
-        // Create audio elements for each sentence
+        // Create audio elements for each sentence (without preloading)
         for (const sentence of sentences) {
           const params = new URLSearchParams({
             text: sentence,
@@ -110,8 +110,8 @@ export function useSpeechSynthesis() {
           });
 
           const url = `/api/rhvoice/say?${params.toString()}`;
-          const audio = new Audio(url);
-          audioQueue.push(audio);
+          // Don't create Audio element yet, just store the URL
+          audioQueue.push({ url, sentence, audio: null } as any);
         }
         
         // Play the queue
@@ -125,7 +125,7 @@ export function useSpeechSynthesis() {
           
           isQueuePlaying = true;
           
-          const playNext = () => {
+          const playNext = async () => {
             if (currentAudioIndex >= audioQueue.length || !isQueuePlaying) {
               updateGlobalState({
                 isPlaying: false,
@@ -137,24 +137,48 @@ export function useSpeechSynthesis() {
               return;
             }
             
-            const audio = audioQueue[currentAudioIndex];
+            const queueItem = audioQueue[currentAudioIndex] as any;
+            console.log(`Playing sentence ${currentAudioIndex + 1}/${audioQueue.length}:`, queueItem.sentence.substring(0, 50) + '...');
+            
+            // Create audio element only when needed
+            if (!queueItem.audio) {
+              queueItem.audio = new Audio(queueItem.url);
+            }
+            
+            const audio = queueItem.audio;
+            
+            // Add a small delay to avoid overwhelming the server
+            if (currentAudioIndex > 0) {
+              await new Promise(resolve => setTimeout(resolve, 300));
+            }
             
             audio.onended = () => {
+              console.log(`Finished sentence ${currentAudioIndex + 1}`);
               currentAudioIndex++;
-              playNext();
+              setTimeout(() => playNext(), 100); // Small gap between sentences
             };
             
             audio.onerror = (event) => {
-              console.error('Queue audio error:', event);
+              console.error(`Queue audio error for sentence ${currentAudioIndex + 1}:`, event);
               currentAudioIndex++;
-              playNext(); // Continue with next sentence
+              setTimeout(() => playNext(), 100); // Continue with next sentence
             };
             
-            audio.play().catch((e) => {
-              console.error('Queue audio play error:', e);
+            audio.onloadstart = () => {
+              console.log(`Loading sentence ${currentAudioIndex + 1}`);
+            };
+            
+            audio.oncanplay = () => {
+              console.log(`Ready to play sentence ${currentAudioIndex + 1}`);
+            };
+            
+            try {
+              await audio.play();
+            } catch (e) {
+              console.error(`Queue audio play error for sentence ${currentAudioIndex + 1}:`, e);
               currentAudioIndex++;
-              playNext(); // Continue with next sentence
-            });
+              setTimeout(() => playNext(), 100); // Continue with next sentence
+            }
           };
           
           playNext();
@@ -330,7 +354,10 @@ export function useSpeechSynthesis() {
       
       // Pause current RHVoice audio
       if (audioQueue.length > 0 && currentAudioIndex < audioQueue.length) {
-        audioQueue[currentAudioIndex].pause();
+        const queueItem = audioQueue[currentAudioIndex] as any;
+        if (queueItem.audio) {
+          queueItem.audio.pause();
+        }
       }
       
       updateGlobalState({
@@ -351,8 +378,11 @@ export function useSpeechSynthesis() {
       
       // Resume current RHVoice audio
       if (audioQueue.length > 0 && currentAudioIndex < audioQueue.length) {
-        audioQueue[currentAudioIndex].play();
-        isQueuePlaying = true;
+        const queueItem = audioQueue[currentAudioIndex] as any;
+        if (queueItem.audio) {
+          queueItem.audio.play();
+          isQueuePlaying = true;
+        }
       }
       
       updateGlobalState({
@@ -372,9 +402,11 @@ export function useSpeechSynthesis() {
     
     // Stop RHVoice queue
     isQueuePlaying = false;
-    audioQueue.forEach(audio => {
-      audio.pause();
-      audio.currentTime = 0;
+    audioQueue.forEach((queueItem: any) => {
+      if (queueItem.audio) {
+        queueItem.audio.pause();
+        queueItem.audio.currentTime = 0;
+      }
     });
     audioQueue.length = 0;
     currentAudioIndex = 0;
