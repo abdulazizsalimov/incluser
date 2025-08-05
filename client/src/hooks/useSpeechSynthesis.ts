@@ -85,6 +85,13 @@ export function useSpeechSynthesis() {
   // Function to speak with RHVoice
   const speakWithRHVoice = useCallback(async (text: string): Promise<void> => {
     try {
+      // КРИТИЧЕСКИ ВАЖНО: Полностью остановить браузерный синтезатор
+      console.log('Stopping browser synthesis before RHVoice');
+      window.speechSynthesis.cancel();
+      
+      // Ждем немного чтобы убедиться что браузерный синтезатор остановлен
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       console.log('RHVoice text length:', text.length);
       console.log('RHVoice settings:', globalRHVoiceSettings);
       
@@ -116,6 +123,10 @@ export function useSpeechSynthesis() {
         
         // Play the queue
         return new Promise((resolve, reject) => {
+          // КРИТИЧЕСКИ ВАЖНО: Еще раз останавливаем браузерный синтезатор перед началом очереди
+          console.log('Final browser synthesis stop before queue playback');
+          window.speechSynthesis.cancel();
+          
           updateGlobalState({
             isPlaying: true,
             isPaused: false,
@@ -271,21 +282,41 @@ export function useSpeechSynthesis() {
     
     console.log('speakText called with:', { text: text.substring(0, 50) + '...', options, globalSpeechEngine });
     
-    // Stop any current speech
+    // КРИТИЧЕСКИ ВАЖНО: Полностью остановить любую текущую речь
+    console.log('Stopping all current speech synthesis');
+    window.speechSynthesis.cancel();
+    
+    // Останавливаем RHVoice аудио если играет
     if (globalState.isPlaying || globalState.isPaused) {
-      window.speechSynthesis.cancel();
+      const allAudio = document.querySelectorAll('audio');
+      allAudio.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
     }
+    
+    // Сбрасываем состояние
+    updateGlobalState({
+      isPlaying: false,
+      isPaused: false,
+      currentText: "",
+      currentUtterance: null,
+    });
 
     const engineToUse = options?.forceEngine || globalSpeechEngine;
 
     // Try RHVoice first if it's the preferred engine
     if (engineToUse === 'rhvoice') {
       try {
+        console.log('Using RHVoice engine');
         await speakWithRHVoice(text);
+        console.log('RHVoice playback completed successfully');
         return;
       } catch (error) {
         console.warn('RHVoice failed, falling back to browser:', error);
-        // Fall through to browser synthesis
+        // ВАЖНО: Еще раз убеждаемся что браузерный синтезатор остановлен перед fallback
+        window.speechSynthesis.cancel();
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
 
@@ -294,6 +325,7 @@ export function useSpeechSynthesis() {
       throw new Error('Speech synthesis not supported');
     }
 
+    console.log('Using browser synthesis fallback');
     const utterance = new SpeechSynthesisUtterance(text);
     
     // Apply options
@@ -395,21 +427,39 @@ export function useSpeechSynthesis() {
   }, []);
 
   const stopSpeech = useCallback(() => {
-    // Stop browser speech synthesis
+    console.log('STOP: Completely stopping all speech synthesis');
+    
+    // Stop browser synthesis MULTIPLE TIMES to be sure
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
+      setTimeout(() => window.speechSynthesis.cancel(), 10);
+      setTimeout(() => window.speechSynthesis.cancel(), 50);
+      setTimeout(() => window.speechSynthesis.cancel(), 100);
     }
     
     // Stop RHVoice queue
     isQueuePlaying = false;
     audioQueue.forEach((queueItem: any) => {
       if (queueItem.audio) {
+        console.log('Stopping RHVoice audio element:', queueItem.audio.src);
         queueItem.audio.pause();
         queueItem.audio.currentTime = 0;
+        // Remove the audio element to prevent any further issues
+        if (queueItem.audio.parentNode) {
+          queueItem.audio.parentNode.removeChild(queueItem.audio);
+        }
       }
     });
     audioQueue.length = 0;
     currentAudioIndex = 0;
+    
+    // Also stop any other audio elements on the page
+    const allAudio = document.querySelectorAll('audio');
+    allAudio.forEach(audio => {
+      console.log('Stopping additional audio element:', audio.src);
+      audio.pause();
+      audio.currentTime = 0;
+    });
     
     updateGlobalState({
       isPlaying: false,
@@ -417,6 +467,8 @@ export function useSpeechSynthesis() {
       currentText: "",
       currentUtterance: null,
     });
+    
+    console.log('STOP: All speech synthesis stopped');
   }, []);
 
   const toggleSpeech = useCallback(async (text?: string, options?: {
