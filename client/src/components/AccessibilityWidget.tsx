@@ -57,9 +57,10 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
       
+      // Hide panel after animation completes
       setTimeout(() => {
         setIsVisible(false);
-      }, 300); // Match animation duration
+      }, 350); // Slightly longer to ensure animation completes
     }
   }, [open, isVisible]);
 
@@ -769,19 +770,20 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const panelContent = (
     <TooltipProvider>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/50 transition-opacity duration-300 accessibility-backdrop"
-        style={{
-          zIndex: 99998,
-          filter: 'none',
-          isolation: 'isolate',
-          pointerEvents: 'auto',
-          opacity: open ? 0.5 : 0,
-          visibility: isVisible ? 'visible' : 'hidden'
-        }}
-        onClick={() => onOpenChange(false)}
-      />
+      {/* Backdrop - only show when visible */}
+      {isVisible && (
+        <div 
+          className="fixed inset-0 bg-black/50 transition-opacity duration-300 accessibility-backdrop"
+          style={{
+            zIndex: 99998,
+            filter: 'none',
+            isolation: 'isolate',
+            pointerEvents: 'auto',
+            opacity: open ? 0.5 : 0
+          }}
+          onClick={() => onOpenChange(false)}
+        />
+      )}
 
       {/* Side Panel */}
       <div 
