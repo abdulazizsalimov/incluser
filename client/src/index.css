@@ -493,28 +493,6 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Accessibility panel animation - working version */
-.accessibility-panel {
-  transform: translateX(100%);
-  transition: transform 500ms ease-in-out;
-  z-index: 99999;
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 100vh;
-  width: 384px;
-}
-
-.accessibility-panel.panel-open {
-  transform: translateX(0);
-}
-
-body.panel-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-}
-
 /* Grayscale mode - apply to body, but accessibility panel is rendered outside */
 .grayscale body {
   filter: grayscale(100%);
@@ -533,6 +511,8 @@ body.panel-open {
 .grayscale .accessibility-panel {
   position: fixed !important;
   z-index: 99999 !important;
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 /* Ensure header maintains proper z-index and positioning in grayscale mode */
