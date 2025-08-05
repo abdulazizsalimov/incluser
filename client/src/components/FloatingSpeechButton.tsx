@@ -70,12 +70,15 @@ export default function FloatingSpeechButton({
     };
 
     const handleClick = (e: MouseEvent) => {
-      // Hide button if clicking outside of it
+      // Hide button if clicking outside of it, but not if clicking on the button itself
       if (buttonRef.current && !buttonRef.current.contains(e.target as Node)) {
-        const selection = window.getSelection();
-        if (!selection?.toString().trim()) {
-          setShowButton(false);
-        }
+        // Delay checking selection to allow button click to complete
+        setTimeout(() => {
+          const selection = window.getSelection();
+          if (!selection?.toString().trim()) {
+            setShowButton(false);
+          }
+        }, 100);
       }
     };
 
@@ -97,7 +100,10 @@ export default function FloatingSpeechButton({
     };
   }, [isEnabled]);
 
-  const handleSpeakClick = async () => {
+  const handleSpeakClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     console.log('FloatingSpeechButton clicked:', { isPlaying, selectedText: selectedText.substring(0, 50) + '...' });
     
     if (isPlaying) {
@@ -114,6 +120,38 @@ export default function FloatingSpeechButton({
     } else {
       console.log('No selected text to speak');
     }
+    
+    // Keep the selection after clicking
+    setTimeout(() => {
+      const selection = window.getSelection();
+      if (selection && selectedText) {
+        // Try to restore selection if it was cleared
+        const range = document.createRange();
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
+        
+        let node;
+        while (node = walker.nextNode()) {
+          if (node.textContent && node.textContent.includes(selectedText.substring(0, 20))) {
+            try {
+              const start = node.textContent.indexOf(selectedText.substring(0, 20));
+              if (start !== -1) {
+                range.setStart(node, start);
+                range.setEnd(node, Math.min(start + selectedText.length, node.textContent.length));
+                selection.removeAllRanges();
+                selection.addRange(range);
+                break;
+              }
+            } catch (err) {
+              // Ignore range errors
+            }
+          }
+        }
+      }
+    }, 50);
   };
 
   if (!showButton || !isEnabled) {
@@ -125,7 +163,7 @@ export default function FloatingSpeechButton({
       ref={buttonRef}
       variant="default"
       size="sm"
-      onClick={handleSpeakClick}
+      onMouseDown={handleSpeakClick}
       className="fixed z-50 bg-blue-600 hover:bg-blue-700 text-white shadow-lg border border-blue-500 flex items-center gap-2"
       style={{
         left: `${buttonPosition.x}px`,
