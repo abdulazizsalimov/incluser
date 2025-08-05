@@ -13,6 +13,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import type { ArticleWithRelations } from "@shared/schema";
 import { ArticleReactions } from "@/components/ArticleReactions";
 import { ArticleComments } from "@/components/ArticleComments";
+import { AudioWaveAnimation } from "@/components/AudioWaveAnimation";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -188,9 +189,33 @@ export default function ArticleDetail() {
                   />
                   {/* Dark overlay for text readability */}
                   <div className="absolute inset-0 bg-black/50"></div>
+                  
+                  {/* Audio Wave Animation */}
+                  {(isPlaying || isPaused) && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
+                        <AudioWaveAnimation 
+                          isPlaying={isPlaying} 
+                          className="scale-150"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500">
+                  {/* Audio Wave Animation for gradient background */}
+                  {(isPlaying || isPaused) && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
+                        <AudioWaveAnimation 
+                          isPlaying={isPlaying} 
+                          className="scale-150"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
               
               {/* Content - responsive layout */}
