@@ -22,16 +22,18 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   const panelRef = useRef<HTMLDivElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [hasBeenOpened, setHasBeenOpened] = useState(false);
 
   // Handle panel visibility and scroll lock
   useEffect(() => {
     if (open) {
       setIsVisible(true);
+      setHasBeenOpened(true);
       // Block background scroll and preserve position
       const scrollY = window.scrollY;
       document.body.style.top = `-${scrollY}px`;
       document.body.classList.add('panel-open');
-    } else if (isVisible) {
+    } else if (hasBeenOpened) {
       // Restore background scroll and position
       const scrollY = document.body.style.top;
       document.body.classList.remove('panel-open');
@@ -45,7 +47,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         setIsVisible(false);
       }, 300);
     }
-  }, [open, isVisible]);
+  }, [open]);
 
   // Cleanup on component unmount
   useEffect(() => {
@@ -773,7 +775,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         ref={panelRef}
         className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col ${open ? 'open' : ''}`}
         style={{
-          display: isVisible ? 'flex' : 'none',
+          display: (open || hasBeenOpened) ? 'flex' : 'none',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
           filter: 'none',
