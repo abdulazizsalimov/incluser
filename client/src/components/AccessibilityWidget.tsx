@@ -778,7 +778,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           isolation: 'isolate',
           pointerEvents: 'auto',
           opacity: open ? 0.5 : 0,
-          visibility: open || hasBeenOpened ? 'visible' : 'hidden'
+          visibility: isVisible ? 'visible' : 'hidden'
         }}
         onClick={() => onOpenChange(false)}
       />
@@ -788,11 +788,11 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         ref={panelRef}
         className="accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col"
         style={{
-          display: open || hasBeenOpened ? 'flex' : 'none',
+          display: isVisible ? 'flex' : 'none',
           // Force hardware acceleration and better rendering
           willChange: 'transform',
           backfaceVisibility: 'hidden',
-          transform: open ? 'translateX(0) translateZ(0)' : 'translateX(100%) translateZ(0)',
+          transform: isAnimating ? 'translateX(0) translateZ(0)' : 'translateX(100%) translateZ(0)',
           transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           // Force colors even in grayscale mode with highest z-index and isolation
           zIndex: 99999,
