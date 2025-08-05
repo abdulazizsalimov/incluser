@@ -104,21 +104,34 @@ export default function FloatingSpeechButton({
     e.preventDefault();
     e.stopPropagation();
     
-    console.log('FloatingSpeechButton clicked:', { isPlaying, selectedText: selectedText.substring(0, 50) + '...' });
+    console.log('🎯 FloatingSpeechButton CLICKED!', { 
+      isPlaying, 
+      selectedText: selectedText.substring(0, 50) + '...',
+      position: buttonPosition,
+      event: e
+    });
+    
+    // Visual feedback
+    if (buttonRef.current) {
+      buttonRef.current.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        if (buttonRef.current) buttonRef.current.style.transform = 'scale(1)';
+      }, 100);
+    }
     
     if (isPlaying) {
-      console.log('Stopping speech...');
+      console.log('🛑 Stopping speech...');
       onStop();
     } else if (selectedText) {
-      console.log('Starting speech for selected text:', selectedText.substring(0, 100) + '...');
+      console.log('🗣️ Starting speech for selected text:', selectedText.substring(0, 100) + '...');
       try {
         await onSpeak(selectedText);
-        console.log('Speech started successfully');
+        console.log('✅ Speech started successfully');
       } catch (error) {
-        console.error('Error starting speech:', error);
+        console.error('❌ Error starting speech:', error);
       }
     } else {
-      console.log('No selected text to speak');
+      console.log('⚠️ No selected text to speak');
     }
     
     // Keep the selection after clicking
@@ -164,10 +177,14 @@ export default function FloatingSpeechButton({
       variant="default"
       size="sm"
       onMouseDown={handleSpeakClick}
-      className="fixed z-50 bg-blue-600 hover:bg-blue-700 text-white shadow-lg border border-blue-500 flex items-center gap-2"
+      className="bg-blue-600 hover:bg-blue-700 text-white shadow-xl border border-blue-500 flex items-center gap-2 pointer-events-auto cursor-pointer"
       style={{
+        position: 'fixed',
         left: `${buttonPosition.x}px`,
         top: `${buttonPosition.y}px`,
+        zIndex: 999999,
+        pointerEvents: 'auto',
+        userSelect: 'none'
       }}
       title={isPlaying ? "Остановить озвучивание" : "Озвучить выделенный текст"}
     >
