@@ -755,8 +755,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const panelContent = (
     <TooltipProvider>
-      {/* Backdrop - only show when visible */}
-      {isVisible && (
+      {/* Backdrop */}
+      {(open || hasBeenOpened) && (
         <div 
           className="fixed inset-0 bg-black/50 transition-opacity duration-300 accessibility-backdrop"
           style={{
