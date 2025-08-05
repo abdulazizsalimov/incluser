@@ -67,6 +67,8 @@ export function useSpeechSynthesis() {
       });
 
       const url = `/api/rhvoice/say?${params.toString()}`;
+      console.log('RHVoice request URL:', url);
+      console.log('RHVoice settings:', globalRHVoiceSettings);
       
       // Quick availability check with shorter timeout
       const controller = new AbortController();
@@ -141,7 +143,7 @@ export function useSpeechSynthesis() {
         });
       });
     } catch (error: any) {
-      console.warn('RHVoice error:', error.message);
+      console.error('RHVoice error details:', error);
       throw error;
     }
   }, []);
@@ -154,6 +156,8 @@ export function useSpeechSynthesis() {
     forceEngine?: 'browser' | 'rhvoice';
   }) => {
     if (!text.trim()) return;
+    
+    console.log('speakText called with:', { text: text.substring(0, 50) + '...', options, globalSpeechEngine });
     
     // Stop any current speech
     if (globalState.isPlaying || globalState.isPaused) {
