@@ -59,7 +59,7 @@ export default function ExpandableSection({
         .trim();
       
       if (textToSpeak) {
-        await speakText(textToSpeak, { rate: 1.0 });
+        await speakText(textToSpeak);
       }
     } catch (error) {
       console.error('Error speaking section:', error);

@@ -1467,7 +1467,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         isEnabled={textToSpeech}
         speechVoice={speechVoice}
         speechSpeed={speechSpeed}
-        onSpeak={handleSpeakText}
+        onSpeak={speakText}
         onStop={globalStopSpeech}
         isPlaying={isPlaying}
       />
