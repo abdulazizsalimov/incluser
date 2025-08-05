@@ -775,7 +775,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         ref={panelRef}
         className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col ${open ? 'panel-open' : ''}`}
         style={{
-          display: (open || hasBeenOpened) ? 'flex' : 'none',
+          visibility: (open || hasBeenOpened) ? 'visible' : 'hidden',
           backgroundColor: actualTheme === 'dark' ? 'hsl(222.2, 84%, 4.9%)' : 'hsl(0, 0%, 100%)',
           borderColor: actualTheme === 'dark' ? 'hsl(217.2, 32.6%, 17.5%)' : 'hsl(214.3, 31.8%, 91.4%)',
           color: actualTheme === 'dark' ? 'hsl(210, 40%, 98%)' : 'hsl(222.2, 84%, 4.9%)',

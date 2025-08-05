@@ -493,15 +493,20 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Accessibility panel animation - specific and forced */
+/* Accessibility panel animation - working version */
 .accessibility-panel {
-  transform: translateX(100%) !important;
-  transition: transform 300ms ease-in-out !important;
-  z-index: 99999 !important;
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+  z-index: 99999;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 384px;
 }
 
 .accessibility-panel.panel-open {
-  transform: translateX(0) !important;
+  transform: translateX(0);
 }
 
 body.panel-open {
