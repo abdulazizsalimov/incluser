@@ -117,6 +117,22 @@
   100% { opacity: 0.8; }
 }
 
+/* Accessibility panel specific styles */
+.accessibility-panel [data-radix-select-content] {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+.accessibility-panel [data-radix-popper-content-wrapper] {
+  z-index: 999999 !important;
+}
+
+/* Ensure Select dropdowns are visible */
+[data-radix-select-content] {
+  overflow: visible !important;
+  box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2) !important;
+}
+
 .dark.high-contrast {
   --background: hsl(0, 0%, 0%);
   --foreground: hsl(0, 0%, 100%);

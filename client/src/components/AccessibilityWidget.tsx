@@ -833,7 +833,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         </div>
 
         {/* Scrollable Content */}
-        <div className="space-y-6 overflow-y-auto flex-1 p-4">
+        <div className="space-y-6 overflow-y-auto overflow-x-visible flex-1 p-4" style={{ position: 'relative' }}>
           {/* Theme Selection */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -1368,7 +1368,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                     <SelectTrigger id="speech-voice" className="mt-2">
                       <SelectValue placeholder="Выберите голос" />
                     </SelectTrigger>
-                    <SelectContent className="z-[100000]">
+                    <SelectContent 
+                      className="z-[999999] !fixed"
+                      position="popper"
+                      side="bottom"
+                      align="start"
+                      sideOffset={5}
+                      avoidCollisions={true}
+                      collisionPadding={10}
+                    >
                       <SelectItem value="browser">Браузерный синтезатор</SelectItem>
                       <SelectItem value="rhvoice">RHVoice (высокое качество)</SelectItem>
                     </SelectContent>
@@ -1404,7 +1412,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <SelectTrigger className="mt-2">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="z-[100000]">
+                        <SelectContent 
+                          className="z-[999999] !fixed"
+                          position="popper"
+                          side="bottom"
+                          align="start"
+                          sideOffset={5}
+                          avoidCollisions={true}
+                          collisionPadding={10}
+                        >
                           <SelectItem value="elena">Елена</SelectItem>
                           <SelectItem value="irina">Ирина</SelectItem>
                           <SelectItem value="anna">Анна</SelectItem>
@@ -1419,7 +1435,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <SelectTrigger className="mt-2">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="z-[100000]">
+                        <SelectContent 
+                          className="z-[999999] !fixed"
+                          position="popper"
+                          side="bottom"
+                          align="start"
+                          sideOffset={5}
+                          avoidCollisions={true}
+                          collisionPadding={10}
+                        >
                           <SelectItem value="30">Медленно (30%)</SelectItem>
                           <SelectItem value="50">Нормально (50%)</SelectItem>
                           <SelectItem value="70">Быстро (70%)</SelectItem>
@@ -1434,7 +1458,15 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <SelectTrigger className="mt-2">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="z-[100000]">
+                        <SelectContent 
+                          className="z-[999999] !fixed"
+                          position="popper"
+                          side="bottom"
+                          align="start"
+                          sideOffset={5}
+                          avoidCollisions={true}
+                          collisionPadding={10}
+                        >
                           <SelectItem value="25">Тихо (25%)</SelectItem>
                           <SelectItem value="50">Средне (50%)</SelectItem>
                           <SelectItem value="75">Громко (75%)</SelectItem>
