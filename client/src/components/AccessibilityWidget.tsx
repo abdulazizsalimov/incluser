@@ -238,7 +238,13 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   // Text magnifier settings
   const [magnifierColorScheme, setMagnifierColorScheme] = useState(() => {
     const saved = localStorage.getItem('accessibility-magnifier-color-scheme');
-    return saved || 'black-white';
+    const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
+    
+    // If user hasn't set a scheme, use theme-based default
+    if (!saved || !userSet) {
+      return actualTheme === 'dark' ? 'white-black' : 'black-white';
+    }
+    return saved;
   });
 
   const [hasUserSetMagnifierScheme, setHasUserSetMagnifierScheme] = useState(() => {
@@ -445,10 +451,9 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     // Text-to-speech is now controlled via UI buttons only
 
     // Set default color scheme based on theme if user hasn't set one
-    const savedScheme = localStorage.getItem('accessibility-magnifier-color-scheme');
     const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
     
-    if (!savedScheme || !userSet) {
+    if (!userSet) {
       const defaultScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
       setMagnifierColorScheme(defaultScheme);
       localStorage.setItem('accessibility-magnifier-color-scheme', defaultScheme);
@@ -458,9 +463,17 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   // Auto-switch magnifier color scheme when theme changes
   useEffect(() => {
     const savedTheme = localStorage.getItem('accessibility-last-theme');
+    const userSet = localStorage.getItem('accessibility-magnifier-user-set') === 'true';
     
-    // If theme changed, reset user choice and apply new default
-    if (savedTheme && savedTheme !== theme) {
+    // If theme changed and user hasn't manually set a scheme, apply new default
+    if (savedTheme && savedTheme !== theme && !userSet) {
+      const newScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
+      setMagnifierColorScheme(newScheme);
+      localStorage.setItem('accessibility-magnifier-color-scheme', newScheme);
+    }
+    
+    // If theme changed and user had set a scheme, reset their choice to get new default
+    if (savedTheme && savedTheme !== theme && userSet) {
       const newScheme = actualTheme === 'dark' ? 'white-black' : 'black-white';
       setMagnifierColorScheme(newScheme);
       setHasUserSetMagnifierScheme(false);
