@@ -250,6 +250,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
   const { isPlaying, speakText, stopSpeech: globalStopSpeech } = useSpeechSynthesis();
   const [showSpeechSettings, setShowSpeechSettings] = useState(false);
+  const [rhvoiceStatus, setRhvoiceStatus] = useState<'unknown' | 'available' | 'unavailable'>('unknown');
 
   // Text magnifier settings
   const [magnifierColorScheme, setMagnifierColorScheme] = useState(() => {
@@ -400,42 +401,54 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
 
       const url = `/api/rhvoice/say?${params.toString()}`;
       
-      // Test if RHVoice server is accessible through proxy
+      // Quick availability check with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
       const testResponse = await fetch(url, { 
-        method: 'HEAD'
+        method: 'HEAD',
+        signal: controller.signal
       });
       
+      clearTimeout(timeoutId);
+      
       if (!testResponse.ok) {
-        throw new Error('RHVoice service unavailable through proxy');
+        setRhvoiceStatus('unavailable');
+        throw new Error(`RHVoice server unavailable (${testResponse.status})`);
       }
       
+      setRhvoiceStatus('available');
       const audio = new Audio(url);
       
       return new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
           reject(new Error('RHVoice audio timeout'));
-        }, 10000); // 10 second timeout
+        }, 8000);
 
         audio.onended = () => {
           clearTimeout(timeout);
           resolve();
         };
-        audio.onerror = (e) => {
+        audio.onerror = () => {
           clearTimeout(timeout);
-          reject(new Error('RHVoice audio playback error'));
+          reject(new Error('RHVoice audio playback failed'));
         };
-        audio.onloadstart = () => {
-          console.log('RHVoice audio loading...');
+        audio.oncanplaythrough = () => {
+          console.log('RHVoice audio ready to play');
         };
         
         audio.play().catch((e) => {
           clearTimeout(timeout);
-          reject(e);
+          reject(new Error(`RHVoice playback error: ${e.message}`));
         });
       });
-    } catch (error) {
-      // Fallback to browser speech if RHVoice fails
+    } catch (error: any) {
+      // Update status and fallback to browser speech
+      setRhvoiceStatus('unavailable');
       console.warn('RHVoice unavailable, using browser speech:', error.message);
+      if (error.name === 'AbortError') {
+        console.warn('RHVoice server timeout - likely not running');
+      }
       return speakText(text, { rate: speechSpeed[0] });
     }
   };
@@ -1412,7 +1425,14 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   </Select>
                   <p className="text-sm text-muted-foreground mt-1">
                     {speechVoice === 'rhvoice' 
-                      ? 'Профессиональный русский синтезатор речи (через прокси сервер)'
+                      ? (
+                        <span>
+                          Профессиональный русский синтезатор речи{' '}
+                          {rhvoiceStatus === 'available' && <span className="text-green-600">🟢 Доступен</span>}
+                          {rhvoiceStatus === 'unavailable' && <span className="text-red-600">🔴 Недоступен (будет использован браузерный)</span>}
+                          {rhvoiceStatus === 'unknown' && <span className="text-yellow-600">🟡 Проверяется...</span>}
+                        </span>
+                      )
                       : 'Встроенный синтезатор браузера'
                     }
                   </p>

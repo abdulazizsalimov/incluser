@@ -1558,10 +1558,16 @@ ${articles.map(article => {
       
       console.log('RHVoice URL:', rhvoiceUrl);
       
-      // Forward request to RHVoice server
+      // Forward request to RHVoice server with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
       const response = await fetch(rhvoiceUrl, {
-        method: 'GET'
+        method: 'GET',
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       
       console.log('RHVoice response status:', response.status);
       
@@ -1586,8 +1592,20 @@ ${articles.map(article => {
       
     } catch (error: any) {
       console.error('RHVoice proxy error:', error);
-      res.status(500).json({ 
-        error: 'RHVoice service unavailable',
+      
+      let statusCode = 500;
+      let errorMessage = 'RHVoice service unavailable';
+      
+      if (error.name === 'AbortError') {
+        statusCode = 504;
+        errorMessage = 'RHVoice server timeout';
+      } else if (error.code === 'ECONNREFUSED') {
+        statusCode = 503;
+        errorMessage = 'RHVoice server not running';
+      }
+      
+      res.status(statusCode).json({ 
+        error: errorMessage,
         message: error.message || 'Unknown error',
         details: 'Make sure RHVoice server is running on localhost:8081'
       });
