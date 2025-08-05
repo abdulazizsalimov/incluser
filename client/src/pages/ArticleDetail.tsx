@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Clock, User, Calendar, Volume2, Pause } from "lucide-react";
+import { ArrowLeft, Clock, User, Calendar, Volume2, Pause, Play } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ShareButton from "@/components/ShareButton";
@@ -16,7 +16,7 @@ import { ArticleComments } from "@/components/ArticleComments";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { isPlaying, isPaused, speakText, stopSpeech } = useSpeechSynthesis();
+  const { isPlaying, isPaused, speakText, pauseSpeech, resumeSpeech } = useSpeechSynthesis();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -86,17 +86,18 @@ export default function ArticleDetail() {
 
   const handleSpeakArticle = async () => {
     if (isPlaying) {
-      stopSpeech();
-      return;
-    }
-    
-    const textToSpeak = getTextToSpeak();
-    if (!textToSpeak) return;
-    
-    try {
-      await speakText(textToSpeak);
-    } catch (error) {
-      console.error('Speech error:', error);
+      pauseSpeech();
+    } else if (isPaused) {
+      resumeSpeech();
+    } else {
+      const textToSpeak = getTextToSpeak();
+      if (!textToSpeak) return;
+      
+      try {
+        await speakText(textToSpeak);
+      } catch (error) {
+        console.error('Speech error:', error);
+      }
     }
   };
 
@@ -259,10 +260,15 @@ export default function ArticleDetail() {
                                 <Pause className="h-4 w-4" />
                                 Пауза
                               </>
+                            ) : isPaused ? (
+                              <>
+                                <Play className="h-4 w-4" />
+                                Продолжить
+                              </>
                             ) : (
                               <>
                                 <Volume2 className="h-4 w-4" />
-                                {isPaused ? "Продолжить" : "Прослушать"}
+                                Прослушать
                               </>
                             )}
                           </Button>

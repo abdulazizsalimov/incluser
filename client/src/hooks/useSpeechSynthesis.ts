@@ -54,45 +54,54 @@ export function useSpeechSynthesis() {
     };
   }, []);
 
+  // Queue system for long text playback
+  const audioQueue: HTMLAudioElement[] = [];
+  let currentAudioIndex = 0;
+  let isQueuePlaying = false;
+
+  // Function to split text into sentences
+  const splitTextIntoSentences = (text: string): string[] => {
+    // Split by sentence endings, keeping sentences reasonable length
+    const sentences = text
+      .split(/[.!?]+/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0)
+      .map(s => s + '.');
+    
+    // Further split very long sentences (over 500 chars) by commas
+    const finalSentences: string[] = [];
+    sentences.forEach(sentence => {
+      if (sentence.length > 500) {
+        const parts = sentence.split(',').map(p => p.trim()).filter(p => p.length > 0);
+        finalSentences.push(...parts);
+      } else {
+        finalSentences.push(sentence);
+      }
+    });
+    
+    return finalSentences;
+  };
+
   // Function to speak with RHVoice
   const speakWithRHVoice = useCallback(async (text: string): Promise<void> => {
     try {
       console.log('RHVoice text length:', text.length);
       console.log('RHVoice settings:', globalRHVoiceSettings);
       
-      // Use GET for short texts, POST for long texts (to avoid URL length limits)
-      const usePost = text.length > 1000;
-      
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), usePost ? 10000 : 5000);
-      
-      let audioResponse;
-      try {
-        if (usePost) {
-          // POST request for long texts
-          console.log('Using POST request for long text');
-          const requestBody = {
-            text: text,
-            voice: globalRHVoiceSettings.voice,
-            format: 'mp3',
-            rate: globalRHVoiceSettings.rate,
-            pitch: globalRHVoiceSettings.pitch,
-            volume: globalRHVoiceSettings.volume
-          };
-
-          audioResponse = await fetch('/api/rhvoice/say', { 
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            signal: controller.signal
-          });
-        } else {
-          // GET request for short texts (more compatible)
-          console.log('Using GET request for short text');
+      // For long texts, split into sentences and queue them
+      if (text.length > 800) {
+        console.log('Long text detected, splitting into sentences');
+        const sentences = splitTextIntoSentences(text);
+        console.log('Split into', sentences.length, 'sentences');
+        
+        // Clear any existing queue
+        audioQueue.length = 0;
+        currentAudioIndex = 0;
+        
+        // Create audio elements for each sentence
+        for (const sentence of sentences) {
           const params = new URLSearchParams({
-            text: text,
+            text: sentence,
             voice: globalRHVoiceSettings.voice,
             format: 'mp3',
             rate: globalRHVoiceSettings.rate.toString(),
@@ -101,97 +110,126 @@ export function useSpeechSynthesis() {
           });
 
           const url = `/api/rhvoice/say?${params.toString()}`;
-          console.log('RHVoice GET URL:', url);
-
-          audioResponse = await fetch(url, { 
-            method: 'GET',
-            signal: controller.signal
-          });
+          const audio = new Audio(url);
+          audioQueue.push(audio);
         }
         
-        clearTimeout(timeoutId);
-        
-        if (!audioResponse.ok) {
-          throw new Error(`RHVoice server unavailable (${audioResponse.status})`);
-        }
-      } catch (fetchError: any) {
-        clearTimeout(timeoutId);
-        throw new Error(`RHVoice server unavailable: ${fetchError.message}`);
-      }
-      
-      // Get audio blob and create object URL
-      const audioBlob = await audioResponse.blob();
-      console.log('RHVoice audio blob:', { 
-        size: audioBlob.size, 
-        type: audioBlob.type,
-        responseHeaders: Object.fromEntries(audioResponse.headers.entries())
-      });
-      
-      // Check if blob is valid audio
-      if (audioBlob.size === 0) {
-        throw new Error('RHVoice returned empty audio file');
-      }
-      
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      
-      console.log('Created audio element:', audioUrl);
-      
-      updateGlobalState({
-        isPlaying: true,
-        isPaused: false,
-        currentText: text,
-        currentUtterance: null,
-      });
-      
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
+        // Play the queue
+        return new Promise((resolve, reject) => {
           updateGlobalState({
-            isPlaying: false,
+            isPlaying: true,
             isPaused: false,
-            currentText: "",
+            currentText: text,
             currentUtterance: null,
           });
-          reject(new Error('RHVoice audio timeout'));
-        }, 8000);
-
-        audio.onended = () => {
-          clearTimeout(timeout);
-          URL.revokeObjectURL(audioUrl);
-          updateGlobalState({
-            isPlaying: false,
-            isPaused: false,
-            currentText: "",
-            currentUtterance: null,
-          });
-          resolve();
-        };
-        audio.onerror = (event) => {
-          clearTimeout(timeout);
-          URL.revokeObjectURL(audioUrl);
-          console.error('Audio playback error:', event);
-          updateGlobalState({
-            isPlaying: false,
-            isPaused: false,
-            currentText: "",
-            currentUtterance: null,
-          });
-          reject(new Error(`RHVoice audio playback failed: ${event.type}`));
-        };
-        
-        audio.play().catch((e) => {
-          clearTimeout(timeout);
-          URL.revokeObjectURL(audioUrl);
-          console.error('Audio play() error:', e);
-          updateGlobalState({
-            isPlaying: false,
-            isPaused: false,
-            currentText: "",
-            currentUtterance: null,
-          });
-          reject(new Error(`RHVoice playback error: ${e.message}`));
+          
+          isQueuePlaying = true;
+          
+          const playNext = () => {
+            if (currentAudioIndex >= audioQueue.length || !isQueuePlaying) {
+              updateGlobalState({
+                isPlaying: false,
+                isPaused: false,
+                currentText: "",
+                currentUtterance: null,
+              });
+              resolve();
+              return;
+            }
+            
+            const audio = audioQueue[currentAudioIndex];
+            
+            audio.onended = () => {
+              currentAudioIndex++;
+              playNext();
+            };
+            
+            audio.onerror = (event) => {
+              console.error('Queue audio error:', event);
+              currentAudioIndex++;
+              playNext(); // Continue with next sentence
+            };
+            
+            audio.play().catch((e) => {
+              console.error('Queue audio play error:', e);
+              currentAudioIndex++;
+              playNext(); // Continue with next sentence
+            });
+          };
+          
+          playNext();
         });
-      });
+      } else {
+        // Short text - direct playback
+        console.log('Using GET request for short text');
+        const params = new URLSearchParams({
+          text: text,
+          voice: globalRHVoiceSettings.voice,
+          format: 'mp3',
+          rate: globalRHVoiceSettings.rate.toString(),
+          pitch: globalRHVoiceSettings.pitch.toString(),
+          volume: globalRHVoiceSettings.volume.toString()
+        });
+
+        const url = `/api/rhvoice/say?${params.toString()}`;
+        console.log('RHVoice GET URL:', url);
+
+        const audio = new Audio(url);
+        
+        updateGlobalState({
+          isPlaying: true,
+          isPaused: false,
+          currentText: text,
+          currentUtterance: null,
+        });
+        
+        return new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            updateGlobalState({
+              isPlaying: false,
+              isPaused: false,
+              currentText: "",
+              currentUtterance: null,
+            });
+            reject(new Error('RHVoice audio timeout'));
+          }, 10000);
+
+          audio.onended = () => {
+            clearTimeout(timeout);
+            updateGlobalState({
+              isPlaying: false,
+              isPaused: false,
+              currentText: "",
+              currentUtterance: null,
+            });
+            resolve();
+          };
+          
+          audio.onerror = (event) => {
+            clearTimeout(timeout);
+            console.error('Audio playback error:', event);
+            updateGlobalState({
+              isPlaying: false,
+              isPaused: false,
+              currentText: "",
+              currentUtterance: null,
+            });
+            reject(new Error(`RHVoice audio playback failed`));
+          };
+          
+          audio.play().catch((e) => {
+            clearTimeout(timeout);
+            console.error('Audio play() error:', e);
+            updateGlobalState({
+              isPlaying: false,
+              isPaused: false,
+              currentText: "",
+              currentUtterance: null,
+            });
+            reject(new Error(`RHVoice playback error: ${e.message}`));
+          });
+        });
+      }
     } catch (error: any) {
       console.error('RHVoice error details:', error);
       throw error;
@@ -284,29 +322,63 @@ export function useSpeechSynthesis() {
   }, [speakWithRHVoice]);
 
   const pauseSpeech = useCallback(() => {
-    if (window.speechSynthesis && globalState.isPlaying) {
-      window.speechSynthesis.pause();
+    if (globalState.isPlaying) {
+      // Pause browser speech synthesis
+      if (window.speechSynthesis && globalState.currentUtterance) {
+        window.speechSynthesis.pause();
+      }
+      
+      // Pause current RHVoice audio
+      if (audioQueue.length > 0 && currentAudioIndex < audioQueue.length) {
+        audioQueue[currentAudioIndex].pause();
+      }
+      
       updateGlobalState({
         isPlaying: false,
         isPaused: true,
+        currentText: globalState.currentText,
+        currentUtterance: globalState.currentUtterance,
       });
     }
   }, []);
 
   const resumeSpeech = useCallback(() => {
-    if (window.speechSynthesis && globalState.isPaused) {
-      window.speechSynthesis.resume();
+    if (globalState.isPaused) {
+      // Resume browser speech synthesis
+      if (window.speechSynthesis && globalState.currentUtterance) {
+        window.speechSynthesis.resume();
+      }
+      
+      // Resume current RHVoice audio
+      if (audioQueue.length > 0 && currentAudioIndex < audioQueue.length) {
+        audioQueue[currentAudioIndex].play();
+        isQueuePlaying = true;
+      }
+      
       updateGlobalState({
         isPlaying: true,
         isPaused: false,
+        currentText: globalState.currentText,
+        currentUtterance: globalState.currentUtterance,
       });
     }
   }, []);
 
   const stopSpeech = useCallback(() => {
+    // Stop browser speech synthesis
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
+    
+    // Stop RHVoice queue
+    isQueuePlaying = false;
+    audioQueue.forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+    audioQueue.length = 0;
+    currentAudioIndex = 0;
+    
     updateGlobalState({
       isPlaying: false,
       isPaused: false,
