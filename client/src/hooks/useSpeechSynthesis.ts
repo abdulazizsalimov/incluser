@@ -96,8 +96,21 @@ export function useSpeechSynthesis() {
       
       // Get audio blob and create object URL
       const audioBlob = await audioResponse.blob();
+      console.log('RHVoice audio blob:', { 
+        size: audioBlob.size, 
+        type: audioBlob.type,
+        responseHeaders: Object.fromEntries(audioResponse.headers.entries())
+      });
+      
+      // Check if blob is valid audio
+      if (audioBlob.size === 0) {
+        throw new Error('RHVoice returned empty audio file');
+      }
+      
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
+      
+      console.log('Created audio element:', audioUrl);
       
       updateGlobalState({
         isPlaying: true,
@@ -128,20 +141,23 @@ export function useSpeechSynthesis() {
           });
           resolve();
         };
-        audio.onerror = () => {
+        audio.onerror = (event) => {
           clearTimeout(timeout);
           URL.revokeObjectURL(audioUrl);
+          console.error('Audio playback error:', event);
           updateGlobalState({
             isPlaying: false,
             isPaused: false,
             currentText: "",
             currentUtterance: null,
           });
-          reject(new Error('RHVoice audio playback failed'));
+          reject(new Error(`RHVoice audio playback failed: ${event.type}`));
         };
         
         audio.play().catch((e) => {
           clearTimeout(timeout);
+          URL.revokeObjectURL(audioUrl);
+          console.error('Audio play() error:', e);
           updateGlobalState({
             isPlaying: false,
             isPaused: false,
