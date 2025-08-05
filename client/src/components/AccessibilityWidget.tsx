@@ -802,7 +802,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
           backgroundColor: actualTheme === 'dark' ? 'hsl(222.2, 84%, 4.9%)' : 'hsl(0, 0%, 100%)',
           borderColor: actualTheme === 'dark' ? 'hsl(217.2, 32.6%, 17.5%)' : 'hsl(214.3, 31.8%, 91.4%)',
           color: actualTheme === 'dark' ? 'hsl(210, 40%, 98%)' : 'hsl(222.2, 84%, 4.9%)',
-          overflowY: 'auto',
+          overflow: 'visible',
           pointerEvents: 'auto'
         }}
         role="dialog"
@@ -833,7 +833,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
         </div>
 
         {/* Scrollable Content */}
-        <div className="space-y-6 overflow-y-auto overflow-x-visible flex-1 p-4" style={{ position: 'relative' }}>
+        <div className="space-y-6 flex-1 p-4 overflow-y-auto" style={{ position: 'relative' }}>
           {/* Theme Selection */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -1369,7 +1369,6 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                       <SelectValue placeholder="Выберите голос" />
                     </SelectTrigger>
                     <SelectContent 
-                      className="z-[999999] !fixed"
                       position="popper"
                       side="bottom"
                       align="start"
@@ -1413,7 +1412,6 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent 
-                          className="z-[999999] !fixed"
                           position="popper"
                           side="bottom"
                           align="start"
@@ -1436,7 +1434,6 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent 
-                          className="z-[999999] !fixed"
                           position="popper"
                           side="bottom"
                           align="start"
@@ -1459,7 +1456,6 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent 
-                          className="z-[999999] !fixed"
                           position="popper"
                           side="bottom"
                           align="start"
