@@ -377,7 +377,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     
     try {
       // Use the unified speech system
-      await speakText(text, { rate: speechSpeed[0] });
+      await speakText(text);
     } catch (error) {
       console.error('Speech synthesis error:', error);
     }
@@ -399,16 +399,20 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     });
   }, [rhvoiceRate, rhvoiceVoice, rhvoiceVolume, setRHVoiceSettings]);
 
-  const speakSelectedText = () => {
+  const speakSelectedText = async () => {
     const selection = window.getSelection();
     const selectedText = selection?.toString().trim();
     
-    if (selectedText) {
-      handleSpeakText(selectedText);
-    } else {
-      // If no text selected, speak the current page title
-      const title = document.title || 'Заголовок страницы отсутствует';
-      handleSpeakText(title);
+    try {
+      if (selectedText) {
+        await speakText(selectedText);
+      } else {
+        // If no text selected, speak the current page title
+        const title = document.title || 'Заголовок страницы отсутствует';
+        await speakText(title);
+      }
+    } catch (error) {
+      console.error('Speech synthesis error:', error);
     }
   };
 

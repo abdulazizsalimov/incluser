@@ -68,19 +68,24 @@ export function useSpeechSynthesis() {
 
       const url = `/api/rhvoice/say?${params.toString()}`;
       
-      // Quick availability check with timeout
+      // Quick availability check with shorter timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const timeoutId = setTimeout(() => controller.abort(), 1500);
       
-      const testResponse = await fetch(url, { 
-        method: 'HEAD',
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!testResponse.ok) {
-        throw new Error(`RHVoice server unavailable (${testResponse.status})`);
+      try {
+        const testResponse = await fetch(url, { 
+          method: 'HEAD',
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!testResponse.ok) {
+          throw new Error(`RHVoice server unavailable (${testResponse.status})`);
+        }
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        throw new Error(`RHVoice server unavailable: ${fetchError.message}`);
       }
       
       const audio = new Audio(url);
@@ -136,7 +141,7 @@ export function useSpeechSynthesis() {
         });
       });
     } catch (error: any) {
-      // Don't automatically fallback here, let the caller decide
+      console.warn('RHVoice error:', error.message);
       throw error;
     }
   }, []);

@@ -16,7 +16,7 @@ import { ArticleComments } from "@/components/ArticleComments";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { isPlaying, isPaused, speakText, toggleSpeech, stopSpeech } = useSpeechSynthesis();
+  const { isPlaying, isPaused, speakText, stopSpeech } = useSpeechSynthesis();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -85,10 +85,19 @@ export default function ArticleDetail() {
   };
 
   const handleSpeakArticle = async () => {
+    if (isPlaying) {
+      stopSpeech();
+      return;
+    }
+    
     const textToSpeak = getTextToSpeak();
     if (!textToSpeak) return;
     
-    await toggleSpeech(textToSpeak, { rate: 1.0 });
+    try {
+      await speakText(textToSpeak);
+    } catch (error) {
+      console.error('Speech error:', error);
+    }
   };
 
   if (error) {
@@ -127,8 +136,8 @@ export default function ArticleDetail() {
           canonical={`${window.location.origin}/articles/${article.slug}`}
           type="article"
           keywords={[article.title, article.category?.name || '', 'доступность', 'инклюзивность', 'веб-разработка'].filter(Boolean).join(', ')}
-          publishedTime={article.publishedAt}
-          modifiedTime={article.updatedAt}
+          publishedTime={article.publishedAt ? new Date(article.publishedAt).toISOString() : undefined}
+          modifiedTime={article.updatedAt ? new Date(article.updatedAt).toISOString() : undefined}
           section={article.category?.name}
           author={`${article.author?.firstName || ''} ${article.author?.lastName || ''}`.trim()}
         />
