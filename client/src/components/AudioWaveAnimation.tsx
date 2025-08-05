@@ -31,19 +31,21 @@ export function AudioWaveAnimation({ isPlaying, className = "" }: AudioWaveAnima
   }
 
   return (
-    <div className={`flex items-center justify-center space-x-1 ${className}`} style={{ minWidth: '40px', minHeight: '40px' }}>
-      {bars.map((height, index) => (
-        <div
-          key={index}
-          className="bg-green-500 rounded-full transition-all duration-150 ease-in-out"
-          style={{
-            width: '4px',
-            height: `${Math.max(height * 40, 4)}px`,
-            opacity: isPlaying ? 0.8 : 0.3,
-            transform: isPlaying ? 'scaleY(1)' : 'scaleY(0.3)',
-          }}
-        />
-      ))}
+    <div className={`relative ${className}`} style={{ width: '50px', height: '30px' }}>
+      <div className="absolute inset-0 flex items-center justify-center space-x-1">
+        {bars.map((height, index) => (
+          <div
+            key={index}
+            className="bg-green-500 rounded-full transition-all duration-150 ease-in-out"
+            style={{
+              width: '4px',
+              height: `${Math.max(height * 25, 4)}px`,
+              opacity: isPlaying ? 0.8 : 0.3,
+              transform: isPlaying ? 'scaleY(1)' : 'scaleY(0.3)',
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

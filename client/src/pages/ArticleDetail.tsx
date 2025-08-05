@@ -250,8 +250,8 @@ export default function ArticleDetail() {
                         )}
                         
                         <div className="flex items-center gap-4">
-                          {/* Listen Button with Wave Animation */}
-                          <div className="flex items-center gap-3">
+                          {/* Control buttons container with fixed layout */}
+                          <div className="flex items-center" style={{ minWidth: '200px' }}>
                             <Button
                               onClick={handleSpeakArticle}
                               className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
@@ -275,24 +275,28 @@ export default function ArticleDetail() {
                               )}
                             </Button>
                             
-                            {/* Stop Button - only visible during playback or pause */}
-                            {(isPlaying || isPaused) && (
-                              <Button
-                                onClick={stopSpeech}
-                                className="border-2 border-red-500/80 text-red-400 bg-red-500/10 backdrop-blur-sm hover:bg-red-500 hover:text-white hover:border-red-500 font-semibold py-2 px-3 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center"
-                                title="Остановить воспроизведение"
-                              >
-                                <Square className="h-4 w-4" />
-                              </Button>
-                            )}
+                            {/* Stop Button - fixed position */}
+                            <div className="ml-3" style={{ width: '45px' }}>
+                              {(isPlaying || isPaused) && (
+                                <Button
+                                  onClick={stopSpeech}
+                                  className="border-2 border-red-500/80 text-red-400 bg-red-500/10 backdrop-blur-sm hover:bg-red-500 hover:text-white hover:border-red-500 font-semibold py-2 px-3 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center"
+                                  title="Остановить воспроизведение"
+                                >
+                                  <Square className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
                             
-                            {/* Audio Wave Animation */}
-                            {(isPlaying || isPaused) && (
-                              <AudioWaveAnimation 
-                                isPlaying={isPlaying} 
-                                className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2"
-                              />
-                            )}
+                            {/* Audio Wave Animation - fixed position */}
+                            <div className="ml-3">
+                              {(isPlaying || isPaused) && (
+                                <AudioWaveAnimation 
+                                  isPlaying={isPlaying} 
+                                  className="bg-white/20 backdrop-blur-sm rounded-lg"
+                                />
+                              )}
+                            </div>
                           </div>
 
                           {/* Share Button */}
@@ -367,8 +371,8 @@ export default function ArticleDetail() {
                     
                     {/* Listen and Share buttons in bottom right */}
                     <div className="ml-4 flex items-center gap-3">
-                      {/* Listen Button with Wave Animation */}
-                      <div className="flex items-center gap-3">
+                      {/* Control buttons container with fixed layout */}
+                      <div className="flex items-center" style={{ minWidth: '220px' }}>
                         <Button
                           onClick={handleSpeakArticle}
                           className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
@@ -387,24 +391,28 @@ export default function ArticleDetail() {
                           )}
                         </Button>
                         
-                        {/* Stop Button - only visible during playback or pause */}
-                        {(isPlaying || isPaused) && (
-                          <Button
-                            onClick={stopSpeech}
-                            className="border-2 border-red-500/80 text-red-400 bg-red-500/10 backdrop-blur-sm hover:bg-red-500 hover:text-white hover:border-red-500 font-semibold py-2 px-3 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center"
-                            title="Остановить воспроизведение"
-                          >
-                            <Square className="h-5 w-5" />
-                          </Button>
-                        )}
+                        {/* Stop Button - fixed position */}
+                        <div className="ml-3" style={{ width: '45px' }}>
+                          {(isPlaying || isPaused) && (
+                            <Button
+                              onClick={stopSpeech}
+                              className="border-2 border-red-500/80 text-red-400 bg-red-500/10 backdrop-blur-sm hover:bg-red-500 hover:text-white hover:border-red-500 font-semibold py-2 px-3 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center"
+                              title="Остановить воспроизведение"
+                            >
+                              <Square className="h-5 w-5" />
+                            </Button>
+                          )}
+                        </div>
                         
-                        {/* Audio Wave Animation */}
-                        {(isPlaying || isPaused) && (
-                          <AudioWaveAnimation 
-                            isPlaying={isPlaying} 
-                            className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2"
-                          />
-                        )}
+                        {/* Audio Wave Animation - fixed position */}
+                        <div className="ml-3">
+                          {(isPlaying || isPaused) && (
+                            <AudioWaveAnimation 
+                              isPlaying={isPlaying} 
+                              className="bg-white/20 backdrop-blur-sm rounded-lg"
+                            />
+                          )}
+                        </div>
                       </div>
 
                       {/* Share Button */}
