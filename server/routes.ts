@@ -1211,6 +1211,47 @@ ${articles.map(article => {
     }
   });
 
+  // News endpoint - combines articles and programs
+  app.get('/api/news', async (req, res) => {
+    try {
+      const { limit = '6' } = req.query;
+      const newsLimit = parseInt(limit as string);
+      
+      // Get latest articles and programs
+      const articlesData = await storage.getArticles({
+        published: true,
+        limit: Math.ceil(newsLimit / 2),
+        offset: 0,
+      });
+      
+      const programs = await storage.getPrograms({
+        published: true,
+        limit: Math.ceil(newsLimit / 2),
+        offset: 0,
+      });
+      
+      // Combine and sort by creation date
+      const newsItems = [
+        ...(articlesData.articles || []).map((article: any) => ({
+          type: 'article' as const,
+          data: article,
+          createdAt: article.createdAt ? new Date(article.createdAt) : new Date(),
+        })),
+        ...(programs || []).map((program: any) => ({
+          type: 'program' as const,
+          data: program,
+          createdAt: program.createdAt ? new Date(program.createdAt) : new Date(),
+        })),
+      ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+       .slice(0, newsLimit);
+      
+      res.json({ items: newsItems });
+    } catch (error) {
+      console.error("Error fetching news:", error);
+      res.status(500).json({ message: "Failed to fetch news" });
+    }
+  });
+
   // Program category routes
   app.get('/api/program-categories', async (req, res) => {
     try {

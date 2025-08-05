@@ -4,27 +4,32 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import ArticleCard from "@/components/ArticleCard";
+import NewsCard from "@/components/NewsCard";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MetaTags from "@/components/MetaTags";
 import AccessibilityFeaturesSlider from "@/components/AccessibilityFeaturesSlider";
 import heroPhoto from "@/assets/hero-photo.png";
-import type { ArticleWithRelations } from "@shared/schema";
+import type { ArticleWithRelations, ProgramWithRelations } from "@shared/schema";
+
+interface NewsItem {
+  type: 'article' | 'program';
+  data: ArticleWithRelations | ProgramWithRelations;
+  createdAt: Date | string;
+}
 
 export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: articlesData, isLoading } = useQuery<{
-    articles: ArticleWithRelations[];
-    totalCount: number;
+  const { data: newsData, isLoading } = useQuery<{
+    items: NewsItem[];
   }>({
-    queryKey: ["/api/articles", { limit: 5, published: true }],
+    queryKey: ["/api/news", { limit: 6 }],
     queryFn: async () => {
-      const response = await fetch("/api/articles?limit=5&published=true");
-      if (!response.ok) throw new Error("Failed to fetch articles");
+      const response = await fetch("/api/news?limit=6");
+      if (!response.ok) throw new Error("Failed to fetch news");
       return response.json();
     },
   });
@@ -155,21 +160,21 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Latest Articles Section */}
-        <section className="py-16" aria-labelledby="latest-articles">
+        {/* Latest News Section */}
+        <section className="py-16" aria-labelledby="latest-news">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <h2 id="latest-articles" className="text-3xl font-bold text-foreground mb-4">
-                Свежие статьи
+              <h2 id="latest-news" className="text-3xl font-bold text-foreground mb-4">
+                Новости
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Последние публикации о цифровой доступности, лучших практиках и новых решениях
+                Последние публикации статей и обновления программ по цифровой доступности
               </p>
             </div>
 
             {isLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {Array.from({ length: 5 }).map((_, i) => (
+                {Array.from({ length: 6 }).map((_, i) => (
                   <div key={i} className="space-y-3">
                     <Skeleton className="h-48 w-full" />
                     <Skeleton className="h-4 w-3/4" />
@@ -178,27 +183,34 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-            ) : articlesData?.articles.length ? (
+            ) : newsData?.items.length ? (
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {articlesData.articles.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
+                  {newsData.items.map((item, index) => (
+                    <NewsCard key={`${item.type}-${item.data.id}-${index}`} item={item} />
                   ))}
                 </div>
                 
-                <div className="text-center mt-12">
+                <div className="text-center mt-12 flex gap-4 justify-center">
                   <Button 
                     size="lg"
                     onClick={() => window.location.href = "/articles"}
                   >
                     Все статьи
                   </Button>
+                  <Button 
+                    size="lg"
+                    variant="outline"
+                    onClick={() => window.location.href = "/programs"}
+                  >
+                    Все программы
+                  </Button>
                 </div>
               </>
             ) : (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground">
-                  Пока что статей нет. Следите за обновлениями!
+                  Пока что новостей нет. Следите за обновлениями!
                 </p>
               </div>
             )}
