@@ -1211,39 +1211,25 @@ ${articles.map(article => {
     }
   });
 
-  // News endpoint - combines articles and programs
+  // News endpoint - shows only articles (as requested by user)
   app.get('/api/news', async (req, res) => {
     try {
       const { limit = '6' } = req.query;
       const newsLimit = parseInt(limit as string);
       
-      // Get latest articles and programs
+      // Get latest articles only
       const articles = await storage.getArticles({
         published: true,
-        limit: Math.ceil(newsLimit / 2),
+        limit: newsLimit,
         offset: 0,
       });
       
-      const programs = await storage.getPrograms({
-        published: true,
-        limit: Math.ceil(newsLimit / 2),
-        offset: 0,
-      });
-      
-      // Combine and sort by creation date
-      const newsItems = [
-        ...(articles || []).map((article: any) => ({
-          type: 'article' as const,
-          data: article,
-          createdAt: article.publishedAt ? new Date(article.publishedAt) : (article.createdAt ? new Date(article.createdAt) : new Date()),
-        })),
-        ...(programs || []).map((program: any) => ({
-          type: 'program' as const,
-          data: program,
-          createdAt: program.createdAt ? new Date(program.createdAt) : new Date(),
-        })),
-      ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-       .slice(0, newsLimit);
+      // Format as news items
+      const newsItems = (articles || []).map((article: any) => ({
+        type: 'article' as const,
+        data: article,
+        createdAt: article.publishedAt ? new Date(article.publishedAt) : (article.createdAt ? new Date(article.createdAt) : new Date()),
+      }));
       
       res.json({ items: newsItems });
     } catch (error) {

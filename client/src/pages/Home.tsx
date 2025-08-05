@@ -168,7 +168,7 @@ export default function Home() {
                 Новости
               </h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Последние публикации статей и обновления программ по цифровой доступности
+                Последние публикации о цифровой доступности, лучших практиках и новых решениях
               </p>
             </div>
 
@@ -203,7 +203,7 @@ export default function Home() {
             ) : (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground">
-                  Пока что новостей нет. Следите за обновлениями!
+                  Пока что статей нет. Следите за обновлениями!
                 </p>
               </div>
             )}

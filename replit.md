@@ -12,7 +12,7 @@ The application features a full-stack monorepo architecture.
 - **Backend**: Express.js REST API with TypeScript, using Drizzle ORM with PostgreSQL. Authentication leverages OpenID Connect via Replit Auth (with a local fallback system including bcrypt hashing for admin users "Gomer98"/"12345"). Session management uses Express sessions stored in PostgreSQL. Middleware includes logging, error handling, and CORS.
 - **Database Schema**: Includes `users`, `sessions`, `articles` (with rich metadata, featured images, SEO fields), `categories`, and `pages` (e.g., About, Contact, Privacy Policy, resource pages like WCAG guides).
 - **Admin Interface**: Provides role-based access control, content management (articles, categories, pages) with a rich text editor, draft/publish workflow, SEO metadata management, password change functionality, and a file upload system for images.
-- **Key Features**: Comprehensive text-to-speech functionality (browser and RHVoice with keyboard shortcut), dynamic sharing with Open Graph support, category filtering, RSS feed, contact form with database submission, and an automatic initialization system for basic setup.
+- **Key Features**: Comprehensive text-to-speech functionality (browser and RHVoice with keyboard shortcut), dynamic sharing with Open Graph support, category filtering, RSS feed, contact form with database submission, and an automatic initialization system for basic setup. Homepage features unified "Новости" (News) section displaying articles only (programs removed per user request).
 
 ## External Dependencies
 - **Database**: PostgreSQL (self-hosted with `pg` driver)
