@@ -773,7 +773,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
       {/* Side Panel */}
       <div 
         ref={panelRef}
-        className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col ${open ? 'open' : ''}`}
+        className={`accessibility-panel fixed top-0 right-0 h-full w-96 bg-background border-l shadow-xl flex flex-col ${open ? 'panel-open' : ''}`}
         style={{
           display: (open || hasBeenOpened) ? 'flex' : 'none',
           backgroundColor: actualTheme === 'dark' ? 'hsl(222.2, 84%, 4.9%)' : 'hsl(0, 0%, 100%)',

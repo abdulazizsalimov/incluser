@@ -493,18 +493,14 @@ span, a, button, label {
   letter-spacing: var(--letter-spacing-multiplier);
 }
 
-/* Accessibility panel animation - FORCED */
+/* Accessibility panel animation */
 .accessibility-panel {
-  z-index: 99999 !important;
-  isolation: isolate !important;
-  filter: none !important;
-  transform: translateX(100%) !important;
-  transition: transform 0.3s ease-in-out !important;
-  will-change: transform !important;
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
 }
 
-.accessibility-panel.open {
-  transform: translateX(0) !important;
+.accessibility-panel.panel-open {
+  transform: translateX(0);
 }
 
 body.panel-open {
