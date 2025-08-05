@@ -17,7 +17,7 @@ import { AudioWaveAnimation } from "@/components/AudioWaveAnimation";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { isPlaying, isPaused, speakText, pauseSpeech, resumeSpeech } = useSpeechSynthesis();
+  const { isPlaying, isPaused, currentAudio, speakText, pauseSpeech, resumeSpeech } = useSpeechSynthesis();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -192,28 +192,22 @@ export default function ArticleDetail() {
                   
                   {/* Audio Wave Animation */}
                   {(isPlaying || isPaused) && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
-                        <AudioWaveAnimation 
-                          isPlaying={isPlaying} 
-                          className="scale-150"
-                        />
-                      </div>
-                    </div>
+                    <AudioWaveAnimation 
+                      audioElement={currentAudio}
+                      isPlaying={isPlaying} 
+                      className=""
+                    />
                   )}
                 </div>
               ) : (
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500">
                   {/* Audio Wave Animation for gradient background */}
                   {(isPlaying || isPaused) && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
-                        <AudioWaveAnimation 
-                          isPlaying={isPlaying} 
-                          className="scale-150"
-                        />
-                      </div>
-                    </div>
+                    <AudioWaveAnimation 
+                      audioElement={currentAudio}
+                      isPlaying={isPlaying} 
+                      className=""
+                    />
                   )}
                 </div>
               )}

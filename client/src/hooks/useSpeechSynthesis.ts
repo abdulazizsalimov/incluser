@@ -14,6 +14,7 @@ interface SpeechSynthesisState {
   isPaused: boolean;
   currentText: string;
   currentUtterance: SpeechSynthesisUtterance | null;
+  currentAudio: HTMLAudioElement | null;
 }
 
 const initialState: SpeechSynthesisState = {
@@ -21,6 +22,7 @@ const initialState: SpeechSynthesisState = {
   isPaused: false,
   currentText: "",
   currentUtterance: null,
+  currentAudio: null,
 };
 
 // Global state for speech synthesis to avoid conflicts
@@ -38,6 +40,7 @@ const updateGlobalState = (updates: Partial<SpeechSynthesisState>) => {
 
 export function useSpeechSynthesis() {
   const [state, setState] = useState<SpeechSynthesisState>(globalState);
+  const [currentAudioElement, setCurrentAudioElement] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const listener = (newState: SpeechSynthesisState) => {
@@ -110,8 +113,8 @@ export function useSpeechSynthesis() {
           });
 
           const url = `/api/rhvoice/say?${params.toString()}`;
-          // Don't create Audio element yet, just store the URL
-          audioQueue.push({ url, sentence, audio: null } as any);
+          // Create placeholder object for queue
+          audioQueue.push(null as any);
         }
         
         // Play the queue
@@ -121,6 +124,7 @@ export function useSpeechSynthesis() {
             isPaused: false,
             currentText: text,
             currentUtterance: null,
+            currentAudio: null,
           });
           
           isQueuePlaying = true;
@@ -132,6 +136,7 @@ export function useSpeechSynthesis() {
                 isPaused: false,
                 currentText: "",
                 currentUtterance: null,
+                currentAudio: null,
               });
               resolve();
               return;
@@ -205,6 +210,7 @@ export function useSpeechSynthesis() {
           isPaused: false,
           currentText: text,
           currentUtterance: null,
+          currentAudio: audio,
         });
         
         return new Promise((resolve, reject) => {
@@ -445,6 +451,7 @@ export function useSpeechSynthesis() {
 
   return {
     ...state,
+    currentAudio: state.currentAudio,
     speakText,
     pauseSpeech,
     resumeSpeech,
