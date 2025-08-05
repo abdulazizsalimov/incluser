@@ -1368,14 +1368,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                     <SelectTrigger id="speech-voice" className="mt-2">
                       <SelectValue placeholder="Выберите голос" />
                     </SelectTrigger>
-                    <SelectContent 
-                      position="popper"
-                      side="bottom"
-                      align="start"
-                      sideOffset={5}
-                      avoidCollisions={true}
-                      collisionPadding={10}
-                    >
+                    <SelectContent>
                       <SelectItem value="browser">Браузерный синтезатор</SelectItem>
                       <SelectItem value="rhvoice">RHVoice (высокое качество)</SelectItem>
                     </SelectContent>
@@ -1411,14 +1404,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <SelectTrigger className="mt-2">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent 
-                          position="popper"
-                          side="bottom"
-                          align="start"
-                          sideOffset={5}
-                          avoidCollisions={true}
-                          collisionPadding={10}
-                        >
+                        <SelectContent>
                           <SelectItem value="elena">Елена</SelectItem>
                           <SelectItem value="irina">Ирина</SelectItem>
                           <SelectItem value="anna">Анна</SelectItem>
@@ -1433,14 +1419,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <SelectTrigger className="mt-2">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent 
-                          position="popper"
-                          side="bottom"
-                          align="start"
-                          sideOffset={5}
-                          avoidCollisions={true}
-                          collisionPadding={10}
-                        >
+                        <SelectContent>
                           <SelectItem value="30">Медленно (30%)</SelectItem>
                           <SelectItem value="50">Нормально (50%)</SelectItem>
                           <SelectItem value="70">Быстро (70%)</SelectItem>
@@ -1455,14 +1434,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                         <SelectTrigger className="mt-2">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent 
-                          position="popper"
-                          side="bottom"
-                          align="start"
-                          sideOffset={5}
-                          avoidCollisions={true}
-                          collisionPadding={10}
-                        >
+                        <SelectContent>
                           <SelectItem value="25">Тихо (25%)</SelectItem>
                           <SelectItem value="50">Средне (50%)</SelectItem>
                           <SelectItem value="75">Громко (75%)</SelectItem>

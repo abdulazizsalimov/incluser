@@ -117,27 +117,52 @@
   100% { opacity: 0.8; }
 }
 
-/* Accessibility panel specific styles */
+/* Fix Select dropdowns in accessibility panel */
+.accessibility-panel {
+  overflow: visible !important;
+}
+
+.accessibility-panel > div {
+  overflow: visible !important;
+}
+
 .accessibility-panel [data-radix-select-content] {
   z-index: 999999 !important;
   position: fixed !important;
-}
-
-.accessibility-panel [data-radix-popper-content-wrapper] {
-  z-index: 999999 !important;
-}
-
-/* Ensure Select dropdowns are visible */
-[data-radix-select-content] {
-  z-index: 999999 !important;
-  overflow: visible !important;
-  position: fixed !important;
+  background: white !important;
+  border: 1px solid #ccc !important;
+  border-radius: 6px !important;
   box-shadow: 0 10px 38px -10px rgba(22, 23, 24, 0.35), 0 10px 20px -15px rgba(22, 23, 24, 0.2) !important;
+  min-width: 200px !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  padding: 4px !important;
 }
 
-/* Force portal positioning */
+.dark .accessibility-panel [data-radix-select-content] {
+  background: hsl(240, 25%, 10%) !important;
+  border-color: hsl(240, 15%, 18%) !important;
+  color: hsl(240, 15%, 92%) !important;
+}
+
+/* Force all radix portals to highest z-index */
 [data-radix-portal] {
   z-index: 999999 !important;
+}
+
+/* Fix Select trigger styling */
+.accessibility-panel [data-radix-select-trigger] {
+  background: white !important;
+  border: 1px solid #ccc !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+
+.dark .accessibility-panel [data-radix-select-trigger] {
+  background: hsl(240, 15%, 15%) !important;
+  border-color: hsl(240, 15%, 18%) !important;
+  color: hsl(240, 15%, 92%) !important;
 }
 
 .dark.high-contrast {
