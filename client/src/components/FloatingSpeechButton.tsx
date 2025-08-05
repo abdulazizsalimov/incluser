@@ -98,10 +98,21 @@ export default function FloatingSpeechButton({
   }, [isEnabled]);
 
   const handleSpeakClick = async () => {
+    console.log('FloatingSpeechButton clicked:', { isPlaying, selectedText: selectedText.substring(0, 50) + '...' });
+    
     if (isPlaying) {
+      console.log('Stopping speech...');
       onStop();
     } else if (selectedText) {
-      await onSpeak(selectedText);
+      console.log('Starting speech for selected text:', selectedText.substring(0, 100) + '...');
+      try {
+        await onSpeak(selectedText);
+        console.log('Speech started successfully');
+      } catch (error) {
+        console.error('Error starting speech:', error);
+      }
+    } else {
+      console.log('No selected text to speak');
     }
   };
 
