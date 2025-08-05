@@ -1,5 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 
+// Global speech engine preference
+let globalSpeechEngine: 'browser' | 'rhvoice' = 'rhvoice'; // Default to RHVoice
+let globalRHVoiceSettings = {
+  rate: 50,
+  pitch: 50,
+  volume: 100
+};
+
 interface SpeechSynthesisState {
   isPlaying: boolean;
   isPaused: boolean;
@@ -45,21 +53,123 @@ export function useSpeechSynthesis() {
     };
   }, []);
 
+  // Function to speak with RHVoice
+  const speakWithRHVoice = useCallback(async (text: string): Promise<void> => {
+    try {
+      const params = new URLSearchParams({
+        text: text,
+        voice: 'elena',
+        format: 'mp3',
+        rate: globalRHVoiceSettings.rate.toString(),
+        pitch: globalRHVoiceSettings.pitch.toString(),
+        volume: globalRHVoiceSettings.volume.toString()
+      });
+
+      const url = `/api/rhvoice/say?${params.toString()}`;
+      
+      // Quick availability check with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
+      const testResponse = await fetch(url, { 
+        method: 'HEAD',
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!testResponse.ok) {
+        throw new Error(`RHVoice server unavailable (${testResponse.status})`);
+      }
+      
+      const audio = new Audio(url);
+      
+      updateGlobalState({
+        isPlaying: true,
+        isPaused: false,
+        currentText: text,
+        currentUtterance: null,
+      });
+      
+      return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          updateGlobalState({
+            isPlaying: false,
+            isPaused: false,
+            currentText: "",
+            currentUtterance: null,
+          });
+          reject(new Error('RHVoice audio timeout'));
+        }, 8000);
+
+        audio.onended = () => {
+          clearTimeout(timeout);
+          updateGlobalState({
+            isPlaying: false,
+            isPaused: false,
+            currentText: "",
+            currentUtterance: null,
+          });
+          resolve();
+        };
+        audio.onerror = () => {
+          clearTimeout(timeout);
+          updateGlobalState({
+            isPlaying: false,
+            isPaused: false,
+            currentText: "",
+            currentUtterance: null,
+          });
+          reject(new Error('RHVoice audio playback failed'));
+        };
+        
+        audio.play().catch((e) => {
+          clearTimeout(timeout);
+          updateGlobalState({
+            isPlaying: false,
+            isPaused: false,
+            currentText: "",
+            currentUtterance: null,
+          });
+          reject(new Error(`RHVoice playback error: ${e.message}`));
+        });
+      });
+    } catch (error: any) {
+      // Don't automatically fallback here, let the caller decide
+      throw error;
+    }
+  }, []);
+
   const speakText = useCallback(async (text: string, options?: {
     rate?: number;
     pitch?: number;
     volume?: number;
     voice?: string;
+    forceEngine?: 'browser' | 'rhvoice';
   }) => {
     if (!text.trim()) return;
     
-    if (!('speechSynthesis' in window)) {
-      throw new Error('Speech synthesis not supported');
-    }
-
     // Stop any current speech
     if (globalState.isPlaying || globalState.isPaused) {
       window.speechSynthesis.cancel();
+    }
+
+    const engineToUse = options?.forceEngine || globalSpeechEngine;
+
+    // Try RHVoice first if it's the preferred engine
+    if (engineToUse === 'rhvoice') {
+      try {
+        await speakWithRHVoice(text);
+        return;
+      } catch (error) {
+        console.warn('RHVoice failed, falling back to browser:', error);
+        // Fall through to browser synthesis
+      }
+    }
+
+    // Browser synthesis fallback
+    if (!('speechSynthesis' in window)) {
+      throw new Error('Speech synthesis not supported');
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -111,7 +221,7 @@ export function useSpeechSynthesis() {
     });
 
     window.speechSynthesis.speak(utterance);
-  }, []);
+  }, [speakWithRHVoice]);
 
   const pauseSpeech = useCallback(() => {
     if (window.speechSynthesis && globalState.isPlaying) {
@@ -160,6 +270,15 @@ export function useSpeechSynthesis() {
     }
   }, [speakText, pauseSpeech, resumeSpeech]);
 
+  // Functions to update global settings
+  const setSpeechEngine = useCallback((engine: 'browser' | 'rhvoice') => {
+    globalSpeechEngine = engine;
+  }, []);
+
+  const setRHVoiceSettings = useCallback((settings: { rate: number; pitch: number; volume: number }) => {
+    globalRHVoiceSettings = settings;
+  }, []);
+
   return {
     ...state,
     speakText,
@@ -167,5 +286,8 @@ export function useSpeechSynthesis() {
     resumeSpeech,
     stopSpeech,
     toggleSpeech,
+    setSpeechEngine,
+    setRHVoiceSettings,
+    currentEngine: globalSpeechEngine,
   };
 }

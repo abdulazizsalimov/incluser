@@ -223,7 +223,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
   });
 
   const [speechVoice, setSpeechVoice] = useState(() => {
-    const saved = localStorage.getItem('accessibility-speech-voice') || 'browser';
+    const saved = localStorage.getItem('accessibility-speech-voice') || 'rhvoice'; // Default to RHVoice
     return saved;
   });
 
@@ -248,9 +248,8 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     return saved ? [parseInt(saved)] : [100];
   });
 
-  const { isPlaying, speakText, stopSpeech: globalStopSpeech } = useSpeechSynthesis();
+  const { isPlaying, speakText, stopSpeech: globalStopSpeech, setSpeechEngine, setRHVoiceSettings, currentEngine } = useSpeechSynthesis();
   const [showSpeechSettings, setShowSpeechSettings] = useState(false);
-  const [rhvoiceStatus, setRhvoiceStatus] = useState<'unknown' | 'available' | 'unavailable'>('unknown');
 
   // Text magnifier settings
   const [magnifierColorScheme, setMagnifierColorScheme] = useState(() => {
@@ -377,81 +376,30 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
     if (!text.trim()) return;
     
     try {
-      if (speechVoice === 'rhvoice') {
-        await speakWithRHVoice(text);
-      } else {
-        await speakText(text, { rate: speechSpeed[0] });
-      }
+      // Use the unified speech system
+      await speakText(text, { rate: speechSpeed[0] });
     } catch (error) {
       console.error('Speech synthesis error:', error);
     }
   };
 
-  const speakWithRHVoice = async (text: string): Promise<void> => {
-    try {
-      // Build RHVoice API URL through our proxy
-      const params = new URLSearchParams({
-        text: text,
-        voice: 'elena',
-        format: 'mp3',
-        rate: rhvoiceRate[0].toString(),
-        pitch: rhvoicePitch[0].toString(),
-        volume: rhvoiceVolume[0].toString()
-      });
+  // Update settings when voice preference changes
+  useEffect(() => {
+    setSpeechEngine(speechVoice as 'browser' | 'rhvoice');
+    localStorage.setItem('accessibility-speech-voice', speechVoice);
+  }, [speechVoice, setSpeechEngine]);
 
-      const url = `/api/rhvoice/say?${params.toString()}`;
-      
-      // Quick availability check with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-      
-      const testResponse = await fetch(url, { 
-        method: 'HEAD',
-        signal: controller.signal
-      });
-      
-      clearTimeout(timeoutId);
-      
-      if (!testResponse.ok) {
-        setRhvoiceStatus('unavailable');
-        throw new Error(`RHVoice server unavailable (${testResponse.status})`);
-      }
-      
-      setRhvoiceStatus('available');
-      const audio = new Audio(url);
-      
-      return new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error('RHVoice audio timeout'));
-        }, 8000);
-
-        audio.onended = () => {
-          clearTimeout(timeout);
-          resolve();
-        };
-        audio.onerror = () => {
-          clearTimeout(timeout);
-          reject(new Error('RHVoice audio playback failed'));
-        };
-        audio.oncanplaythrough = () => {
-          console.log('RHVoice audio ready to play');
-        };
-        
-        audio.play().catch((e) => {
-          clearTimeout(timeout);
-          reject(new Error(`RHVoice playback error: ${e.message}`));
-        });
-      });
-    } catch (error: any) {
-      // Update status and fallback to browser speech
-      setRhvoiceStatus('unavailable');
-      console.warn('RHVoice unavailable, using browser speech:', error.message);
-      if (error.name === 'AbortError') {
-        console.warn('RHVoice server timeout - likely not running');
-      }
-      return speakText(text, { rate: speechSpeed[0] });
-    }
-  };
+  // Update RHVoice settings when they change
+  useEffect(() => {
+    setRHVoiceSettings({
+      rate: rhvoiceRate[0],
+      pitch: rhvoicePitch[0],
+      volume: rhvoiceVolume[0]
+    });
+    localStorage.setItem('accessibility-rhvoice-rate', rhvoiceRate[0].toString());
+    localStorage.setItem('accessibility-rhvoice-pitch', rhvoicePitch[0].toString());
+    localStorage.setItem('accessibility-rhvoice-volume', rhvoiceVolume[0].toString());
+  }, [rhvoiceRate, rhvoicePitch, rhvoiceVolume, setRHVoiceSettings]);
 
   const speakSelectedText = () => {
     const selection = window.getSelection();
@@ -1425,14 +1373,7 @@ export default function AccessibilityWidget({ open, onOpenChange }: Accessibilit
                   </Select>
                   <p className="text-sm text-muted-foreground mt-1">
                     {speechVoice === 'rhvoice' 
-                      ? (
-                        <span>
-                          Профессиональный русский синтезатор речи{' '}
-                          {rhvoiceStatus === 'available' && <span className="text-green-600">🟢 Доступен</span>}
-                          {rhvoiceStatus === 'unavailable' && <span className="text-red-600">🔴 Недоступен (будет использован браузерный)</span>}
-                          {rhvoiceStatus === 'unknown' && <span className="text-yellow-600">🟡 Проверяется...</span>}
-                        </span>
-                      )
+                      ? 'Профессиональный русский синтезатор речи (с автоматическим fallback)'
                       : 'Встроенный синтезатор браузера'
                     }
                   </p>
