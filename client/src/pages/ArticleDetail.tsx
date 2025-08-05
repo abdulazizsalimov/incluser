@@ -189,33 +189,9 @@ export default function ArticleDetail() {
                   />
                   {/* Dark overlay for text readability */}
                   <div className="absolute inset-0 bg-black/50"></div>
-                  
-                  {/* Audio Wave Animation */}
-                  {(isPlaying || isPaused) && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
-                        <AudioWaveAnimation 
-                          isPlaying={isPlaying} 
-                          className="scale-150"
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
               ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500">
-                  {/* Audio Wave Animation for gradient background */}
-                  {(isPlaying || isPaused) && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
-                        <AudioWaveAnimation 
-                          isPlaying={isPlaying} 
-                          className="scale-150"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
               )}
               
               {/* Content - responsive layout */}
@@ -273,30 +249,40 @@ export default function ArticleDetail() {
                           </span>
                         )}
                         
-                        <div className="flex items-center gap-2">
-                          {/* Listen Button */}
-                          <Button
-                            onClick={handleSpeakArticle}
-                            className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
-                            title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
-                          >
-                            {isPlaying ? (
-                              <>
-                                <Pause className="h-4 w-4" />
-                                Пауза
-                              </>
-                            ) : isPaused ? (
-                              <>
-                                <Play className="h-4 w-4" />
-                                Продолжить
-                              </>
-                            ) : (
-                              <>
-                                <Volume2 className="h-4 w-4" />
-                                Прослушать
-                              </>
+                        <div className="flex items-center gap-4">
+                          {/* Listen Button with Wave Animation */}
+                          <div className="flex items-center gap-3">
+                            <Button
+                              onClick={handleSpeakArticle}
+                              className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
+                              title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
+                            >
+                              {isPlaying ? (
+                                <>
+                                  <Pause className="h-4 w-4" />
+                                  Пауза
+                                </>
+                              ) : isPaused ? (
+                                <>
+                                  <Play className="h-4 w-4" />
+                                  Продолжить
+                                </>
+                              ) : (
+                                <>
+                                  <Volume2 className="h-4 w-4" />
+                                  Прослушать
+                                </>
+                              )}
+                            </Button>
+                            
+                            {/* Audio Wave Animation */}
+                            {(isPlaying || isPaused) && (
+                              <AudioWaveAnimation 
+                                isPlaying={isPlaying} 
+                                className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2"
+                              />
                             )}
-                          </Button>
+                          </div>
 
                           {/* Share Button */}
                           <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white [&_button:hover]:text-blue-600 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
@@ -370,24 +356,34 @@ export default function ArticleDetail() {
                     
                     {/* Listen and Share buttons in bottom right */}
                     <div className="ml-4 flex items-center gap-3">
-                      {/* Listen Button */}
-                      <Button
-                        onClick={handleSpeakArticle}
-                        className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
-                        title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
-                      >
-                        {isPlaying ? (
-                          <>
-                            <Pause className="h-5 w-5" />
-                            Пауза
-                          </>
-                        ) : (
-                          <>
-                            <Volume2 className="h-5 w-5" />
-                            {isPaused ? "Продолжить" : "Прослушать"}
-                          </>
+                      {/* Listen Button with Wave Animation */}
+                      <div className="flex items-center gap-3">
+                        <Button
+                          onClick={handleSpeakArticle}
+                          className="border-2 border-white/80 text-white bg-white/10 backdrop-blur-sm hover:bg-white hover:text-blue-600 hover:border-white font-semibold py-2 px-4 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-white/50 flex items-center gap-2"
+                          title={isPlaying ? "Пауза" : isPaused ? "Продолжить" : "Прослушать статью"}
+                        >
+                          {isPlaying ? (
+                            <>
+                              <Pause className="h-5 w-5" />
+                              Пауза
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="h-5 w-5" />
+                              {isPaused ? "Продолжить" : "Прослушать"}
+                            </>
+                          )}
+                        </Button>
+                        
+                        {/* Audio Wave Animation */}
+                        {(isPlaying || isPaused) && (
+                          <AudioWaveAnimation 
+                            isPlaying={isPlaying} 
+                            className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2"
+                          />
                         )}
-                      </Button>
+                      </div>
 
                       {/* Share Button */}
                       <div className="[&_button]:border-2 [&_button]:border-white/80 [&_button]:text-white [&_button]:bg-white/10 [&_button]:backdrop-blur-sm [&_button:hover]:bg-white [&_button:hover]:text-blue-600 [&_button:hover]:border-white [&_button]:font-semibold [&_button]:py-2 [&_button]:px-4 [&_button]:rounded-lg [&_button]:shadow-lg [&_button]:transition-all [&_button]:transform [&_button:hover]:scale-105 [&_button]:focus:outline-none [&_button]:focus:ring-4 [&_button]:focus:ring-white/50">
