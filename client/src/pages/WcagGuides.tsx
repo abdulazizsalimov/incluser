@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Download, ExternalLink, Volume2, VolumeX } from "lucide-react";
+import { Download, ExternalLink, Volume2, VolumeX, Square, Pause, Play } from "lucide-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import wcagPdfUrl from "@assets/wcag-2.1-guide.pdf";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { AudioWaveAnimation } from "@/components/AudioWaveAnimation";
 
 export default function WcagGuides() {
   usePageTitle("Руководства WCAG - Incluser");
   
   const [pdfError, setPdfError] = useState(false);
-  const [isReading, setIsReading] = useState(false);
-  const [speechInstance, setSpeechInstance] = useState<SpeechSynthesisUtterance | null>(null);
   const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const { isPlaying, isPaused, speakText, pauseSpeech, resumeSpeech, stopSpeech } = useSpeechSynthesis();
   
   useEffect(() => {
     // Прокручиваем в начало страницы при загрузке
@@ -62,47 +63,12 @@ export default function WcagGuides() {
   `;
 
   const handleSpeech = () => {
-    if (isReading) {
-      // Остановить чтение
-      if (speechInstance) {
-        speechSynthesis.cancel();
-        setIsReading(false);
-        setSpeechInstance(null);
-      }
+    if (isPlaying) {
+      pauseSpeech();
+    } else if (isPaused) {
+      resumeSpeech();
     } else {
-      // Начать чтение
-      const utterance = new SpeechSynthesisUtterance(wcagContent);
-      
-      // Настройки голоса
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
-      utterance.volume = 1;
-      
-      // Попытка найти русский голос
-      const voices = speechSynthesis.getVoices();
-      const russianVoice = voices.find(voice => 
-        voice.lang.includes('ru') || voice.name.toLowerCase().includes('russian')
-      );
-      if (russianVoice) {
-        utterance.voice = russianVoice;
-      }
-
-      utterance.onstart = () => {
-        setIsReading(true);
-      };
-
-      utterance.onend = () => {
-        setIsReading(false);
-        setSpeechInstance(null);
-      };
-
-      utterance.onerror = () => {
-        setIsReading(false);
-        setSpeechInstance(null);
-      };
-
-      setSpeechInstance(utterance);
-      speechSynthesis.speak(utterance);
+      speakText(wcagContent);
     }
   };
 
@@ -124,23 +90,51 @@ export default function WcagGuides() {
             </p>
             
             <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <Button 
-                onClick={handleSpeech}
-                variant={isReading ? "destructive" : "secondary"}
-                aria-label={isReading ? "Остановить озвучивание" : "Озвучить введение к WCAG 2.1"}
-              >
-                {isReading ? (
-                  <>
-                    <VolumeX className="w-4 h-4 mr-2" />
-                    Остановить озвучивание
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="w-4 h-4 mr-2" />
-                    Озвучить введение
-                  </>
+              {/* Speech controls with fixed layout */}
+              <div className="flex items-center gap-3">
+                <Button 
+                  onClick={handleSpeech}
+                  variant={isPlaying ? "destructive" : "secondary"}
+                  aria-label={isPlaying ? "Пауза" : isPaused ? "Продолжить озвучивание" : "Озвучить введение к WCAG 2.1"}
+                >
+                  {isPlaying ? (
+                    <>
+                      <Pause className="w-4 h-4 mr-2" />
+                      Пауза
+                    </>
+                  ) : isPaused ? (
+                    <>
+                      <Play className="w-4 h-4 mr-2" />
+                      Продолжить
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="w-4 h-4 mr-2" />
+                      Озвучить введение
+                    </>
+                  )}
+                </Button>
+
+                {/* Stop Button - only visible during playback or pause */}
+                {(isPlaying || isPaused) && (
+                  <Button
+                    onClick={stopSpeech}
+                    variant="destructive"
+                    size="sm"
+                    aria-label="Остановить воспроизведение"
+                  >
+                    <Square className="h-4 w-4" />
+                  </Button>
                 )}
-              </Button>
+
+                {/* Audio Wave Animation */}
+                {(isPlaying || isPaused) && (
+                  <AudioWaveAnimation 
+                    isPlaying={isPlaying} 
+                    className="bg-muted/50 backdrop-blur-sm rounded-lg"
+                  />
+                )}
+              </div>
               
               <Button asChild variant="default">
                 <a href={pdfUrl} download>
