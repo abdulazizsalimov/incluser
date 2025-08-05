@@ -31,7 +31,7 @@ export function AudioWaveAnimation({ isPlaying, className = "" }: AudioWaveAnima
   }
 
   return (
-    <div className={`flex items-center justify-center space-x-1 ${className}`}>
+    <div className={`flex items-center justify-center space-x-1 ${className}`} style={{ minWidth: '40px', minHeight: '40px' }}>
       {bars.map((height, index) => (
         <div
           key={index}

@@ -158,7 +158,7 @@ export function useSpeechSynthesis() {
               setTimeout(() => playNext(), 100); // Small gap between sentences
             };
             
-            audio.onerror = (event) => {
+            audio.onerror = (event: any) => {
               console.error(`Queue audio error for sentence ${currentAudioIndex + 1}:`, event);
               currentAudioIndex++;
               setTimeout(() => playNext(), 100); // Continue with next sentence

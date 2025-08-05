@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Clock, User, Calendar, Volume2, Pause, Play } from "lucide-react";
+import { ArrowLeft, Clock, User, Calendar, Volume2, Pause, Play, Square } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ShareButton from "@/components/ShareButton";
@@ -17,7 +17,7 @@ import { AudioWaveAnimation } from "@/components/AudioWaveAnimation";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { isPlaying, isPaused, speakText, pauseSpeech, resumeSpeech } = useSpeechSynthesis();
+  const { isPlaying, isPaused, speakText, pauseSpeech, resumeSpeech, stopSpeech } = useSpeechSynthesis();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -275,6 +275,17 @@ export default function ArticleDetail() {
                               )}
                             </Button>
                             
+                            {/* Stop Button - only visible during playback or pause */}
+                            {(isPlaying || isPaused) && (
+                              <Button
+                                onClick={stopSpeech}
+                                className="border-2 border-red-500/80 text-red-400 bg-red-500/10 backdrop-blur-sm hover:bg-red-500 hover:text-white hover:border-red-500 font-semibold py-2 px-3 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center"
+                                title="Остановить воспроизведение"
+                              >
+                                <Square className="h-4 w-4" />
+                              </Button>
+                            )}
+                            
                             {/* Audio Wave Animation */}
                             {(isPlaying || isPaused) && (
                               <AudioWaveAnimation 
@@ -375,6 +386,17 @@ export default function ArticleDetail() {
                             </>
                           )}
                         </Button>
+                        
+                        {/* Stop Button - only visible during playback or pause */}
+                        {(isPlaying || isPaused) && (
+                          <Button
+                            onClick={stopSpeech}
+                            className="border-2 border-red-500/80 text-red-400 bg-red-500/10 backdrop-blur-sm hover:bg-red-500 hover:text-white hover:border-red-500 font-semibold py-2 px-3 rounded-lg shadow-lg transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center"
+                            title="Остановить воспроизведение"
+                          >
+                            <Square className="h-5 w-5" />
+                          </Button>
+                        )}
                         
                         {/* Audio Wave Animation */}
                         {(isPlaying || isPaused) && (
